@@ -69,7 +69,17 @@ struct ScenarioLibraryStore {
             return fileURLOverride
         }
 
-        return try fileManager.url(
+        return try Self.defaultFileURL(fileManager: fileManager)
+    }
+
+    static func clearPersistedData(fileManager: FileManager = .default) throws {
+        let url = try defaultFileURL(fileManager: fileManager)
+        guard fileManager.fileExists(atPath: url.path) else { return }
+        try fileManager.removeItem(at: url)
+    }
+
+    private static func defaultFileURL(fileManager: FileManager) throws -> URL {
+        try fileManager.url(
             for: .applicationSupportDirectory,
             in: .userDomainMask,
             appropriateFor: nil,

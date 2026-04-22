@@ -16,6 +16,7 @@ struct LibraryView: View {
                 Section("Nothing saved yet") {
                     Text("Save a scenario from Explore to keep a lightweight history.")
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("saved-empty-state")
                 }
             } else {
                 Section("Saved scenarios") {
@@ -33,14 +34,17 @@ struct LibraryView: View {
                                 }
                                 .buttonStyle(.borderedProminent)
                                 .tint(entry.scenario.asset.tint)
+                                .accessibilityIdentifier("saved-scenario-open-button")
 
                                 Button("Delete", role: .destructive) {
                                     appModel.removeSavedScenario(entry)
                                 }
                                 .buttonStyle(.bordered)
+                                .accessibilityIdentifier("saved-scenario-delete-button")
                             }
                         }
                         .padding(.vertical, 8)
+                        .accessibilityIdentifier("saved-scenario-row")
                     }
                 }
             }
@@ -62,4 +66,3 @@ struct LibraryView: View {
         }
     }
 }
-

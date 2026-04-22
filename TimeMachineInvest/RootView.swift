@@ -14,6 +14,7 @@ struct RootView: View {
                 Label("Explore", systemImage: "sparkles.rectangle.stack")
             }
             .tag(AppTab.explore)
+            .accessibilityIdentifier("explore-tab")
 
             NavigationStack {
                 LibraryView()
@@ -22,6 +23,7 @@ struct RootView: View {
                 Label("Saved", systemImage: "bookmark")
             }
             .tag(AppTab.library)
+            .accessibilityIdentifier("saved-tab")
         }
     }
 }
@@ -30,4 +32,3 @@ struct RootView: View {
     RootView()
         .environment(AppModel())
 }
-

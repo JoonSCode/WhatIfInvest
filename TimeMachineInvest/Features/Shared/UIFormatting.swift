@@ -34,35 +34,6 @@ enum UIFormatting {
     }
 }
 
-struct SponsoredBannerView: View {
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "rectangle.badge.ad")
-                .font(.title3)
-                .foregroundStyle(Color(red: 0.47, green: 0.31, blue: 0.18))
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Sponsored slot")
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                Text("Reserved for a single below-the-fold banner placement.")
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-        }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.white.opacity(0.7))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .strokeBorder(Color.black.opacity(0.06))
-                )
-        )
-    }
-}
-
 struct TrustNotesView: View {
     let providerLabel: String
     let lastUpdatedAt: Date?

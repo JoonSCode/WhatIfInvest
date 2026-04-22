@@ -144,14 +144,7 @@ struct HistoricalDataStore {
             return cacheFileURL
         }
 
-        return try fileManager.url(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: true
-        )
-        .appending(path: "TimeMachineInvest", directoryHint: .isDirectory)
-        .appending(path: "historical_cache.json")
+        return try Self.defaultCacheURL(fileManager: fileManager)
     }
 
     private static func fetchHistoryFromNetwork(for asset: AssetID) async throws -> AssetHistory {
@@ -195,6 +188,23 @@ struct HistoricalDataStore {
             categoryLabel: asset.categoryLabel,
             monthlyPoints: points
         )
+    }
+
+    static func clearPersistedData(fileManager: FileManager = .default) throws {
+        let url = try defaultCacheURL(fileManager: fileManager)
+        guard fileManager.fileExists(atPath: url.path) else { return }
+        try fileManager.removeItem(at: url)
+    }
+
+    private static func defaultCacheURL(fileManager: FileManager) throws -> URL {
+        try fileManager.url(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true
+        )
+        .appending(path: "TimeMachineInvest", directoryHint: .isDirectory)
+        .appending(path: "historical_cache.json")
     }
 }
 

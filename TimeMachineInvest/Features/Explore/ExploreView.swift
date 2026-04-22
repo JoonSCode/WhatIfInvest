@@ -7,8 +7,10 @@ struct ExploreView: View {
 
     @State private var comparisonDraft = InvestmentScenario.suggestedComparison(after: .starter, excluding: [])
     @State private var showingComparisonSheet = false
+    @State private var shareExport: ShareExportItem?
     @State private var visibleYearIndex = 0
     @State private var isPlaying = false
+    @State private var isPreparingShare = false
     @State private var playbackTask: Task<Void, Never>?
 
     var body: some View {
@@ -53,8 +55,6 @@ struct ExploreView: View {
                     providerLabel: appModel.providerLabel,
                     lastUpdatedAt: appModel.lastUpdatedAt
                 )
-
-                SponsoredBannerView()
             }
             .padding(20)
             .padding(.bottom, 28)
@@ -77,6 +77,9 @@ struct ExploreView: View {
                 )
             }
             .presentationDetents([.large])
+        }
+        .sheet(item: $shareExport) { export in
+            ActivityShareSheet(items: [export.caption, export.fileURL])
         }
         .task {
             await appModel.loadIfNeeded()
@@ -114,13 +117,14 @@ struct ExploreView: View {
     }
 
     private var controlRow: some View {
-        VStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
                 Button(isPlaying ? "Stop Playback" : "Play Years") {
                     togglePlayback()
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(Color(red: 0.10, green: 0.29, blue: 0.54))
+                .accessibilityIdentifier("timeline-playback-button")
 
                 Button("Add Comparison") {
                     comparisonDraft = appModel.nextComparisonDraft()
@@ -128,29 +132,44 @@ struct ExploreView: View {
                 }
                 .buttonStyle(.bordered)
                 .disabled(appModel.primaryResult == nil)
+                .accessibilityIdentifier("add-comparison-button")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-                Menu("More") {
-                    Button("Save Current Scenario") {
-                        appModel.savePrimaryScenario()
-                    }
-
-                    ShareLink(item: appModel.shareSummary) {
-                        Label("Share Summary", systemImage: "square.and.arrow.up")
-                    }
-
-                    Button(appModel.isRefreshing ? "Refreshing..." : "Refresh Data Cache") {
-                        Task { await appModel.refreshHistoricalData() }
-                    }
-                    .disabled(appModel.isRefreshing)
+            FlowLayout(spacing: 10) {
+                Button {
+                    appModel.savePrimaryScenario()
+                } label: {
+                    Label("Save Scenario", systemImage: "bookmark")
                 }
                 .buttonStyle(.bordered)
+                .disabled(appModel.primaryResult == nil)
+                .accessibilityIdentifier("save-scenario-button")
+
+                Button {
+                    Task { await prepareShareCard() }
+                } label: {
+                    Label(isPreparingShare ? "Preparing Share Card..." : "Share Card", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.bordered)
+                .disabled(appModel.primaryResult == nil || isPreparingShare)
+                .accessibilityIdentifier("share-card-button")
+
+                Button {
+                    Task { await appModel.refreshHistoricalData() }
+                } label: {
+                    Label(appModel.isRefreshing ? "Refreshing..." : "Refresh Data", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(.bordered)
+                .disabled(appModel.isRefreshing)
+                .accessibilityIdentifier("refresh-data-button")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 16) {
-                statPill(title: "Visible year", value: visibleYearLabel)
-                statPill(title: "Saved", value: "\(appModel.savedScenarios.count)")
-                statPill(title: "Compared", value: "\(appModel.comparisonScenarios.count + 1)")
+                statPill(title: "Visible year", value: visibleYearLabel, accessibilityIdentifier: "visible-year-pill")
+                statPill(title: "Saved", value: "\(appModel.savedScenarios.count)", accessibilityIdentifier: "saved-count-pill")
+                statPill(title: "Compared", value: "\(appModel.comparisonScenarios.count + 1)", accessibilityIdentifier: "compared-count-pill")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -198,6 +217,7 @@ struct ExploreView: View {
                 )
             }
         }
+        .accessibilityIdentifier("comparison-section")
     }
 
     private func fallbackState(message: String?) -> some View {
@@ -236,13 +256,15 @@ struct ExploreView: View {
         return "\(appModel.animationYears[visibleYearIndex])"
     }
 
-    private func statPill(title: String, value: String) -> some View {
+    private func statPill(title: String, value: String, accessibilityIdentifier: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title.uppercased())
                 .font(.system(size: 10, weight: .bold, design: .rounded))
                 .foregroundStyle(.secondary)
+                .accessibilityIdentifier("\(accessibilityIdentifier)-title")
             Text(value)
                 .font(.system(size: 16, weight: .bold, design: .rounded))
+                .accessibilityIdentifier("\(accessibilityIdentifier)-value")
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
@@ -250,6 +272,8 @@ struct ExploreView: View {
             Capsule(style: .continuous)
                 .fill(Color.white.opacity(0.74))
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier(accessibilityIdentifier)
     }
 
     private func alignVisibleYearToLatest() {
@@ -283,6 +307,26 @@ struct ExploreView: View {
         playbackTask?.cancel()
         playbackTask = nil
         isPlaying = false
+    }
+
+    @MainActor
+    private func prepareShareCard() async {
+        guard let primaryResult = appModel.primaryResult else { return }
+
+        isPreparingShare = true
+        defer { isPreparingShare = false }
+
+        do {
+            shareExport = try ShareCardExporter().export(
+                primaryResult: primaryResult,
+                comparisons: appModel.comparisonResults,
+                caption: appModel.shareSummary,
+                lastUpdatedAt: appModel.lastUpdatedAt
+            )
+            appModel.lastErrorMessage = nil
+        } catch {
+            appModel.lastErrorMessage = error.localizedDescription
+        }
     }
 }
 
@@ -359,6 +403,7 @@ private struct ScenarioEditorCard: View {
                         .stroke(Color.black.opacity(0.06))
                 )
         )
+        .accessibilityIdentifier(title == "Story mode" ? "story-mode-card" : "comparison-editor-card")
     }
 
     private var amountBinding: Binding<Double> {
@@ -413,6 +458,7 @@ private struct ResultSummaryCard: View {
                     )
                 )
         )
+        .accessibilityIdentifier("result-summary-card")
     }
 
     private func metricBlock(title: String, value: String) -> some View {
@@ -532,6 +578,7 @@ private struct ComparisonComposerView: View {
                 Button("Cancel") {
                     dismiss()
                 }
+                .accessibilityIdentifier("comparison-cancel-button")
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Add") {
@@ -539,6 +586,7 @@ private struct ComparisonComposerView: View {
                 }
                 .fontWeight(.semibold)
                 .disabled(validationMessage != nil)
+                .accessibilityIdentifier("comparison-add-button")
             }
         }
     }
