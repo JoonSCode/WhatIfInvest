@@ -2,8 +2,8 @@
 build/
 DerivedData/
 xcuserdata/
+.artifacts/
 *.xcuserstate
 *.moved-aside
 *.swp
 *.orig
-

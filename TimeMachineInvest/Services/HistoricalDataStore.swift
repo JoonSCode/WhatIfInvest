@@ -18,21 +18,56 @@ enum HistoricalDataError: LocalizedError {
 }
 
 struct HistoricalDataStore {
-    private let fileName = "bundled_historical_data"
-    private let fileExtension = "json"
+    private let fileName: String
+    private let fileExtension: String
+    private let fileManager: FileManager
+    private let bundle: Bundle
+    private let bundledPayloadURL: URL?
+    private let cacheFileURL: URL?
+    private let now: @Sendable () -> Date
+    private let historyFetcher: @Sendable (AssetID) async throws -> AssetHistory
 
+    init(
+        fileName: String = "bundled_historical_data",
+        fileExtension: String = "json",
+        fileManager: FileManager = .default,
+        bundle: Bundle = .main,
+        bundledPayloadURL: URL? = nil,
+        cacheFileURL: URL? = nil,
+        now: @escaping @Sendable () -> Date = { .now },
+        historyFetcher: @escaping @Sendable (AssetID) async throws -> AssetHistory = HistoricalDataStore.fetchHistoryFromNetwork
+    ) {
+        self.fileName = fileName
+        self.fileExtension = fileExtension
+        self.fileManager = fileManager
+        self.bundle = bundle
+        self.bundledPayloadURL = bundledPayloadURL
+        self.cacheFileURL = cacheFileURL
+        self.now = now
+        self.historyFetcher = historyFetcher
+    }
+
+    @MainActor
     func loadHistoricalData() async throws -> BundledHistoricalData {
-        if let cached = try loadCachedPayload() {
-            return cached
+        do {
+            if let cached = try loadCachedPayload() {
+                return cached
+            }
+        } catch {
+            try? clearCache()
         }
+
         return try loadBundledPayload()
     }
 
+    @MainActor
     func refreshAllData() async throws -> BundledHistoricalData {
+        let historyFetcher = self.historyFetcher
+
         let histories = try await withThrowingTaskGroup(of: AssetHistory.self) { group in
             for asset in AssetID.allCases {
                 group.addTask {
-                    try await fetchHistory(for: asset)
+                    try await historyFetcher(asset)
                 }
             }
 
@@ -44,7 +79,7 @@ struct HistoricalDataStore {
         }
 
         let payload = BundledHistoricalData(
-            generatedAt: .now,
+            generatedAt: now(),
             provider: "Yahoo Finance chart endpoint (monthly adjusted close)",
             interval: "1mo",
             histories: histories
@@ -54,7 +89,11 @@ struct HistoricalDataStore {
     }
 
     private func loadBundledPayload() throws -> BundledHistoricalData {
-        let bundle = Bundle.main
+        if let bundledPayloadURL {
+            let data = try Data(contentsOf: bundledPayloadURL)
+            return try decodePayload(from: data)
+        }
+
         let candidates = [
             bundle.url(forResource: fileName, withExtension: fileExtension),
             bundle.url(forResource: fileName, withExtension: fileExtension, subdirectory: "Resources/Historical")
@@ -70,7 +109,7 @@ struct HistoricalDataStore {
 
     private func loadCachedPayload() throws -> BundledHistoricalData? {
         let url = try cacheURL()
-        guard FileManager.default.fileExists(atPath: url.path()) else { return nil }
+        guard fileManager.fileExists(atPath: url.path) else { return nil }
         let data = try Data(contentsOf: url)
         return try decodePayload(from: data)
     }
@@ -87,15 +126,25 @@ struct HistoricalDataStore {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let data = try encoder.encode(payload)
         let url = try cacheURL()
-        try FileManager.default.createDirectory(
+        try fileManager.createDirectory(
             at: url.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
         try data.write(to: url, options: [.atomic])
     }
 
+    private func clearCache() throws {
+        let url = try cacheURL()
+        guard fileManager.fileExists(atPath: url.path) else { return }
+        try fileManager.removeItem(at: url)
+    }
+
     private func cacheURL() throws -> URL {
-        try FileManager.default.url(
+        if let cacheFileURL {
+            return cacheFileURL
+        }
+
+        return try fileManager.url(
             for: .applicationSupportDirectory,
             in: .userDomainMask,
             appropriateFor: nil,
@@ -105,7 +154,7 @@ struct HistoricalDataStore {
         .appending(path: "historical_cache.json")
     }
 
-    private func fetchHistory(for asset: AssetID) async throws -> AssetHistory {
+    private static func fetchHistoryFromNetwork(for asset: AssetID) async throws -> AssetHistory {
         let startDate = Calendar.utc.date(from: DateComponents(year: 2010, month: 1, day: 1)) ?? .distantPast
         let period1 = Int(startDate.timeIntervalSince1970)
         let period2 = Int(Date().addingTimeInterval(86_400).timeIntervalSince1970)
@@ -169,4 +218,3 @@ private struct YahooIndicators: Decodable {
 private struct YahooAdjCloseSeries: Decodable {
     let adjclose: [Double?]
 }
-

@@ -2,13 +2,19 @@ import Foundation
 
 struct SimulationEngine {
     func simulate(scenario: InvestmentScenario, history: AssetHistory) -> ScenarioResult? {
-        let orderedPoints = history.monthlyPoints.sorted { $0.date < $1.date }
-        guard let startIndex = orderedPoints.firstIndex(where: { $0.date >= Calendar.utc.startOfDay(for: scenario.startDate) }) else {
+        guard scenario.amount > 0 else {
             return nil
         }
 
-        let relevantPoints = Array(orderedPoints[startIndex...])
-        guard let firstPoint = relevantPoints.first, firstPoint.adjustedClose > 0 else {
+        let orderedPoints = history.monthlyPoints.sorted { $0.date < $1.date }
+        guard let startIndex = orderedPoints.firstIndex(where: {
+            $0.date >= scenario.normalizedStartDate && $0.adjustedClose > 0
+        }) else {
+            return nil
+        }
+
+        let relevantPoints = Array(orderedPoints[startIndex...]).filter { $0.adjustedClose > 0 }
+        guard let firstPoint = relevantPoints.first else {
             return nil
         }
 
@@ -76,4 +82,3 @@ struct SimulationEngine {
         }
     }
 }
-

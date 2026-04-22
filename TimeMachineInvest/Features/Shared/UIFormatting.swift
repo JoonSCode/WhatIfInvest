@@ -24,6 +24,14 @@ enum UIFormatting {
     static func scenarioDescriptor(_ scenario: InvestmentScenario) -> String {
         "\(scenario.asset.symbol) · \(scenario.startDate.monthYearText) · \(scenario.mode.title) \(scenario.amount.currencyText)"
     }
+
+    static func spanDescriptor(for result: ScenarioResult) -> String {
+        let years = Double(result.elapsedMonths) / 12
+        if years >= 1 {
+            return "\(years.formatted(.number.precision(.fractionLength(1))))y"
+        }
+        return "\(result.elapsedMonths) mo"
+    }
 }
 
 struct SponsoredBannerView: View {
@@ -83,4 +91,3 @@ struct TrustNotesView: View {
         )
     }
 }
-

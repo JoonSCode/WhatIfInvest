@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		A10000000000000000000001 /* TimeMachineInvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeMachineInvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000012 /* TimeMachineInvestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimeMachineInvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -33,10 +34,28 @@
 			path = TimeMachineInvest;
 			sourceTree = "<group>";
 		};
+		A10000000000000000000013 /* TimeMachineInvestTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvestTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXContainerItemProxy section */
+		A10000000000000000000011 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000007 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000008;
+			remoteInfo = TimeMachineInvest;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A10000000000000000000004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000000000000000000014 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -50,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000003 /* TimeMachineInvest */,
+				A10000000000000000000013 /* TimeMachineInvestTests */,
 				A10000000000000000000006 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000001 /* TimeMachineInvest.app */,
+				A10000000000000000000012 /* TimeMachineInvestTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,6 +108,29 @@
 			productReference = A10000000000000000000001 /* TimeMachineInvest.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A10000000000000000000017 /* TimeMachineInvestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000000000000000000001B /* Build configuration list for PBXNativeTarget "TimeMachineInvestTests" */;
+			buildPhases = (
+				A10000000000000000000015 /* Sources */,
+				A10000000000000000000014 /* Frameworks */,
+				A10000000000000000000016 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A10000000000000000000018 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A10000000000000000000013 /* TimeMachineInvestTests */,
+			);
+			name = TimeMachineInvestTests;
+			packageProductDependencies = (
+			);
+			productName = TimeMachineInvestTests;
+			productReference = A10000000000000000000012 /* TimeMachineInvestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -99,6 +143,10 @@
 				TargetAttributes = {
 					A10000000000000000000008 = {
 						CreatedOnToolsVersion = 26.4.1;
+					};
+					A10000000000000000000017 = {
+						CreatedOnToolsVersion = 26.4.1;
+						TestTargetID = A10000000000000000000008;
 					};
 				};
 			};
@@ -116,12 +164,20 @@
 			projectRoot = "";
 			targets = (
 				A10000000000000000000008 /* TimeMachineInvest */,
+				A10000000000000000000017 /* TimeMachineInvestTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A1000000000000000000000B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000000000000000000016 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -138,7 +194,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10000000000000000000015 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A10000000000000000000018 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A10000000000000000000008 /* TimeMachineInvest */;
+			targetProxy = A10000000000000000000011 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A1000000000000000000000D /* Debug */ = {
@@ -323,6 +394,44 @@
 			};
 			name = Release;
 		};
+		A10000000000000000000019 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvestTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TimeMachineInvest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TimeMachineInvest";
+			};
+			name = Debug;
+		};
+		A1000000000000000000001A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvestTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TimeMachineInvest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TimeMachineInvest";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -344,8 +453,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		A1000000000000000000001B /* Build configuration list for PBXNativeTarget "TimeMachineInvestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000000000000000000019 /* Debug */,
+				A1000000000000000000001A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 	};
 	rootObject = A10000000000000000000007 /* Project object */;
 }
-

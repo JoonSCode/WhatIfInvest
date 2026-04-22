@@ -111,6 +111,15 @@ struct InvestmentScenario: Codable, Hashable, Identifiable {
     var mode: InvestmentMode
     var amount: Double
 
+    var normalizedStartDate: Date {
+        Calendar.utc.startOfDay(for: startDate)
+    }
+
+    var storageKey: String {
+        let amountInCents = Int((amount * 100).rounded())
+        return "\(asset.rawValue)|\(mode.rawValue)|\(Int(normalizedStartDate.timeIntervalSince1970))|\(amountInCents)"
+    }
+
     static let starter = InvestmentScenario(
         asset: .voo,
         startDate: Calendar.utc.date(from: DateComponents(year: 2014, month: 1, day: 1)) ?? .now,
@@ -183,6 +192,11 @@ struct ScenarioResult: Identifiable {
     var id: UUID {
         scenario.id
     }
+
+    var elapsedMonths: Int {
+        guard let first = timeline.first, let last = timeline.last else { return 0 }
+        return Calendar.utc.dateComponents([.month], from: first.date, to: last.date).month ?? 0
+    }
 }
 
 struct SavedScenario: Codable, Hashable, Identifiable {
@@ -198,4 +212,3 @@ extension Calendar {
         return calendar
     }()
 }
-

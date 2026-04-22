@@ -22,7 +22,9 @@ struct ExploreView: View {
                     title: "Story mode",
                     subtitle: "Start with one scenario. Add comparisons only after the first answer lands.",
                     scenario: $appModel.primaryScenario,
-                    assets: appModel.availableAssets
+                    assets: appModel.availableAssets,
+                    availableDateRange: appModel.availableDateRange(for: appModel.primaryScenario.asset),
+                    validationMessage: appModel.validationMessage(for: appModel.primaryScenario)
                 )
 
                 if let primaryResult = appModel.primaryResult {
@@ -34,7 +36,7 @@ struct ExploreView: View {
                         allYears: appModel.animationYears
                     )
 
-                    controlRow(primaryResult: primaryResult)
+                    controlRow
 
                     if !appModel.comparisonScenarios.isEmpty {
                         comparisonSection
@@ -44,7 +46,7 @@ struct ExploreView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.vertical, 40)
                 } else {
-                    fallbackState
+                    fallbackState(message: appModel.validationMessage(for: appModel.primaryScenario))
                 }
 
                 TrustNotesView(
@@ -65,6 +67,8 @@ struct ExploreView: View {
                 ComparisonComposerView(
                     scenario: $comparisonDraft,
                     assets: appModel.availableAssets,
+                    availableDateRange: appModel.availableDateRange(for: comparisonDraft.asset),
+                    validationMessage: appModel.validationMessage(for: comparisonDraft),
                     onAdd: {
                         appModel.addComparisonScenario(comparisonDraft)
                         comparisonDraft = appModel.nextComparisonDraft()
@@ -109,7 +113,7 @@ struct ExploreView: View {
         }
     }
 
-    private func controlRow(primaryResult: ScenarioResult) -> some View {
+    private var controlRow: some View {
         VStack(spacing: 14) {
             HStack(spacing: 12) {
                 Button(isPlaying ? "Stop Playback" : "Play Years") {
@@ -123,6 +127,7 @@ struct ExploreView: View {
                     showingComparisonSheet = true
                 }
                 .buttonStyle(.bordered)
+                .disabled(appModel.primaryResult == nil)
 
                 Menu("More") {
                     Button("Save Current Scenario") {
@@ -133,9 +138,10 @@ struct ExploreView: View {
                         Label("Share Summary", systemImage: "square.and.arrow.up")
                     }
 
-                    Button("Refresh Data Cache") {
+                    Button(appModel.isRefreshing ? "Refreshing..." : "Refresh Data Cache") {
                         Task { await appModel.refreshHistoricalData() }
                     }
+                    .disabled(appModel.isRefreshing)
                 }
                 .buttonStyle(.bordered)
             }
@@ -162,16 +168,16 @@ struct ExploreView: View {
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
             }
 
-            ForEach(appModel.comparisonScenarios) { scenario in
+            ForEach(appModel.comparisonResults) { result in
                 HStack(spacing: 12) {
                     Circle()
-                        .fill(scenario.asset.tint)
+                        .fill(result.scenario.asset.tint)
                         .frame(width: 12, height: 12)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(UIFormatting.scenarioDescriptor(scenario))
+                        Text(UIFormatting.scenarioDescriptor(result.scenario))
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        Text("Added as a progressive overlay, not a separate dashboard.")
+                        Text("Now \(result.currentValue.currencyText) · Return \(result.totalReturnRatio.percentText)")
                             .font(.system(size: 12, weight: .medium, design: .rounded))
                             .foregroundStyle(.secondary)
                     }
@@ -179,7 +185,7 @@ struct ExploreView: View {
                     Spacer()
 
                     Button(role: .destructive) {
-                        appModel.removeComparisonScenario(scenario.id)
+                        appModel.removeComparisonScenario(result.scenario.id)
                     } label: {
                         Image(systemName: "trash")
                     }
@@ -194,11 +200,11 @@ struct ExploreView: View {
         }
     }
 
-    private var fallbackState: some View {
+    private func fallbackState(message: String?) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("No result yet")
+            Text(message == nil ? "No result yet" : "Adjust the scenario")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
-            Text("Load the bundled data or refresh the cache to start exploring.")
+            Text(message ?? "Load the bundled data or refresh the cache to start exploring.")
                 .font(.system(size: 15, weight: .medium, design: .rounded))
                 .foregroundStyle(.secondary)
         }
@@ -285,6 +291,8 @@ private struct ScenarioEditorCard: View {
     let subtitle: String
     @Binding var scenario: InvestmentScenario
     let assets: [AssetID]
+    let availableDateRange: ClosedRange<Date>?
+    let validationMessage: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -304,8 +312,13 @@ private struct ScenarioEditorCard: View {
             }
             .pickerStyle(.menu)
 
-            DatePicker("Start date", selection: $scenario.startDate, displayedComponents: .date)
-                .datePickerStyle(.compact)
+            if let availableDateRange {
+                DatePicker("Start date", selection: $scenario.startDate, in: availableDateRange, displayedComponents: .date)
+                    .datePickerStyle(.compact)
+            } else {
+                DatePicker("Start date", selection: $scenario.startDate, displayedComponents: .date)
+                    .datePickerStyle(.compact)
+            }
 
             Picker("Mode", selection: $scenario.mode) {
                 ForEach(InvestmentMode.allCases) { mode in
@@ -318,9 +331,15 @@ private struct ScenarioEditorCard: View {
                 Text(scenario.mode.amountFieldLabel)
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(.secondary)
-                TextField("Amount", value: $scenario.amount, format: .number.precision(.fractionLength(0...2)))
+                TextField("Amount", value: amountBinding, format: .number.precision(.fractionLength(0...2)))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
+            }
+
+            if let validationMessage {
+                Label(validationMessage, systemImage: "exclamationmark.circle")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color(red: 0.72, green: 0.21, blue: 0.18))
             }
 
             HStack(spacing: 10) {
@@ -339,6 +358,13 @@ private struct ScenarioEditorCard: View {
                     RoundedRectangle(cornerRadius: 30, style: .continuous)
                         .stroke(Color.black.opacity(0.06))
                 )
+        )
+    }
+
+    private var amountBinding: Binding<Double> {
+        Binding(
+            get: { scenario.amount },
+            set: { scenario.amount = max(0, $0) }
         )
     }
 }
@@ -370,7 +396,7 @@ private struct ResultSummaryCard: View {
             HStack(spacing: 16) {
                 metricBlock(title: "Invested", value: result.investedAmount.currencyText)
                 metricBlock(title: "Return", value: result.totalReturnRatio.percentText)
-                metricBlock(title: "Years", value: "\(result.timeline.count)")
+                metricBlock(title: "Span", value: UIFormatting.spanDescriptor(for: result))
             }
         }
         .padding(22)
@@ -481,6 +507,8 @@ private struct TimelineChartCard: View {
 private struct ComparisonComposerView: View {
     @Binding var scenario: InvestmentScenario
     let assets: [AssetID]
+    let availableDateRange: ClosedRange<Date>?
+    let validationMessage: String?
     let onAdd: () -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -490,7 +518,9 @@ private struct ComparisonComposerView: View {
                 title: "New comparison",
                 subtitle: "Keep it lightweight. Add one more line only after the first line already means something.",
                 scenario: $scenario,
-                assets: assets
+                assets: assets,
+                availableDateRange: availableDateRange,
+                validationMessage: validationMessage
             )
             .padding(20)
         }
@@ -508,6 +538,7 @@ private struct ComparisonComposerView: View {
                     onAdd()
                 }
                 .fontWeight(.semibold)
+                .disabled(validationMessage != nil)
             }
         }
     }
@@ -528,4 +559,3 @@ private struct FlowLayout<Content: View>: View {
         }
     }
 }
-
