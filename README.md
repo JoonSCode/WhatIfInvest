@@ -16,3 +16,8 @@ This repo starts from the Ariadne plan bundle in:
 - free basic save and share
 - restrained monetization
 
+## Build
+
+```bash
+xcodebuild -project TimeMachineInvest.xcodeproj -scheme TimeMachineInvest -destination 'generic/platform=iOS Simulator' build
+```
