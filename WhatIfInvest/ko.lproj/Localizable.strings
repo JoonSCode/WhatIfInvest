@@ -17,6 +17,7 @@
 "common.share" = "공유";
 "explore.share_card" = "공유 카드";
 "common.preparing" = "준비 중...";
+"common.close" = "닫기";
 "explore.preparing_share_card" = "공유 카드 준비 중...";
 "explore.refresh_data" = "데이터 새로고침";
 "explore.refreshing_data" = "새로고침 중...";
@@ -26,7 +27,7 @@
 "explore.stat.compared" = "비교 수";
 "explore.visible_year.latest" = "최신";
 "explore.visible_year.until" = "%d년까지 표시";
-"explore.status_summary" = "%1$@까지 표시 · 시나리오 %2$d개 · 저장 %3$d개";
+"explore.status_summary" = "%1$@봉 · 시나리오 %2$d개 · 저장 %3$d개";
 "explore.compare_mode.title" = "비교 모드";
 "comparison.clear" = "비교 초기화";
 "common.clear" = "초기화";
@@ -44,6 +45,19 @@
 "result.metric.return" = "수익률";
 "result.metric.span" = "기간";
 "chart.timeline_replay.title" = "타임라인 재생";
+"chart.window.title" = "봉 단위";
+"chart.window.current" = "%@봉";
+"chart.window.one_month" = "1M";
+"chart.window.six_months" = "6M";
+"chart.window.one_year" = "1Y";
+"chart.window.three_years" = "3년";
+"chart.window.five_years" = "5년";
+"chart.window.ten_years" = "10년";
+"chart.window.all" = "전체";
+"chart.compact.hint" = "좌우로 움직여 시점을 옮겨 보세요.";
+"chart.detail.open" = "전체 차트 보기";
+"chart.detail.title" = "전체 화면 차트";
+"chart.detail.hint" = "가로로 넘기며 더 촘촘한 날짜 흐름과 비교 결과를 살펴보세요.";
 "chart.axis.time" = "시점";
 "chart.axis.amount_usd" = "금액 (USD)";
 "comparison.new.title" = "새 비교";
@@ -69,6 +83,7 @@
 "trust.latest_snapshot_unavailable" = "최신 데이터 스냅샷 정보를 아직 확인할 수 없어요.";
 "provider.bundled_data" = "기본 내장 데이터";
 "provider.yahoo_monthly_adjusted" = "Yahoo Finance 월간 수정종가";
+"provider.yahoo_range_adjusted" = "Yahoo Finance OHLC + 수정종가 차트 데이터";
 "share.summary.primary_line" = "%1$@에 %3$@을 %4$@으로 넣었다면 지금 %2$@, 수익률은 %5$@%%입니다.";
 "share.summary.pending" = "아직 계산 전입니다.";
 "share.summary.comparisons_prefix" = "비교";

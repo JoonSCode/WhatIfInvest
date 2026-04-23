@@ -90,8 +90,8 @@ struct HistoricalDataStore {
 
         let payload = BundledHistoricalData(
             generatedAt: now(),
-            provider: "Yahoo Finance chart endpoint (monthly adjusted close)",
-            interval: "1mo",
+            provider: "Yahoo Finance chart endpoint (monthly OHLC + recent OHLC + derived semiannual/annual OHLC)",
+            interval: "1mo+1wk+6mo+1y",
             histories: histories
         )
         try await Self.persist(payload, to: currentCacheURL())
@@ -174,9 +174,55 @@ struct HistoricalDataStore {
 
     private static func fetchHistoryFromNetwork(for asset: AssetID) async throws -> AssetHistory {
         let startDate = Calendar.utc.date(from: DateComponents(year: 2010, month: 1, day: 1)) ?? .distantPast
+        let recentStartDate = Calendar.utc.date(byAdding: .year, value: -1, to: Date()) ?? startDate
         let period1 = Int(startDate.timeIntervalSince1970)
         let period2 = Int(Date().addingTimeInterval(86_400).timeIntervalSince1970)
-        let url = URL(string: "https://query1.finance.yahoo.com/v8/finance/chart/\(asset.symbol)?interval=1mo&period1=\(period1)&period2=\(period2)&events=div%2Csplits&includeAdjustedClose=true")!
+
+        let monthlyBars = try await fetchMarketBars(
+            for: asset,
+            interval: "1mo",
+            period1: period1,
+            period2: period2
+        )
+        let recentBars = try? await fetchMarketBars(
+            for: asset,
+            interval: "1wk",
+            period1: Int(recentStartDate.timeIntervalSince1970),
+            period2: period2
+        )
+        let yearlyBars = AssetHistory.yearlyBars(from: monthlyBars)
+        let sixMonthBars = AssetHistory.bars(
+            from: monthlyBars,
+            monthsPerBar: MarketBarInterval.sixMonths.monthsPerBar
+        )
+        let monthlyPoints = monthlyBars.map(\.pricePoint)
+        let recentPoints = recentBars?.map(\.pricePoint)
+
+        guard !monthlyPoints.isEmpty else {
+            throw HistoricalDataError.emptySeries(asset.symbol)
+        }
+
+        return AssetHistory(
+            asset: asset,
+            symbol: asset.symbol,
+            displayName: asset.displayName,
+            categoryLabel: asset.categoryLabel,
+            monthlyPoints: monthlyPoints,
+            recentPoints: recentPoints,
+            monthlyBars: monthlyBars,
+            recentBars: recentBars,
+            sixMonthBars: sixMonthBars,
+            yearlyBars: yearlyBars
+        )
+    }
+
+    private static func fetchMarketBars(
+        for asset: AssetID,
+        interval: String,
+        period1: Int,
+        period2: Int
+    ) async throws -> [MarketBar] {
+        let url = URL(string: "https://query1.finance.yahoo.com/v8/finance/chart/\(asset.symbol)?interval=\(interval)&period1=\(period1)&period2=\(period2)&events=div%2Csplits&includeAdjustedClose=true")!
         var request = URLRequest(url: url)
         request.setValue("Mozilla/5.0", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -191,28 +237,55 @@ struct HistoricalDataStore {
         guard
             let result = payload.chart.result?.first,
             let timestamps = result.timestamp,
+            let quote = result.indicators.quote.first,
+            let opens = quote.open,
+            let highs = quote.high,
+            let lows = quote.low,
+            let closes = quote.close,
             let adjusted = result.indicators.adjclose.first?.adjclose
         else {
             throw HistoricalDataError.invalidResponse
         }
 
-        let points = zip(timestamps, adjusted)
-            .compactMap { timestamp, adjustedClose -> MarketPoint? in
-                guard let adjustedClose else { return nil }
-                return MarketPoint(date: Date(timeIntervalSince1970: timestamp), adjustedClose: adjustedClose)
+        let bars = timestamps.indices.compactMap { index -> MarketBar? in
+            guard
+                timestamps.indices.contains(index),
+                opens.indices.contains(index),
+                highs.indices.contains(index),
+                lows.indices.contains(index),
+                closes.indices.contains(index),
+                adjusted.indices.contains(index),
+                let open = opens[index],
+                let high = highs[index],
+                let low = lows[index],
+                let close = closes[index],
+                let adjustedClose = adjusted[index],
+                open > 0,
+                high > 0,
+                low > 0,
+                close > 0,
+                adjustedClose > 0
+            else {
+                return nil
             }
 
-        guard !points.isEmpty else {
+            let volume = quote.volume?.indices.contains(index) == true ? quote.volume?[index] : nil
+            return MarketBar(
+                date: Date(timeIntervalSince1970: timestamps[index]),
+                open: open,
+                high: high,
+                low: low,
+                close: close,
+                adjustedClose: adjustedClose,
+                volume: volume ?? nil
+            )
+        }
+
+        guard !bars.isEmpty else {
             throw HistoricalDataError.emptySeries(asset.symbol)
         }
 
-        return AssetHistory(
-            asset: asset,
-            symbol: asset.symbol,
-            displayName: asset.displayName,
-            categoryLabel: asset.categoryLabel,
-            monthlyPoints: points
-        )
+        return bars
     }
 
     static func clearPersistedData(fileManager: FileManager = .default) throws {
@@ -265,8 +338,17 @@ private struct YahooChartResult: Decodable {
 
 private struct YahooIndicators: Decodable {
     let adjclose: [YahooAdjCloseSeries]
+    let quote: [YahooQuoteSeries]
 }
 
 private struct YahooAdjCloseSeries: Decodable {
     let adjclose: [Double?]
+}
+
+private struct YahooQuoteSeries: Decodable {
+    let open: [Double?]?
+    let high: [Double?]?
+    let low: [Double?]?
+    let close: [Double?]?
+    let volume: [Double?]?
 }

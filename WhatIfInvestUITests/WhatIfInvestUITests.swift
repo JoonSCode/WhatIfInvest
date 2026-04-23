@@ -36,6 +36,35 @@ final class WhatIfInvestUITests: XCTestCase {
     }
 
     @MainActor
+    func testSameAssetComparisonCanOpenFullscreenChart() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["UITEST_RESET_DATA", "UITEST_SEED_SAME_ASSET_COMPARISON"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["Timeline replay"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Compare mode"].waitForExistence(timeout: 10))
+
+        let primaryLegend = app.otherElements["timeline-compact-series-0"].firstMatch
+        let comparisonLegend = app.otherElements["timeline-compact-series-1"].firstMatch
+        XCTAssertTrue(primaryLegend.waitForExistence(timeout: 10))
+        XCTAssertTrue(comparisonLegend.waitForExistence(timeout: 10))
+        XCTAssertTrue(primaryLegend.label.contains("VOO"))
+        XCTAssertTrue(comparisonLegend.label.contains("VOO"))
+        XCTAssertTrue(comparisonLegend.label.contains("Monthly"))
+
+        let fullChartButton = app.buttons["timeline-open-detail-button"].firstMatch
+        XCTAssertTrue(fullChartButton.waitForExistence(timeout: 10))
+        fullChartButton.tap()
+
+        XCTAssertTrue(app.navigationBars["Fullscreen chart"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.otherElements["timeline-detail-series-0"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.otherElements["timeline-detail-series-1"].waitForExistence(timeout: 5))
+
+        app.buttons["timeline-detail-close-button"].tap()
+        XCTAssertTrue(app.buttons["timeline-open-detail-button"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
     func testSavedScenarioCanOpenFromLibrary() throws {
         let app = XCUIApplication()
         app.launchArguments = ["UITEST_RESET_DATA", "UITEST_SEED_LIBRARY", "UITEST_START_ON_SAVED"]

@@ -20,6 +20,15 @@ enum AppTheme {
         static let xl: CGFloat = 56
     }
 
+    static let chartSeriesPalette: [Color] = [
+        Color(red: 0.07, green: 0.42, blue: 0.86),
+        Color(red: 0.03, green: 0.57, blue: 0.60),
+        Color(red: 0.72, green: 0.44, blue: 0.16),
+        Color(red: 0.45, green: 0.31, blue: 0.69),
+        Color(red: 0.73, green: 0.34, blue: 0.26),
+        Color(red: 0.34, green: 0.43, blue: 0.56)
+    ]
+
     static var canvasGradient: LinearGradient {
         LinearGradient(
             colors: [

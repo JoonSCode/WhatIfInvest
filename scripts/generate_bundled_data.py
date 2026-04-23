@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import json
-import sys
 import urllib.request
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any
 
 
 ASSETS = [
@@ -31,16 +31,26 @@ class AssetHistory:
     symbol: str
     display_name: str
     category_label: str
-    monthly_points: list[dict[str, object]]
+    monthly_bars: list[dict[str, Any]]
+    recent_bars: list[dict[str, Any]]
+    six_month_bars: list[dict[str, Any]]
+    yearly_bars: list[dict[str, Any]]
 
 
-def fetch_history(asset: tuple[str, str, str, str]) -> AssetHistory:
-    asset_id, symbol, display_name, category_label = asset
-    start = int(datetime(2010, 1, 1, tzinfo=timezone.utc).timestamp())
-    end = int(datetime.now(tz=timezone.utc).timestamp()) + 86400
+def iso_date(timestamp: int | float) -> str:
+    return (
+        datetime.fromtimestamp(timestamp, tz=timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+
+
+def fetch_bars(symbol: str, interval: str, start: int, end: int) -> list[dict[str, Any]]:
     url = (
         f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
-        f"?interval=1mo&period1={start}&period2={end}&events=div%2Csplits&includeAdjustedClose=true"
+        f"?interval={interval}&period1={start}&period2={end}"
+        "&events=div%2Csplits&includeAdjustedClose=true"
     )
     request = urllib.request.Request(
         url,
@@ -53,29 +63,88 @@ def fetch_history(asset: tuple[str, str, str, str]) -> AssetHistory:
         payload = json.load(response)
 
     result = payload["chart"]["result"][0]
-    timestamps = result["timestamp"]
+    quote = result["indicators"]["quote"][0]
     adjusted = result["indicators"]["adjclose"][0]["adjclose"]
+    bars: list[dict[str, Any]] = []
 
-    monthly_points = []
-    for timestamp, price in zip(timestamps, adjusted):
-        if price is None:
+    for index, timestamp in enumerate(result["timestamp"]):
+        open_price = quote["open"][index]
+        high = quote["high"][index]
+        low = quote["low"][index]
+        close = quote["close"][index]
+        adjusted_close = adjusted[index]
+        if not all(value and value > 0 for value in [open_price, high, low, close, adjusted_close]):
             continue
-        monthly_points.append(
-            {
-                "date": datetime.fromtimestamp(timestamp, tz=timezone.utc)
-                .replace(microsecond=0)
-                .isoformat()
-                .replace("+00:00", "Z"),
-                "adjustedClose": round(float(price), 6),
-            }
-        )
+
+        volume = quote.get("volume", [None] * len(result["timestamp"]))[index]
+        bar = {
+            "date": iso_date(timestamp),
+            "open": round(float(open_price), 6),
+            "high": round(float(high), 6),
+            "low": round(float(low), 6),
+            "close": round(float(close), 6),
+            "adjustedClose": round(float(adjusted_close), 6),
+        }
+        if volume is not None:
+            bar["volume"] = float(volume)
+        bars.append(bar)
+
+    return bars
+
+
+def bar_bucket_key(bar: dict[str, Any], months_per_bar: int) -> int:
+    date = datetime.fromisoformat(bar["date"].replace("Z", "+00:00"))
+    bucket = (date.month - 1) // months_per_bar
+    return date.year * (12 // months_per_bar) + bucket
+
+
+def aggregate_bars(bars: list[dict[str, Any]], months_per_bar: int) -> list[dict[str, Any]]:
+    buckets: dict[int, list[dict[str, Any]]] = {}
+    for bar in bars:
+        buckets.setdefault(bar_bucket_key(bar, months_per_bar), []).append(bar)
+
+    aggregated: list[dict[str, Any]] = []
+    for key in sorted(buckets):
+        bucket_bars = sorted(buckets[key], key=lambda item: item["date"])
+        first = bucket_bars[0]
+        last = bucket_bars[-1]
+        volumes = [bar["volume"] for bar in bucket_bars if "volume" in bar]
+        bar = {
+            "date": last["date"],
+            "open": first["open"],
+            "high": max(item["high"] for item in bucket_bars),
+            "low": min(item["low"] for item in bucket_bars),
+            "close": last["close"],
+            "adjustedClose": last["adjustedClose"],
+        }
+        if volumes:
+            bar["volume"] = sum(volumes)
+        aggregated.append(bar)
+
+    return aggregated
+
+
+def fetch_history(asset: tuple[str, str, str, str]) -> AssetHistory:
+    asset_id, symbol, display_name, category_label = asset
+    start = int(datetime(2010, 1, 1, tzinfo=timezone.utc).timestamp())
+    now = datetime.now(tz=timezone.utc)
+    recent_start = int((now - timedelta(days=366)).timestamp())
+    end = int(now.timestamp()) + 86400
+
+    monthly_bars = fetch_bars(symbol, "1mo", start, end)
+    recent_bars = fetch_bars(symbol, "1wk", recent_start, end)
+    six_month_bars = aggregate_bars(monthly_bars, months_per_bar=6)
+    yearly_bars = aggregate_bars(monthly_bars, months_per_bar=12)
 
     return AssetHistory(
         asset=asset_id,
         symbol=symbol,
         display_name=display_name,
         category_label=category_label,
-        monthly_points=monthly_points,
+        monthly_bars=monthly_bars,
+        recent_bars=recent_bars,
+        six_month_bars=six_month_bars,
+        yearly_bars=yearly_bars,
     )
 
 
@@ -87,15 +156,32 @@ def main() -> int:
     histories = [fetch_history(asset) for asset in ASSETS]
     payload = {
         "generatedAt": datetime.now(tz=timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "provider": "Yahoo Finance chart endpoint (monthly adjusted close)",
-        "interval": "1mo",
+        "provider": "Yahoo Finance chart endpoint (monthly OHLC + recent OHLC + derived semiannual/annual OHLC)",
+        "interval": "1mo+1wk+6mo+1y",
         "histories": [
             {
                 "asset": history.asset,
                 "symbol": history.symbol,
                 "displayName": history.display_name,
                 "categoryLabel": history.category_label,
-                "monthlyPoints": history.monthly_points,
+                "monthlyPoints": [
+                    {
+                        "date": bar["date"],
+                        "adjustedClose": bar["adjustedClose"],
+                    }
+                    for bar in history.monthly_bars
+                ],
+                "recentPoints": [
+                    {
+                        "date": bar["date"],
+                        "adjustedClose": bar["adjustedClose"],
+                    }
+                    for bar in history.recent_bars
+                ],
+                "monthlyBars": history.monthly_bars,
+                "recentBars": history.recent_bars,
+                "sixMonthBars": history.six_month_bars,
+                "yearlyBars": history.yearly_bars,
             }
             for history in histories
         ],

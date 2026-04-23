@@ -59,6 +59,7 @@ enum L10n {
     static var share: String { text("common.share", "Share") }
     static var shareCard: String { text("explore.share_card", "Share Card") }
     static var preparing: String { text("common.preparing", "Preparing...") }
+    static var close: String { text("common.close", "Close") }
     static var preparingShareCard: String {
         text("explore.preparing_share_card", "Preparing Share Card...")
     }
@@ -94,6 +95,15 @@ enum L10n {
     static var spanTitle: String { text("result.metric.span", "Span") }
     static var timelineReplayTitle: String {
         text("chart.timeline_replay.title", "Timeline replay")
+    }
+    static var chartDetailOpen: String {
+        text("chart.detail.open", "Open full chart")
+    }
+    static var chartDetailTitle: String {
+        text("chart.detail.title", "Fullscreen chart")
+    }
+    static var chartDetailHint: String {
+        text("chart.detail.hint", "Scroll horizontally to inspect denser dates and compare scenarios in more detail.")
     }
     static var chartTimeAxis: String { text("chart.axis.time", "Time") }
     static var chartAmountAxis: String { text("chart.axis.amount_usd", "Amount (USD)") }
@@ -157,6 +167,10 @@ enum L10n {
     static var providerBundledData: String { text("provider.bundled_data", "Bundled data") }
     static var providerYahooMonthlyAdjusted: String {
         text("provider.yahoo_monthly_adjusted", "Yahoo Finance chart endpoint (monthly adjusted close)")
+    }
+
+    static var providerYahooRangeAdjusted: String {
+        text("provider.yahoo_range_adjusted", "Yahoo Finance OHLC + adjusted-close chart data")
     }
 
     static var shareSummaryPending: String { text("share.summary.pending", "Scenario pending.") }
@@ -234,15 +248,51 @@ enum L10n {
         }
     }
 
-    static func visibleThroughYear(_ year: Int) -> String {
-        format("explore.visible_year.until", "Visible through %d", year)
+    static var chartWindowTitle: String {
+        text("chart.window.title", "Bar interval")
     }
 
-    static func statusSummary(visibleThrough: String, scenarioCount: Int, savedCount: Int) -> String {
+    static func visibleWindow(_ window: String) -> String {
+        format("chart.window.current", "%@ bar", window)
+    }
+
+    static var chartWindowOneMonth: String {
+        text("chart.window.one_month", "1M")
+    }
+
+    static var chartWindowSixMonths: String {
+        text("chart.window.six_months", "6M")
+    }
+
+    static var chartWindowOneYear: String {
+        text("chart.window.one_year", "1Y")
+    }
+
+    static var chartWindowThreeYears: String {
+        text("chart.window.three_years", "3Y")
+    }
+
+    static var chartWindowFiveYears: String {
+        text("chart.window.five_years", "5Y")
+    }
+
+    static var chartWindowTenYears: String {
+        text("chart.window.ten_years", "10Y")
+    }
+
+    static var chartWindowAll: String {
+        text("chart.window.all", "All")
+    }
+
+    static var chartCompactHint: String {
+        text("chart.compact.hint", "Scroll left or right to move through time.")
+    }
+
+    static func statusSummary(window: String, scenarioCount: Int, savedCount: Int) -> String {
         format(
             "explore.status_summary",
-            "Visible through %@ • %d scenarios • %d saved",
-            visibleThrough,
+            "%@ bar • %d scenarios • %d saved",
+            window,
             scenarioCount,
             savedCount
         )
@@ -324,6 +374,9 @@ enum L10n {
         }
 
         if rawValue.contains("Yahoo Finance") {
+            if rawValue.contains("OHLC") || rawValue.contains("recent") {
+                return providerYahooRangeAdjusted
+            }
             return providerYahooMonthlyAdjusted
         }
 

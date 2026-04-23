@@ -143,12 +143,162 @@ struct MarketPoint: Codable, Hashable, Sendable {
     var adjustedClose: Double
 }
 
+enum MarketBarInterval: Hashable, Sendable {
+    case oneMonth
+    case sixMonths
+    case oneYear
+
+    var monthsPerBar: Int {
+        switch self {
+        case .oneMonth:
+            return 1
+        case .sixMonths:
+            return 6
+        case .oneYear:
+            return 12
+        }
+    }
+
+    func bucketKey(for date: Date) -> Int {
+        let year = Calendar.utc.component(.year, from: date)
+        let month = Calendar.utc.component(.month, from: date)
+
+        switch self {
+        case .oneMonth:
+            return year * 12 + month
+        case .sixMonths:
+            return year * 2 + ((month - 1) / 6)
+        case .oneYear:
+            return year
+        }
+    }
+}
+
+struct MarketBar: Codable, Hashable, Sendable {
+    var date: Date
+    var open: Double
+    var high: Double
+    var low: Double
+    var close: Double
+    var adjustedClose: Double
+    var volume: Double?
+
+    var pricePoint: MarketPoint {
+        MarketPoint(date: date, adjustedClose: adjustedClose)
+    }
+}
+
 struct AssetHistory: Codable, Hashable, Sendable {
     var asset: AssetID
     var symbol: String
     var displayName: String
     var categoryLabel: String
     var monthlyPoints: [MarketPoint]
+    var recentPoints: [MarketPoint]?
+    var monthlyBars: [MarketBar]? = nil
+    var recentBars: [MarketBar]? = nil
+    var sixMonthBars: [MarketBar]? = nil
+    var yearlyBars: [MarketBar]? = nil
+
+    var pricePoints: [MarketPoint] {
+        let monthlySeries = monthlyBars?.map(\.pricePoint) ?? monthlyPoints
+        let recentSeries = recentBars?.map(\.pricePoint) ?? (recentPoints ?? [])
+        return Self.deduplicatedByDay(monthlySeries + recentSeries)
+    }
+
+    var annualBars: [MarketBar] {
+        let sourceBars = monthlyBarSeries
+        return sourceBars.isEmpty ? (yearlyBars ?? []) : Self.yearlyBars(from: sourceBars)
+    }
+
+    func pricePoints(for interval: MarketBarInterval?) -> [MarketPoint] {
+        guard let interval else {
+            return pricePoints
+        }
+
+        return bars(for: interval).map(\.pricePoint)
+    }
+
+    func bars(for interval: MarketBarInterval) -> [MarketBar] {
+        switch interval {
+        case .oneMonth:
+            return monthlyBarSeries
+        case .sixMonths:
+            return sixMonthBars ?? Self.bars(from: monthlyBarSeries, monthsPerBar: interval.monthsPerBar)
+        case .oneYear:
+            return annualBars
+        }
+    }
+
+    private static func deduplicatedByDay(_ points: [MarketPoint]) -> [MarketPoint] {
+        var keyedPoints: [Date: MarketPoint] = [:]
+        for point in points where point.adjustedClose > 0 {
+            keyedPoints[Calendar.utc.startOfDay(for: point.date)] = point
+        }
+        return keyedPoints.values.sorted { $0.date < $1.date }
+    }
+
+    static func yearlyBars(from bars: [MarketBar]) -> [MarketBar] {
+        self.bars(from: bars, monthsPerBar: MarketBarInterval.oneYear.monthsPerBar)
+    }
+
+    static func bars(from bars: [MarketBar], monthsPerBar: Int) -> [MarketBar] {
+        guard monthsPerBar > 0 else { return [] }
+
+        let grouped = Dictionary(grouping: bars.filter(\.isValidOHLC)) { bar in
+            let year = Calendar.utc.component(.year, from: bar.date)
+            let month = Calendar.utc.component(.month, from: bar.date)
+            let bucket = (month - 1) / monthsPerBar
+            return year * (12 / monthsPerBar) + bucket
+        }
+
+        return grouped.keys.sorted().compactMap { key in
+            let bucketBars = (grouped[key] ?? []).sorted { $0.date < $1.date }
+            guard
+                let first = bucketBars.first,
+                let last = bucketBars.last,
+                let high = bucketBars.map(\.high).max(),
+                let low = bucketBars.map(\.low).min()
+            else {
+                return nil
+            }
+
+            let volumes = bucketBars.compactMap(\.volume)
+            return MarketBar(
+                date: last.date,
+                open: first.open,
+                high: high,
+                low: low,
+                close: last.close,
+                adjustedClose: last.adjustedClose,
+                volume: volumes.isEmpty ? nil : volumes.reduce(0, +)
+            )
+        }
+    }
+
+    private var monthlyBarSeries: [MarketBar] {
+        if let monthlyBars, !monthlyBars.isEmpty {
+            return monthlyBars
+        }
+
+        return monthlyPoints.map { point in
+            MarketBar(
+                date: point.date,
+                open: point.adjustedClose,
+                high: point.adjustedClose,
+                low: point.adjustedClose,
+                close: point.adjustedClose,
+                adjustedClose: point.adjustedClose,
+                volume: nil
+            )
+        }
+    }
+}
+
+private extension MarketBar {
+    var isValidOHLC: Bool {
+        open > 0 && high > 0 && low > 0 && close > 0 && adjustedClose > 0
+    }
 }
 
 struct BundledHistoricalData: Codable, Sendable {

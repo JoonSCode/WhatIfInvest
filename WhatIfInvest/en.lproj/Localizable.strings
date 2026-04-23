@@ -17,6 +17,7 @@
 "common.share" = "Share";
 "explore.share_card" = "Share Card";
 "common.preparing" = "Preparing...";
+"common.close" = "Close";
 "explore.preparing_share_card" = "Preparing Share Card...";
 "explore.refresh_data" = "Refresh Data";
 "explore.refreshing_data" = "Refreshing...";
@@ -26,7 +27,7 @@
 "explore.stat.compared" = "Compared";
 "explore.visible_year.latest" = "Latest";
 "explore.visible_year.until" = "Visible through %d";
-"explore.status_summary" = "Visible through %@ • %2$d scenarios • %3$d saved";
+"explore.status_summary" = "%@ bar • %2$d scenarios • %3$d saved";
 "explore.compare_mode.title" = "Compare mode";
 "comparison.clear" = "Clear comparisons";
 "common.clear" = "Clear";
@@ -44,6 +45,19 @@
 "result.metric.return" = "Return";
 "result.metric.span" = "Span";
 "chart.timeline_replay.title" = "Timeline replay";
+"chart.window.title" = "Bar interval";
+"chart.window.current" = "%@ bar";
+"chart.window.one_month" = "1M";
+"chart.window.six_months" = "6M";
+"chart.window.one_year" = "1Y";
+"chart.window.three_years" = "3Y";
+"chart.window.five_years" = "5Y";
+"chart.window.ten_years" = "10Y";
+"chart.window.all" = "All";
+"chart.compact.hint" = "Scroll left or right to move through time.";
+"chart.detail.open" = "Open full chart";
+"chart.detail.title" = "Fullscreen chart";
+"chart.detail.hint" = "Scroll horizontally to inspect denser dates and compare scenarios in more detail.";
 "chart.axis.time" = "Time";
 "chart.axis.amount_usd" = "Amount (USD)";
 "comparison.new.title" = "New comparison";
@@ -69,6 +83,7 @@
 "trust.latest_snapshot_unavailable" = "Latest data snapshot unavailable.";
 "provider.bundled_data" = "Bundled data";
 "provider.yahoo_monthly_adjusted" = "Yahoo Finance monthly adjusted close";
+"provider.yahoo_range_adjusted" = "Yahoo Finance OHLC + adjusted-close chart data";
 "share.summary.primary_line" = "%1$@: %2$@ now from %3$@ %4$@, return %5$@%%.";
 "share.summary.pending" = "Scenario pending.";
 "share.summary.comparisons_prefix" = "Comparisons";

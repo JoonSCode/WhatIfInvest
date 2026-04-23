@@ -26,6 +26,17 @@ struct WhatIfInvestApp: App {
         if arguments.contains("UITEST_START_ON_SAVED") {
             model.selectedTab = .library
         }
+        if arguments.contains("UITEST_SEED_SAME_ASSET_COMPARISON") {
+            model.primaryScenario = .starter
+            model.comparisonScenarios = [
+                InvestmentScenario(
+                    asset: .voo,
+                    startDate: Calendar.utc.date(from: DateComponents(year: 2016, month: 1, day: 1)) ?? .now,
+                    mode: .recurringMonthly,
+                    amount: 500
+                )
+            ]
+        }
         _appModel = State(initialValue: model)
     }
 

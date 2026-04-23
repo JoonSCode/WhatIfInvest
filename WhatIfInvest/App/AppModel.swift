@@ -45,11 +45,16 @@ final class AppModel {
     }
 
     var comparisonResults: [ScenarioResult] {
-        comparisonScenarios.compactMap(simulate)
+        comparisonScenarios.compactMap { simulate($0) }
     }
 
     var visibleResults: [ScenarioResult] {
         [primaryResult].compactMap { $0 } + comparisonResults
+    }
+
+    func visibleResults(barInterval: MarketBarInterval) -> [ScenarioResult] {
+        [simulate(primaryScenario, barInterval: barInterval)].compactMap { $0 }
+            + comparisonScenarios.compactMap { simulate($0, barInterval: barInterval) }
     }
 
     var animationYears: [Int] {
@@ -155,7 +160,7 @@ final class AppModel {
 
     func availableDateRange(for asset: AssetID) -> ClosedRange<Date>? {
         guard
-            let points = assetHistories[asset]?.monthlyPoints.sorted(by: { $0.date < $1.date }),
+            let points = assetHistories[asset]?.pricePoints.sorted(by: { $0.date < $1.date }),
             let first = points.first?.date,
             let last = points.last?.date
         else {
@@ -196,8 +201,12 @@ final class AppModel {
         }
     }
 
-    private func simulate(_ scenario: InvestmentScenario) -> ScenarioResult? {
+    private func simulate(_ scenario: InvestmentScenario, barInterval: MarketBarInterval? = nil) -> ScenarioResult? {
         guard let history = assetHistories[scenario.asset] else { return nil }
-        return simulationEngine.simulate(scenario: scenario, history: history)
+        return simulationEngine.simulate(
+            scenario: scenario,
+            history: history,
+            barInterval: barInterval
+        )
     }
 }

@@ -1,4 +1,3 @@
-import Charts
 import Observation
 import SwiftUI
 
@@ -9,8 +8,10 @@ struct ExploreView: View {
     @State private var showingComparisonSheet = false
     @State private var shareExport: ShareExportItem?
     @State private var visibleYearIndex = 0
+    @State private var visibleWindow = TimelineVisibleWindow.oneYear
     @State private var isPlaying = false
     @State private var isPreparingShare = false
+    @State private var showingTimelineDetail = false
     @State private var playbackTask: Task<Void, Never>?
 
     var body: some View {
@@ -34,9 +35,11 @@ struct ExploreView: View {
                     ResultSummaryCard(result: primaryResult)
 
                     TimelineChartCard(
-                        results: appModel.visibleResults,
+                        series: timelineSeriesDescriptors,
                         visibleYearIndex: $visibleYearIndex,
-                        allYears: appModel.animationYears
+                        visibleWindow: $visibleWindow,
+                        allYears: appModel.animationYears,
+                        onOpenDetail: openTimelineDetail
                     )
 
                     controlRow
@@ -82,6 +85,12 @@ struct ExploreView: View {
         }
         .sheet(item: $shareExport) { export in
             ActivityShareSheet(items: [export.caption, export.fileURL])
+        }
+        .fullScreenCover(isPresented: $showingTimelineDetail) {
+            TimelineDetailSheet(
+                series: timelineSeriesDescriptors,
+                visibleWindow: $visibleWindow
+            )
         }
         .task {
             alignVisibleYearToLatest()
@@ -177,30 +186,25 @@ struct ExploreView: View {
                 .buttonStyle(.bordered)
             }
 
-            ForEach(appModel.comparisonResults) { result in
-                HStack(spacing: 12) {
-                    Circle()
-                        .fill(result.scenario.asset.tint)
-                        .frame(width: 12, height: 12)
+            ForEach(comparisonSeriesDescriptors) { descriptor in
+                HStack(alignment: .top, spacing: 12) {
+                    comparisonMarker(for: descriptor)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(UIFormatting.scenarioDescriptor(result.scenario))
+                        Text(descriptor.primaryText)
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        Text(
-                            L10n.comparisonResultSummary(
-                                currentValue: result.currentValue.currencyText,
-                                returnValue: result.totalReturnRatio.percentText
-                            )
-                        )
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(descriptor.secondaryText)
                             .font(.system(size: 12, weight: .medium, design: .rounded))
                             .foregroundStyle(AppTheme.ColorToken.textSecondary)
                             .monospacedDigit()
+                            .fixedSize(horizontal: false, vertical: true)
                     }
 
-                    Spacer()
+                    Spacer(minLength: 0)
 
                     Button(L10n.remove, role: .destructive) {
-                        appModel.removeComparisonScenario(result.scenario.id)
+                        appModel.removeComparisonScenario(descriptor.result.scenario.id)
                     }
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .buttonStyle(.bordered)
@@ -242,11 +246,16 @@ struct ExploreView: View {
             .ignoresSafeArea()
     }
 
-    private var visibleYearLabel: String {
-        guard appModel.animationYears.indices.contains(visibleYearIndex) else {
-            return L10n.latest
-        }
-        return "\(appModel.animationYears[visibleYearIndex])"
+    private var timelineSeriesDescriptors: [ChartSeriesDescriptor] {
+        ChartSeriesDescriptor.make(from: appModel.visibleResults(barInterval: visibleWindow.barInterval))
+    }
+
+    private var comparisonSeriesDescriptors: [ChartSeriesDescriptor] {
+        Array(ChartSeriesDescriptor.make(from: appModel.visibleResults).dropFirst())
+    }
+
+    private var visibleWindowLabel: String {
+        visibleWindow.title
     }
 
     private var replayButton: some View {
@@ -318,14 +327,30 @@ struct ExploreView: View {
 
     private var statusSummaryText: String {
         L10n.statusSummary(
-            visibleThrough: visibleYearLabel,
+            window: visibleWindowLabel,
             scenarioCount: appModel.comparisonScenarios.count + 1,
             savedCount: appModel.savedScenarios.count
         )
     }
 
+    private func comparisonMarker(for descriptor: ChartSeriesDescriptor) -> some View {
+        Image(systemName: descriptor.symbol.systemImageName)
+            .font(.system(size: 13, weight: .bold))
+            .foregroundStyle(descriptor.color)
+            .frame(width: 26, height: 26)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(descriptor.color.opacity(0.12))
+            )
+    }
+
     private func alignVisibleYearToLatest() {
         visibleYearIndex = max(0, appModel.animationYears.count - 1)
+    }
+
+    private func openTimelineDetail() {
+        stopPlayback()
+        showingTimelineDetail = true
     }
 
     private func togglePlayback() {
@@ -404,13 +429,16 @@ private struct ScenarioEditorCard: View {
                 }
             }
             .pickerStyle(.menu)
+            .accessibilityIdentifier("\(accessibilityIdentifier)-asset-picker")
 
             if let availableDateRange {
                 DatePicker(L10n.startDateFieldTitle, selection: $scenario.startDate, in: availableDateRange, displayedComponents: .date)
                     .datePickerStyle(.compact)
+                    .accessibilityIdentifier("\(accessibilityIdentifier)-start-date-picker")
             } else {
                 DatePicker(L10n.startDateFieldTitle, selection: $scenario.startDate, displayedComponents: .date)
                     .datePickerStyle(.compact)
+                    .accessibilityIdentifier("\(accessibilityIdentifier)-start-date-picker")
             }
 
             Picker(L10n.modeFieldTitle, selection: $scenario.mode) {
@@ -419,6 +447,7 @@ private struct ScenarioEditorCard: View {
                 }
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier("\(accessibilityIdentifier)-mode-picker")
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(scenario.mode.amountFieldLabel)
@@ -427,6 +456,7 @@ private struct ScenarioEditorCard: View {
                 TextField(L10n.amountPlaceholder, value: amountBinding, format: .number.precision(.fractionLength(0...2)))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("\(accessibilityIdentifier)-amount-field")
             }
 
             if let validationMessage {
@@ -522,152 +552,6 @@ private struct ResultSummaryCard: View {
                 .monospacedDigit()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct TimelineChartCard: View {
-    let results: [ScenarioResult]
-    @Binding var visibleYearIndex: Int
-    let allYears: [Int]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(L10n.timelineReplayTitle)
-                .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundStyle(AppTheme.ColorToken.textPrimary)
-
-            Chart {
-                ForEach(results) { result in
-                    let points = visiblePoints(for: result)
-                    ForEach(points) { point in
-                        LineMark(
-                            x: .value("Time", point.date),
-                            y: .value("Amount", point.portfolioValue)
-                        )
-                        .foregroundStyle(result.scenario.asset.tint)
-                        .lineStyle(.init(lineWidth: result.scenario == results.first?.scenario ? 3.5 : 2.4))
-                        .interpolationMethod(.catmullRom)
-                    }
-                }
-            }
-            .frame(height: 240)
-            .chartXScale(domain: chartDateDomain)
-            .chartYScale(domain: chartValueDomain)
-            .chartXAxisLabel(position: .bottom, alignment: .center) {
-                Text(L10n.chartTimeAxis)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
-            }
-            .chartYAxisLabel(position: .leading, alignment: .center) {
-                Text(L10n.chartAmountAxis)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
-            }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .year)) { value in
-                    AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel(format: .dateTime.year())
-                }
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { value in
-                    AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel {
-                if let amount = value.as(Double.self) {
-                            Text(amount.formatted(.currency(code: "USD").precision(.fractionLength(0))))
-                                .monospacedDigit()
-                        }
-                    }
-                }
-            }
-            .chartLegend(.hidden)
-
-            if !allYears.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text(L10n.visibleThroughYear(allYears[min(visibleYearIndex, allYears.count - 1)]))
-                            .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        Spacer()
-                    }
-
-                    Slider(
-                        value: Binding(
-                            get: { Double(visibleYearIndex) },
-                            set: { visibleYearIndex = Int($0.rounded()) }
-                        ),
-                        in: 0...Double(max(0, allYears.count - 1)),
-                        step: 1
-                    )
-                }
-            }
-
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 150), spacing: 10, alignment: .leading)],
-                alignment: .leading,
-                spacing: 10
-            ) {
-                ForEach(results) { result in
-                    HStack(spacing: 8) {
-                        Circle()
-                            .fill(result.scenario.asset.tint)
-                            .frame(width: 8, height: 8)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(result.scenario.asset.symbol)
-                                .font(.system(size: 12, weight: .bold, design: .rounded))
-                            Text(result.scenario.asset.displayName)
-                                .font(.system(size: 11, weight: .medium, design: .rounded))
-                                .foregroundStyle(AppTheme.ColorToken.textSecondary)
-                                .lineLimit(1)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .background(Capsule().fill(AppTheme.ColorToken.surfaceSubtle.opacity(0.9)))
-                }
-            }
-        }
-        .padding(20)
-        .appCardSurface(
-            fill: AppTheme.ColorToken.surfaceBase.opacity(0.92),
-            radius: AppTheme.Radius.lg
-        )
-    }
-
-    private func visiblePoints(for result: ScenarioResult) -> [TimelinePoint] {
-        guard !allYears.isEmpty else { return result.timeline }
-        let upperYear = allYears[min(visibleYearIndex, allYears.count - 1)]
-        return result.timeline.filter { $0.year <= upperYear }
-    }
-
-    private var chartDateDomain: ClosedRange<Date> {
-        let allDates = results.flatMap { $0.timeline.map(\.date) }.sorted()
-        guard let firstDate = allDates.first, let lastDate = allDates.last else {
-            let today = Date.now
-            return today...today
-        }
-        return firstDate...lastDate
-    }
-
-    private var chartValueDomain: ClosedRange<Double> {
-        let allPortfolioValues = results.flatMap { $0.timeline.map(\.portfolioValue) }
-        guard
-            let minimumValue = allPortfolioValues.min(),
-            let maximumValue = allPortfolioValues.max()
-        else {
-            return 0...1
-        }
-
-        let lowerBound = max(0, minimumValue * 0.9)
-        let upperBound = maximumValue * 1.08
-
-        if lowerBound == upperBound {
-            return lowerBound...(upperBound + 1)
-        }
-
-        return lowerBound...upperBound
     }
 }
 

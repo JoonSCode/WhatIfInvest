@@ -1,37 +1,62 @@
 import Foundation
 
 struct SimulationEngine {
-    func simulate(scenario: InvestmentScenario, history: AssetHistory) -> ScenarioResult? {
+    func simulate(
+        scenario: InvestmentScenario,
+        history: AssetHistory,
+        barInterval: MarketBarInterval? = nil
+    ) -> ScenarioResult? {
         guard scenario.amount > 0 else {
             return nil
         }
 
-        let orderedPoints = history.monthlyPoints.sorted { $0.date < $1.date }
-        guard let startIndex = orderedPoints.firstIndex(where: {
+        let orderedValuationPoints = history.pricePoints(for: barInterval).sorted { $0.date < $1.date }
+        guard let startIndex = orderedValuationPoints.firstIndex(where: {
             $0.date >= scenario.normalizedStartDate && $0.adjustedClose > 0
         }) else {
             return nil
         }
 
-        let relevantPoints = Array(orderedPoints[startIndex...]).filter { $0.adjustedClose > 0 }
-        guard let firstPoint = relevantPoints.first else {
+        let relevantValuationPoints = Array(orderedValuationPoints[startIndex...]).filter { $0.adjustedClose > 0 }
+        guard !relevantValuationPoints.isEmpty else {
+            return nil
+        }
+
+        let contributionPoints = contributionPoints(
+            for: history,
+            barInterval: barInterval,
+            startDate: scenario.normalizedStartDate
+        )
+        guard let firstContributionPoint = contributionPoints.first else {
             return nil
         }
 
         var shares = 0.0
         var invested = 0.0
         var checkpoints: [TimelinePoint] = []
+        var lastContributionMonth: Int?
+        var contributionIndex = 0
 
-        for point in relevantPoints {
+        for point in relevantValuationPoints {
             switch scenario.mode {
             case .lumpSum:
                 if invested == 0 {
                     invested = scenario.amount
-                    shares = scenario.amount / firstPoint.adjustedClose
+                    shares = scenario.amount / firstContributionPoint.adjustedClose
                 }
             case .recurringMonthly:
-                invested += scenario.amount
-                shares += scenario.amount / point.adjustedClose
+                while contributionIndex < contributionPoints.count {
+                    let contributionPoint = contributionPoints[contributionIndex]
+                    guard contributionPoint.date <= point.date else { break }
+
+                    let contributionMonth = Self.monthKey(for: contributionPoint.date)
+                    if contributionMonth != lastContributionMonth {
+                        invested += scenario.amount
+                        shares += scenario.amount / contributionPoint.adjustedClose
+                        lastContributionMonth = contributionMonth
+                    }
+                    contributionIndex += 1
+                }
             }
 
             let value = shares * point.adjustedClose
@@ -52,33 +77,30 @@ struct SimulationEngine {
             investedAmount: current.investedAmount,
             currentValue: current.portfolioValue,
             totalReturnRatio: current.investedAmount == 0 ? 0 : ((current.portfolioValue / current.investedAmount) - 1),
-            timeline: yearSnapshots(from: checkpoints)
+            timeline: checkpoints
         )
     }
 
-    private func yearSnapshots(from checkpoints: [TimelinePoint]) -> [TimelinePoint] {
-        guard let first = checkpoints.first, let last = checkpoints.last else { return [] }
-
-        var snapshots: [TimelinePoint] = [first]
-        var previousYear = first.year
-        var previousPoint = first
-
-        for point in checkpoints.dropFirst() {
-            if point.year != previousYear {
-                snapshots.append(previousPoint)
-                previousYear = point.year
-            }
-            previousPoint = point
+    private func contributionPoints(
+        for history: AssetHistory,
+        barInterval: MarketBarInterval?,
+        startDate: Date
+    ) -> [MarketPoint] {
+        let points: [MarketPoint]
+        if barInterval == nil {
+            points = history.pricePoints
+        } else {
+            points = history.pricePoints(for: .oneMonth)
         }
 
-        if snapshots.last?.date != last.date {
-            snapshots.append(last)
-        }
+        return points
+            .filter { $0.date >= startDate && $0.adjustedClose > 0 }
+            .sorted { $0.date < $1.date }
+    }
 
-        return snapshots.reduce(into: [TimelinePoint]()) { result, point in
-            if result.last?.date != point.date {
-                result.append(point)
-            }
-        }
+    private static func monthKey(for date: Date) -> Int {
+        let year = Calendar.utc.component(.year, from: date)
+        let month = Calendar.utc.component(.month, from: date)
+        return year * 100 + month
     }
 }
