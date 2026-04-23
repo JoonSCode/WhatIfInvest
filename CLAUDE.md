@@ -26,4 +26,5 @@ This repository contains the standalone iOS app for the US stock what-if simulat
 - Avoid UIKit except when SwiftUI requires an adapter for system share or app lifecycle integration.
 - Keep feature code split into small files under `WhatIfInvest/`.
 - For material UI changes, review with multiple expert lenses: brand/product, SwiftUI implementation, fintech accessibility, and growth/shareability.
+- Keep Apple default controls and interaction surfaces where possible. Do not custom-skin standard `Picker`, `DatePicker`, `TextField`, `List`, `TabView`, or segmented controls unless explicitly requested.
 - If product rules change, update this file and `SPECIFICATION.md`.

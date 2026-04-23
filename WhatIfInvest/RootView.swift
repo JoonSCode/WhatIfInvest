@@ -47,6 +47,10 @@ private struct LaunchLoadingView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 18) {
+                Circle()
+                    .fill(AppTheme.ColorToken.brandPrimary)
+                    .frame(width: 18, height: 18)
+
                 Text(AppBrand.displayName)
                     .font(.system(size: 34, weight: .black, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textPrimary)

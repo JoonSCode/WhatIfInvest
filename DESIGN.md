@@ -63,6 +63,8 @@ Source inspiration:
 - Do not use neon gradients, glassmorphism, or crypto-exchange styling.
 
 ### Forms
+- Keep Apple system controls as the default baseline.
+- Do not custom-skin `Picker`, `DatePicker`, `TextField`, `List`, `TabView`, or segmented controls unless there is a strong product reason.
 - Persistent labels above inputs when helpful.
 - Keep pickers and date controls visually consistent with the rest of the form.
 - One primary action per interaction cluster.

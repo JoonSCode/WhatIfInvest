@@ -103,6 +103,16 @@ struct ExploreView: View {
 
     private var heroHeader: some View {
         VStack(alignment: .leading, spacing: 12) {
+            Text("Time-travel investing")
+                .font(.system(size: 11, weight: .bold, design: .rounded))
+                .foregroundStyle(AppTheme.ColorToken.brandPrimary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(AppTheme.ColorToken.surfaceSubtle)
+                )
+
             Text("If you had invested then")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.ColorToken.textPrimary)
@@ -176,6 +186,11 @@ struct ExploreView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .padding(18)
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.9),
+            radius: 24
+        )
     }
 
     private var comparisonSection: some View {
@@ -188,6 +203,7 @@ struct ExploreView: View {
                     appModel.resetComparisons()
                 }
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .buttonStyle(.bordered)
             }
 
             ForEach(appModel.comparisonResults) { result in
@@ -201,7 +217,8 @@ struct ExploreView: View {
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
                         Text("Now \(result.currentValue.currencyText) · Return \(result.totalReturnRatio.percentText)")
                             .font(.system(size: 12, weight: .medium, design: .rounded))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppTheme.ColorToken.textSecondary)
+                            .monospacedDigit()
                     }
 
                     Spacer()
@@ -214,12 +231,17 @@ struct ExploreView: View {
                     .buttonStyle(.borderless)
                 }
                 .padding(14)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Color.white.opacity(0.7))
+                .appCardSurface(
+                    fill: AppTheme.ColorToken.surfaceMuted.opacity(0.95),
+                    radius: 18
                 )
             }
         }
+        .padding(18)
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.88),
+            radius: 24
+        )
         .accessibilityIdentifier("comparison-section")
     }
 
@@ -522,8 +544,9 @@ private struct TimelineChartCard: View {
                     AxisGridLine()
                     AxisTick()
                     AxisValueLabel {
-                        if let amount = value.as(Double.self) {
+                if let amount = value.as(Double.self) {
                             Text(amount.formatted(.currency(code: "USD").precision(.fractionLength(0))))
+                                .monospacedDigit()
                         }
                     }
                 }

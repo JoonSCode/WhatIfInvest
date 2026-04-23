@@ -14,13 +14,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QnC-w8-6mP">
+                                <rect key="frame" x="176.66666666666666" y="346" width="40" height="40"/>
+                                <color key="backgroundColor" red="0.0" green="0.32156862750000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="6gP-GY-yef"/>
+                                    <constraint firstAttribute="height" constant="40" id="BA5-fn-qra"/>
+                                </constraints>
+                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="HOY-vT-5ki">
-                                <rect key="frame" x="54.333333333333336" y="382" width="284.33333333333331" height="88"/>
+                                <rect key="frame" x="54.333333333333336" y="410" width="284.33333333333331" height="88"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="What If Invest" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WSm-xL-rhE">
                                         <rect key="frame" x="0.0" y="0.0" width="284.33333333333331" height="41"/>
                                         <fontDescription key="fontDescription" type="system" weight="black" pointSize="34"/>
-                                        <color key="textColor" red="0.16078431369999999" green="0.1803921569" blue="0.23921568630000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="textColor" red="0.0" green="0.32156862750000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Hindsight investing, loaded locally." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fL1-2d-pT6">
@@ -33,9 +41,11 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
-                        <color key="backgroundColor" red="0.97254901959999998" green="0.94901960779999997" blue="0.91372549019999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.98039215689999995" green="0.98823529410000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="QnC-w8-6mP" firstAttribute="bottom" secondItem="HOY-vT-5ki" secondAttribute="top" constant="-24" id="5dS-Mw-kA5"/>
                             <constraint firstItem="HOY-vT-5ki" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="6pq-gh-2BI"/>
+                            <constraint firstItem="QnC-w8-6mP" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="FFO-C6-jjR"/>
                             <constraint firstItem="HOY-vT-5ki" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="PD1-W7-2Gz"/>
                             <constraint firstItem="HOY-vT-5ki" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="24" id="Tw1-Zm-2fm"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="HOY-vT-5ki" secondAttribute="trailing" constant="24" id="trI-g2-H6o"/>
