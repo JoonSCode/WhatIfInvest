@@ -10,6 +10,7 @@ This repository contains the standalone iOS app for the US stock what-if simulat
 4. Basic save and basic share stay free.
 5. Do not place ads above the fold in the result experience.
 6. Always keep adjusted-close basis and exclusions visible near results.
+7. Follow `DESIGN.md` for visual system decisions.
 
 ## MVP Shape
 
@@ -24,5 +25,5 @@ This repository contains the standalone iOS app for the US stock what-if simulat
 - Prefer `@Observable` and modern SwiftUI data flow.
 - Avoid UIKit except when SwiftUI requires an adapter for system share or app lifecycle integration.
 - Keep feature code split into small files under `WhatIfInvest/`.
+- For material UI changes, review with multiple expert lenses: brand/product, SwiftUI implementation, fintech accessibility, and growth/shareability.
 - If product rules change, update this file and `SPECIFICATION.md`.
-

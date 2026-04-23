@@ -53,12 +53,12 @@ struct TrustNotesView: View {
                 }
             }
             .font(.system(size: 13, weight: .medium, design: .rounded))
-            .foregroundStyle(.secondary)
+            .foregroundStyle(AppTheme.ColorToken.textSecondary)
         }
         .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color(red: 0.97, green: 0.95, blue: 0.90))
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceSubtle.opacity(0.82),
+            radius: 24
         )
     }
 }

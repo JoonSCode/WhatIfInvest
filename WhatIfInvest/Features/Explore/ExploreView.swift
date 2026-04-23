@@ -62,6 +62,7 @@ struct ExploreView: View {
         .background(backgroundGradient)
         .navigationTitle(AppBrand.displayName)
         .navigationBarTitleDisplayMode(.inline)
+        .tint(AppTheme.ColorToken.brandPrimary)
         .sheet(isPresented: $showingComparisonSheet) {
             NavigationStack {
                 ComparisonComposerView(
@@ -104,16 +105,16 @@ struct ExploreView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("If you had invested then")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundStyle(Color(red: 0.18, green: 0.20, blue: 0.24))
+                .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
             Text("A hindsight simulator for major US ETFs and the Magnificent 7. Built to make the force of time feel visual, not abstract.")
                 .font(.system(size: 16, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
 
             if let message = appModel.lastErrorMessage {
                 Label(message, systemImage: "exclamationmark.triangle")
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.red)
+                    .foregroundStyle(AppTheme.ColorToken.danger)
             }
         }
     }
@@ -125,7 +126,7 @@ struct ExploreView: View {
                     togglePlayback()
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(Color(red: 0.10, green: 0.29, blue: 0.54))
+                .tint(AppTheme.ColorToken.brandPrimary)
                 .accessibilityIdentifier("timeline-playback-button")
 
                 Button("Add Comparison") {
@@ -228,27 +229,19 @@ struct ExploreView: View {
                 .font(.system(size: 22, weight: .bold, design: .rounded))
             Text(message ?? "Load the bundled data or refresh the cache to start exploring.")
                 .font(.system(size: 15, weight: .medium, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(24)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Color.white.opacity(0.68))
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.84),
+            radius: 26
         )
     }
 
     private var backgroundGradient: some View {
-        LinearGradient(
-            colors: [
-                Color(red: 0.97, green: 0.94, blue: 0.88),
-                Color(red: 0.92, green: 0.94, blue: 0.97),
-                Color(red: 0.98, green: 0.97, blue: 0.94)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
+        AppTheme.canvasGradient
+            .ignoresSafeArea()
     }
 
     private var visibleYearLabel: String {
@@ -262,17 +255,18 @@ struct ExploreView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title.uppercased())
                 .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
                 .accessibilityIdentifier("\(accessibilityIdentifier)-title")
             Text(value)
                 .font(.system(size: 16, weight: .bold, design: .rounded))
+                .monospacedDigit()
                 .accessibilityIdentifier("\(accessibilityIdentifier)-value")
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .background(
             Capsule(style: .continuous)
-                .fill(Color.white.opacity(0.74))
+                .fill(AppTheme.ColorToken.surfaceSubtle.opacity(0.9))
         )
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier(accessibilityIdentifier)
@@ -347,7 +341,7 @@ private struct ScenarioEditorCard: View {
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                 Text(subtitle)
                     .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
 
             Picker("Asset", selection: $scenario.asset) {
@@ -376,7 +370,7 @@ private struct ScenarioEditorCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(scenario.mode.amountFieldLabel)
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
                 TextField("Amount", value: amountBinding, format: .number.precision(.fractionLength(0...2)))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
@@ -385,7 +379,7 @@ private struct ScenarioEditorCard: View {
             if let validationMessage {
                 Label(validationMessage, systemImage: "exclamationmark.circle")
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.72, green: 0.21, blue: 0.18))
+                    .foregroundStyle(AppTheme.ColorToken.danger)
             }
 
             HStack(spacing: 10) {
@@ -394,16 +388,12 @@ private struct ScenarioEditorCard: View {
                 Text(UIFormatting.scenarioDescriptor(scenario))
             }
             .font(.system(size: 12, weight: .semibold, design: .rounded))
-            .foregroundStyle(.secondary)
+            .foregroundStyle(AppTheme.ColorToken.textSecondary)
         }
         .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color.white.opacity(0.84))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30, style: .continuous)
-                        .stroke(Color.black.opacity(0.06))
-                )
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.92),
+            radius: AppTheme.Radius.lg
         )
         .accessibilityIdentifier(title == "Story mode" ? "story-mode-card" : "comparison-editor-card")
     }
@@ -425,9 +415,10 @@ private struct ResultSummaryCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("If you had started with \(result.scenario.asset.symbol)")
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     Text(result.currentValue.currencyText)
                         .font(.system(size: 34, weight: .bold, design: .rounded))
+                        .monospacedDigit()
                 }
                 Spacer()
                 Circle()
@@ -452,12 +443,17 @@ private struct ResultSummaryCard: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            result.scenario.asset.tint.opacity(0.18),
-                            Color.white.opacity(0.95)
+                            AppTheme.ColorToken.surfaceBase.opacity(0.98),
+                            AppTheme.ColorToken.surfaceSubtle.opacity(0.92),
+                            result.scenario.asset.tint.opacity(0.10)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30, style: .continuous)
+                        .stroke(AppTheme.ColorToken.borderSoft)
                 )
         )
         .accessibilityIdentifier("result-summary-card")
@@ -467,9 +463,10 @@ private struct ResultSummaryCard: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title.uppercased())
                 .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
             Text(value)
                 .font(.system(size: 16, weight: .bold, design: .rounded))
+                .monospacedDigit()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -484,6 +481,7 @@ private struct TimelineChartCard: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Timeline replay")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
+                .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
             Chart {
                 ForEach(results) { result in
@@ -505,12 +503,12 @@ private struct TimelineChartCard: View {
             .chartXAxisLabel(position: .bottom, alignment: .center) {
                 Text("Time")
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
             .chartYAxisLabel(position: .leading, alignment: .center) {
                 Text("Amount (USD)")
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
             .chartXAxis {
                 AxisMarks(values: .stride(by: .year)) { value in
@@ -562,14 +560,14 @@ private struct TimelineChartCard: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
-                    .background(Capsule().fill(Color.white.opacity(0.75)))
+                    .background(Capsule().fill(AppTheme.ColorToken.surfaceSubtle.opacity(0.9)))
                 }
             }
         }
         .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color.white.opacity(0.84))
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.92),
+            radius: AppTheme.Radius.lg
         )
     }
 
@@ -628,7 +626,7 @@ private struct ComparisonComposerView: View {
             )
             .padding(20)
         }
-        .background(Color(red: 0.95, green: 0.94, blue: 0.91))
+        .background(AppTheme.canvasGradient)
         .navigationTitle("Add comparison")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

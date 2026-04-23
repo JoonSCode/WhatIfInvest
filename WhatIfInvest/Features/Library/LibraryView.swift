@@ -8,14 +8,14 @@ struct LibraryView: View {
             Section {
                 Text("Saved scenarios stay free so revisit and sharing behavior can be measured before deeper monetization.")
                     .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     .listRowBackground(Color.clear)
             }
 
             if appModel.savedScenarios.isEmpty {
                 Section("Nothing saved yet") {
                     Text("Save a scenario from Explore to keep a lightweight history.")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppTheme.ColorToken.textSecondary)
                         .accessibilityIdentifier("saved-empty-state")
                 }
             } else {
@@ -26,14 +26,14 @@ struct LibraryView: View {
                                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                             Text("Saved \(entry.savedAt.formatted(.dateTime.year().month().day().hour().minute()))")
                                 .font(.system(size: 12, weight: .medium, design: .rounded))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AppTheme.ColorToken.textSecondary)
 
                             HStack {
                                 Button("Open in Explore") {
                                     appModel.loadSavedScenario(entry)
                                 }
                                 .buttonStyle(.borderedProminent)
-                                .tint(entry.scenario.asset.tint)
+                                .tint(AppTheme.ColorToken.brandPrimary)
                                 .accessibilityIdentifier("saved-scenario-open-button")
 
                                 Button("Delete", role: .destructive) {
@@ -50,16 +50,7 @@ struct LibraryView: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color(red: 0.95, green: 0.94, blue: 0.91),
-                    Color(red: 0.93, green: 0.95, blue: 0.97)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
+        .background(AppTheme.canvasGradient)
         .navigationTitle("Saved")
     }
 }

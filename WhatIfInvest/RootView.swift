@@ -32,6 +32,7 @@ struct RootView: View {
                     .transition(.opacity)
             }
         }
+        .tint(AppTheme.ColorToken.brandPrimary)
         .task {
             await Task.yield()
             await appModel.loadIfNeeded()
@@ -42,42 +43,31 @@ struct RootView: View {
 private struct LaunchLoadingView: View {
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.97, green: 0.94, blue: 0.88),
-                    Color(red: 0.92, green: 0.94, blue: 0.97),
-                    Color(red: 0.98, green: 0.97, blue: 0.94)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            AppTheme.canvasGradient
+                .ignoresSafeArea()
 
             VStack(spacing: 18) {
                 Text(AppBrand.displayName)
                     .font(.system(size: 34, weight: .black, design: .rounded))
-                    .foregroundStyle(Color(red: 0.16, green: 0.18, blue: 0.24))
+                    .foregroundStyle(AppTheme.ColorToken.textPrimary)
                     .multilineTextAlignment(.center)
 
                 ProgressView()
                     .controlSize(.large)
-                    .tint(Color(red: 0.10, green: 0.29, blue: 0.54))
+                    .tint(AppTheme.ColorToken.brandPrimary)
 
                 Text("Loading adjusted-close history")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.22, green: 0.24, blue: 0.30))
+                    .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
                 Text("Past market data is loading locally so your first result is ready fast.")
                     .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 260)
             }
             .padding(28)
-            .background(
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .fill(Color.white.opacity(0.78))
-            )
+            .appCardSurface(fill: AppTheme.ColorToken.surfaceBase.opacity(0.92))
             .padding(24)
         }
     }

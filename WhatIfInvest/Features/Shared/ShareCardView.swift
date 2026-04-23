@@ -7,26 +7,18 @@ struct ShareCardView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.97, green: 0.92, blue: 0.84),
-                    Color(red: 0.93, green: 0.95, blue: 0.98),
-                    Color(red: 0.98, green: 0.97, blue: 0.94)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            AppTheme.shareGradient
 
             VStack(alignment: .leading, spacing: 28) {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(AppBrand.displayName)
                         .font(.system(size: 36, weight: .black, design: .rounded))
-                        .foregroundStyle(Color(red: 0.16, green: 0.18, blue: 0.24))
+                        .foregroundStyle(AppTheme.ColorToken.brandPrimary)
                         .lineLimit(2)
 
                     Text("If you had invested then")
                         .font(.system(size: 74, weight: .heavy, design: .rounded))
-                        .foregroundStyle(Color(red: 0.18, green: 0.20, blue: 0.24))
+                        .foregroundStyle(AppTheme.ColorToken.textPrimary)
                         .minimumScaleFactor(0.7)
                 }
 
@@ -37,11 +29,12 @@ struct ShareCardView: View {
 
                     Text(primaryResult.currentValue.currencyText)
                         .font(.system(size: 92, weight: .black, design: .rounded))
-                        .foregroundStyle(Color(red: 0.16, green: 0.18, blue: 0.24))
+                        .foregroundStyle(AppTheme.ColorToken.textPrimary)
+                        .monospacedDigit()
 
                     Text(UIFormatting.scenarioDescriptor(primaryResult.scenario))
                         .font(.system(size: 28, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppTheme.ColorToken.textSecondary)
                 }
 
                 HStack(spacing: 18) {
@@ -63,15 +56,16 @@ struct ShareCardView: View {
 
                                 Text("\(result.scenario.asset.symbol)  \(result.currentValue.currencyText)  \(result.totalReturnRatio.percentText)")
                                     .font(.system(size: 24, weight: .semibold, design: .rounded))
-                                    .foregroundStyle(Color(red: 0.22, green: 0.24, blue: 0.30))
+                                    .foregroundStyle(AppTheme.ColorToken.textPrimary)
+                                    .monospacedDigit()
                             }
                         }
                     }
                     .padding(24)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 34, style: .continuous)
-                            .fill(Color.white.opacity(0.72))
+                    .appCardSurface(
+                        fill: AppTheme.ColorToken.surfaceBase.opacity(0.82),
+                        radius: 34
                     )
                 }
 
@@ -84,7 +78,7 @@ struct ShareCardView: View {
                     }
                 }
                 .font(.system(size: 22, weight: .semibold, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
             .padding(64)
         }
@@ -95,16 +89,17 @@ struct ShareCardView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
                 .font(.system(size: 18, weight: .bold, design: .rounded))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
             Text(value)
                 .font(.system(size: 34, weight: .black, design: .rounded))
-                .foregroundStyle(Color(red: 0.18, green: 0.20, blue: 0.24))
+                .foregroundStyle(AppTheme.ColorToken.textPrimary)
+                .monospacedDigit()
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color.white.opacity(0.76))
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.88),
+            radius: 30
         )
     }
 }
