@@ -1,6 +1,6 @@
 import XCTest
 
-final class TimeMachineInvestUITests: XCTestCase {
+final class WhatIfInvestUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

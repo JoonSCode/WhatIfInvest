@@ -1,7 +1,31 @@
 import XCTest
-@testable import TimeMachineInvest
+@testable import WhatIfInvest
 
 final class HistoricalDataStoreTests: XCTestCase {
+    func testLoadHistoricalDataFallsBackToLegacyCacheWhenCurrentCacheIsMissing() async throws {
+        let directory = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString, directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let bundledURL = directory.appending(path: "bundled.json")
+        let currentCacheURL = directory.appending(path: "current-cache.json")
+        let legacyCacheURL = directory.appending(path: "legacy-cache.json")
+        let expectedPayload = makePayload(generatedAt: Self.date(year: 2026, month: 4, day: 20))
+
+        try Self.writePayload(expectedPayload, to: bundledURL)
+        try Self.writePayload(expectedPayload, to: legacyCacheURL)
+
+        let store = HistoricalDataStore(
+            bundledPayloadURL: bundledURL,
+            cacheFileURL: currentCacheURL,
+            legacyCacheFileURL: legacyCacheURL
+        )
+
+        let loaded = try await store.loadHistoricalData()
+
+        XCTAssertEqual(loaded.generatedAt, expectedPayload.generatedAt)
+        XCTAssertEqual(loaded.provider, expectedPayload.provider)
+    }
+
     func testLoadHistoricalDataFallsBackToBundledPayloadWhenCacheIsCorrupted() async throws {
         let directory = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString, directoryHint: .isDirectory)
         defer { try? FileManager.default.removeItem(at: directory) }

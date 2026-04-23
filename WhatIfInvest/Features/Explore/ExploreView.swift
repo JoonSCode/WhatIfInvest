@@ -490,8 +490,8 @@ private struct TimelineChartCard: View {
                     let points = visiblePoints(for: result)
                     ForEach(points) { point in
                         LineMark(
-                            x: .value("Date", point.date),
-                            y: .value("Portfolio", point.portfolioValue)
+                            x: .value("Time", point.date),
+                            y: .value("Amount", point.portfolioValue)
                         )
                         .foregroundStyle(result.scenario.asset.tint)
                         .lineStyle(.init(lineWidth: result.scenario == results.first?.scenario ? 3.5 : 2.4))
@@ -502,6 +502,16 @@ private struct TimelineChartCard: View {
             .frame(height: 240)
             .chartXScale(domain: chartDateDomain)
             .chartYScale(domain: chartValueDomain)
+            .chartXAxisLabel(position: .bottom, alignment: .center) {
+                Text("Time")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+            .chartYAxisLabel(position: .leading, alignment: .center) {
+                Text("Amount (USD)")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
             .chartXAxis {
                 AxisMarks(values: .stride(by: .year)) { value in
                     AxisGridLine()

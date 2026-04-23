@@ -1,4 +1,4 @@
-# CLAUDE.md (TimeMachineInvest)
+# CLAUDE.md (WhatIfInvest)
 
 This repository contains the standalone iOS app for the US stock what-if simulator planned in Ariadne.
 
@@ -23,6 +23,6 @@ This repository contains the standalone iOS app for the US stock what-if simulat
 
 - Prefer `@Observable` and modern SwiftUI data flow.
 - Avoid UIKit except when SwiftUI requires an adapter for system share or app lifecycle integration.
-- Keep feature code split into small files under `TimeMachineInvest/`.
+- Keep feature code split into small files under `WhatIfInvest/`.
 - If product rules change, update this file and `SPECIFICATION.md`.
 

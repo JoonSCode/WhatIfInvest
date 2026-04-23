@@ -1,5 +1,5 @@
 import XCTest
-@testable import TimeMachineInvest
+@testable import WhatIfInvest
 
 final class SimulationEngineTests: XCTestCase {
     private let engine = SimulationEngine()

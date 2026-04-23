@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct TimeMachineInvestApp: App {
+struct WhatIfInvestApp: App {
     @State private var appModel: AppModel
 
     @MainActor

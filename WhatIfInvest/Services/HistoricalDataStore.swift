@@ -24,6 +24,7 @@ struct HistoricalDataStore {
     private let bundle: Bundle
     private let bundledPayloadURL: URL?
     private let cacheFileURL: URL?
+    private let legacyCacheFileURL: URL?
     private let now: @Sendable () -> Date
     private let historyFetcher: @Sendable (AssetID) async throws -> AssetHistory
 
@@ -34,6 +35,7 @@ struct HistoricalDataStore {
         bundle: Bundle = .main,
         bundledPayloadURL: URL? = nil,
         cacheFileURL: URL? = nil,
+        legacyCacheFileURL: URL? = nil,
         now: @escaping @Sendable () -> Date = { .now },
         historyFetcher: @escaping @Sendable (AssetID) async throws -> AssetHistory = HistoricalDataStore.fetchHistoryFromNetwork
     ) {
@@ -43,22 +45,25 @@ struct HistoricalDataStore {
         self.bundle = bundle
         self.bundledPayloadURL = bundledPayloadURL
         self.cacheFileURL = cacheFileURL
+        self.legacyCacheFileURL = legacyCacheFileURL
         self.now = now
         self.historyFetcher = historyFetcher
     }
 
     @MainActor
     func loadHistoricalData() async throws -> BundledHistoricalData {
-        let cacheURL = try cacheURL()
+        let cacheURLs = try cacheURLs()
         let bundledURL = try resolveBundledPayloadURL()
 
         return try await Task.detached(priority: .userInitiated) {
-            do {
-                if let cached = try Self.loadCachedPayload(at: cacheURL) {
-                    return cached
+            for cacheURL in cacheURLs {
+                do {
+                    if let cached = try Self.loadCachedPayload(at: cacheURL) {
+                        return cached
+                    }
+                } catch {
+                    try? Self.clearCache(at: cacheURL)
                 }
-            } catch {
-                try? Self.clearCache(at: cacheURL)
             }
 
             return try Self.loadPayload(from: bundledURL)
@@ -89,7 +94,7 @@ struct HistoricalDataStore {
             interval: "1mo",
             histories: histories
         )
-        try await Self.persist(payload, to: cacheURL())
+        try await Self.persist(payload, to: currentCacheURL())
         return payload
     }
 
@@ -148,12 +153,23 @@ struct HistoricalDataStore {
         try fileManager.removeItem(at: url)
     }
 
-    private func cacheURL() throws -> URL {
+    private func currentCacheURL() throws -> URL {
         if let cacheFileURL {
             return cacheFileURL
         }
 
-        return try Self.defaultCacheURL(fileManager: fileManager)
+        return try Self.currentCacheURL(fileManager: fileManager)
+    }
+
+    private func cacheURLs() throws -> [URL] {
+        if let cacheFileURL {
+            if let legacyCacheFileURL {
+                return [cacheFileURL, legacyCacheFileURL]
+            }
+            return [cacheFileURL]
+        }
+
+        return try Self.defaultCacheURLs(fileManager: fileManager)
     }
 
     private static func fetchHistoryFromNetwork(for asset: AssetID) async throws -> AssetHistory {
@@ -200,20 +216,37 @@ struct HistoricalDataStore {
     }
 
     static func clearPersistedData(fileManager: FileManager = .default) throws {
-        let url = try defaultCacheURL(fileManager: fileManager)
-        guard fileManager.fileExists(atPath: url.path) else { return }
-        try fileManager.removeItem(at: url)
+        for url in try defaultCacheURLs(fileManager: fileManager) where fileManager.fileExists(atPath: url.path) {
+            try fileManager.removeItem(at: url)
+        }
     }
 
-    private static func defaultCacheURL(fileManager: FileManager) throws -> URL {
+    private static func defaultCacheURLs(fileManager: FileManager) throws -> [URL] {
+        [
+            try currentCacheURL(fileManager: fileManager),
+            try legacyCacheURL(fileManager: fileManager)
+        ]
+    }
+
+    private static func currentCacheURL(fileManager: FileManager) throws -> URL {
+        try applicationSupportDirectory(fileManager: fileManager)
+            .appending(path: AppBrand.internalName, directoryHint: .isDirectory)
+            .appending(path: "historical_cache.json")
+    }
+
+    private static func legacyCacheURL(fileManager: FileManager) throws -> URL {
+        try applicationSupportDirectory(fileManager: fileManager)
+            .appending(path: AppBrand.legacyInternalName, directoryHint: .isDirectory)
+            .appending(path: "historical_cache.json")
+    }
+
+    private static func applicationSupportDirectory(fileManager: FileManager) throws -> URL {
         try fileManager.url(
             for: .applicationSupportDirectory,
             in: .userDomainMask,
             appropriateFor: nil,
             create: true
         )
-        .appending(path: "TimeMachineInvest", directoryHint: .isDirectory)
-        .appending(path: "historical_cache.json")
     }
 }
 

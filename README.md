@@ -19,5 +19,5 @@ This repo starts from the Ariadne plan bundle in:
 ## Build
 
 ```bash
-xcodebuild -project TimeMachineInvest.xcodeproj -scheme TimeMachineInvest -destination 'generic/platform=iOS Simulator' build
+xcodebuild -project WhatIfInvest.xcodeproj -scheme WhatIfInvest -destination 'generic/platform=iOS Simulator' build
 ```

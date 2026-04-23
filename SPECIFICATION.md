@@ -1,4 +1,4 @@
-# TimeMachineInvest Specification
+# WhatIfInvest Specification
 
 ## Goal
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import TimeMachineInvest
+@testable import WhatIfInvest
 
 @MainActor
 final class ShareCardExporterTests: XCTestCase {

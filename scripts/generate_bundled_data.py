@@ -81,7 +81,7 @@ def fetch_history(asset: tuple[str, str, str, str]) -> AssetHistory:
 
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
-    output_path = repo_root / "TimeMachineInvest" / "Resources" / "Historical" / "bundled_historical_data.json"
+    output_path = repo_root / "WhatIfInvest" / "Resources" / "Historical" / "bundled_historical_data.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     histories = [fetch_history(asset) for asset in ASSETS]

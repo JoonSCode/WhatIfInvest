@@ -27,7 +27,7 @@ struct ShareCardExporter {
         lastUpdatedAt: Date?
     ) throws -> ShareExportItem {
         let fileManager = FileManager.default
-        let directory = fileManager.temporaryDirectory.appending(path: "TimeMachineInvestShareCards", directoryHint: .isDirectory)
+        let directory = fileManager.temporaryDirectory.appending(path: AppBrand.shareCardDirectoryName, directoryHint: .isDirectory)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
 
         let fileURL = directory.appending(path: "share-card-\(UUID().uuidString).png")

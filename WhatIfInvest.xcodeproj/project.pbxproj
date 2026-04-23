@@ -12,21 +12,21 @@
 			containerPortal = A10000000000000000000007 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A10000000000000000000008;
-			remoteInfo = TimeMachineInvest;
+			remoteInfo = WhatIfInvest;
 		};
 		A1000000000000000000001E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A10000000000000000000007 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A10000000000000000000008;
-			remoteInfo = TimeMachineInvest;
+			remoteInfo = WhatIfInvest;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A10000000000000000000001 /* TimeMachineInvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeMachineInvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000000000000000000012 /* TimeMachineInvestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimeMachineInvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1000000000000000000001C /* TimeMachineInvestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimeMachineInvestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000001 /* WhatIfInvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhatIfInvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000012 /* WhatIfInvestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhatIfInvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000000000000000000001C /* WhatIfInvestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhatIfInvestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -35,14 +35,14 @@
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = A10000000000000000000008 /* TimeMachineInvest */;
+			target = A10000000000000000000008 /* WhatIfInvest */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A10000000000000000000003 /* TimeMachineInvest */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (A10000000000000000000002 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvest; sourceTree = "<group>"; };
-		A10000000000000000000013 /* TimeMachineInvestTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvestTests; sourceTree = "<group>"; };
-		A1000000000000000000001D /* TimeMachineInvestUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvestUITests; sourceTree = "<group>"; };
+		A10000000000000000000003 /* WhatIfInvest */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (A10000000000000000000002 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WhatIfInvest; sourceTree = "<group>"; };
+		A10000000000000000000013 /* WhatIfInvestTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatIfInvestTests; sourceTree = "<group>"; };
+		A1000000000000000000001D /* WhatIfInvestUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatIfInvestUITests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,9 +73,9 @@
 		A10000000000000000000005 = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000003 /* TimeMachineInvest */,
-				A10000000000000000000013 /* TimeMachineInvestTests */,
-				A1000000000000000000001D /* TimeMachineInvestUITests */,
+				A10000000000000000000003 /* WhatIfInvest */,
+				A10000000000000000000013 /* WhatIfInvestTests */,
+				A1000000000000000000001D /* WhatIfInvestUITests */,
 				A10000000000000000000006 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -83,9 +83,9 @@
 		A10000000000000000000006 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000001 /* TimeMachineInvest.app */,
-				A10000000000000000000012 /* TimeMachineInvestTests.xctest */,
-				A1000000000000000000001C /* TimeMachineInvestUITests.xctest */,
+				A10000000000000000000001 /* WhatIfInvest.app */,
+				A10000000000000000000012 /* WhatIfInvestTests.xctest */,
+				A1000000000000000000001C /* WhatIfInvestUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -93,9 +93,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A10000000000000000000008 /* TimeMachineInvest */ = {
+		A10000000000000000000008 /* WhatIfInvest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A10000000000000000000009 /* Build configuration list for PBXNativeTarget "TimeMachineInvest" */;
+			buildConfigurationList = A10000000000000000000009 /* Build configuration list for PBXNativeTarget "WhatIfInvest" */;
 			buildPhases = (
 				A1000000000000000000000A /* Sources */,
 				A10000000000000000000004 /* Frameworks */,
@@ -106,18 +106,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				A10000000000000000000003 /* TimeMachineInvest */,
+				A10000000000000000000003 /* WhatIfInvest */,
 			);
-			name = TimeMachineInvest;
+			name = WhatIfInvest;
 			packageProductDependencies = (
 			);
-			productName = TimeMachineInvest;
-			productReference = A10000000000000000000001 /* TimeMachineInvest.app */;
+			productName = WhatIfInvest;
+			productReference = A10000000000000000000001 /* WhatIfInvest.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A10000000000000000000017 /* TimeMachineInvestTests */ = {
+		A10000000000000000000017 /* WhatIfInvestTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1000000000000000000001B /* Build configuration list for PBXNativeTarget "TimeMachineInvestTests" */;
+			buildConfigurationList = A1000000000000000000001B /* Build configuration list for PBXNativeTarget "WhatIfInvestTests" */;
 			buildPhases = (
 				A10000000000000000000015 /* Sources */,
 				A10000000000000000000014 /* Frameworks */,
@@ -129,18 +129,18 @@
 				A10000000000000000000018 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				A10000000000000000000013 /* TimeMachineInvestTests */,
+				A10000000000000000000013 /* WhatIfInvestTests */,
 			);
-			name = TimeMachineInvestTests;
+			name = WhatIfInvestTests;
 			packageProductDependencies = (
 			);
-			productName = TimeMachineInvestTests;
-			productReference = A10000000000000000000012 /* TimeMachineInvestTests.xctest */;
+			productName = WhatIfInvestTests;
+			productReference = A10000000000000000000012 /* WhatIfInvestTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A10000000000000000000022 /* TimeMachineInvestUITests */ = {
+		A10000000000000000000022 /* WhatIfInvestUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A10000000000000000000026 /* Build configuration list for PBXNativeTarget "TimeMachineInvestUITests" */;
+			buildConfigurationList = A10000000000000000000026 /* Build configuration list for PBXNativeTarget "WhatIfInvestUITests" */;
 			buildPhases = (
 				A10000000000000000000020 /* Sources */,
 				A1000000000000000000001F /* Frameworks */,
@@ -152,13 +152,13 @@
 				A10000000000000000000023 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				A1000000000000000000001D /* TimeMachineInvestUITests */,
+				A1000000000000000000001D /* WhatIfInvestUITests */,
 			);
-			name = TimeMachineInvestUITests;
+			name = WhatIfInvestUITests;
 			packageProductDependencies = (
 			);
-			productName = TimeMachineInvestUITests;
-			productReference = A1000000000000000000001C /* TimeMachineInvestUITests.xctest */;
+			productName = WhatIfInvestUITests;
+			productReference = A1000000000000000000001C /* WhatIfInvestUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -184,7 +184,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A1000000000000000000000C /* Build configuration list for PBXProject "TimeMachineInvest" */;
+			buildConfigurationList = A1000000000000000000000C /* Build configuration list for PBXProject "WhatIfInvest" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -197,9 +197,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A10000000000000000000008 /* TimeMachineInvest */,
-				A10000000000000000000017 /* TimeMachineInvestTests */,
-				A10000000000000000000022 /* TimeMachineInvestUITests */,
+				A10000000000000000000008 /* WhatIfInvest */,
+				A10000000000000000000017 /* WhatIfInvestTests */,
+				A10000000000000000000022 /* WhatIfInvestUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -255,12 +255,12 @@
 /* Begin PBXTargetDependency section */
 		A10000000000000000000018 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A10000000000000000000008 /* TimeMachineInvest */;
+			target = A10000000000000000000008 /* WhatIfInvest */;
 			targetProxy = A10000000000000000000011 /* PBXContainerItemProxy */;
 		};
 		A10000000000000000000023 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A10000000000000000000008 /* TimeMachineInvest */;
+			target = A10000000000000000000008 /* WhatIfInvest */;
 			targetProxy = A1000000000000000000001E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -396,7 +396,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TimeMachineInvest/Info.plist;
+				INFOPLIST_FILE = WhatIfInvest/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What If Invest";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -407,7 +407,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.WhatIfInvest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -426,7 +426,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TimeMachineInvest/Info.plist;
+				INFOPLIST_FILE = WhatIfInvest/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "What If Invest";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -437,7 +437,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.WhatIfInvest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -457,13 +457,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvestTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.WhatIfInvestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TimeMachineInvest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TimeMachineInvest";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WhatIfInvest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WhatIfInvest";
 			};
 			name = Debug;
 		};
@@ -476,13 +476,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvestTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.WhatIfInvestTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TimeMachineInvest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TimeMachineInvest";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WhatIfInvest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WhatIfInvest";
 			};
 			name = Release;
 		};
@@ -495,12 +495,12 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvestUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.WhatIfInvestUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TimeMachineInvest;
+				TEST_TARGET_NAME = WhatIfInvest;
 			};
 			name = Debug;
 		};
@@ -513,19 +513,19 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.TimeMachineInvestUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KinnoLabs.WhatIfInvestUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TimeMachineInvest;
+				TEST_TARGET_NAME = WhatIfInvest;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A10000000000000000000009 /* Build configuration list for PBXNativeTarget "TimeMachineInvest" */ = {
+		A10000000000000000000009 /* Build configuration list for PBXNativeTarget "WhatIfInvest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000000000000000000000F /* Debug */,
@@ -534,7 +534,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1000000000000000000000C /* Build configuration list for PBXProject "TimeMachineInvest" */ = {
+		A1000000000000000000000C /* Build configuration list for PBXProject "WhatIfInvest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000000000000000000000D /* Debug */,
@@ -543,7 +543,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1000000000000000000001B /* Build configuration list for PBXNativeTarget "TimeMachineInvestTests" */ = {
+		A1000000000000000000001B /* Build configuration list for PBXNativeTarget "WhatIfInvestTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000019 /* Debug */,
@@ -552,7 +552,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A10000000000000000000026 /* Build configuration list for PBXNativeTarget "TimeMachineInvestUITests" */ = {
+		A10000000000000000000026 /* Build configuration list for PBXNativeTarget "WhatIfInvestUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A10000000000000000000024 /* Debug */,
