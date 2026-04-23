@@ -1,4 +1,4 @@
-# TimeMachineInvest
+# What If Invest
 
 Standalone SwiftUI iOS app for exploring US stock and ETF what-if scenarios.
 

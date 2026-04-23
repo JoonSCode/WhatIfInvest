@@ -11,7 +11,7 @@ final class TimeMachineInvestUITests: XCTestCase {
         app.launchArguments = ["UITEST_RESET_DATA"]
         app.launch()
 
-        XCTAssertTrue(app.navigationBars["Time Machine"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["What If Invest"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Story mode"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Timeline replay"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["Add Comparison"].waitForExistence(timeout: 10))

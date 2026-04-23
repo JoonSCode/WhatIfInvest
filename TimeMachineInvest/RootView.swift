@@ -54,19 +54,20 @@ private struct LaunchLoadingView: View {
             .ignoresSafeArea()
 
             VStack(spacing: 18) {
-                Text("Then")
-                    .font(.system(size: 44, weight: .black, design: .rounded))
+                Text(AppBrand.displayName)
+                    .font(.system(size: 34, weight: .black, design: .rounded))
                     .foregroundStyle(Color(red: 0.16, green: 0.18, blue: 0.24))
+                    .multilineTextAlignment(.center)
 
                 ProgressView()
                     .controlSize(.large)
                     .tint(Color(red: 0.10, green: 0.29, blue: 0.54))
 
-                Text("Loading bundled market history")
+                Text("Loading adjusted-close history")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0.22, green: 0.24, blue: 0.30))
 
-                Text("The first frame should appear immediately now, even while local data is decoding.")
+                Text("Past market data is loading locally so your first result is ready fast.")
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

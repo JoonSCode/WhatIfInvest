@@ -19,9 +19,10 @@ struct ShareCardView: View {
 
             VStack(alignment: .leading, spacing: 28) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Time Machine Invest")
-                        .font(.system(size: 42, weight: .black, design: .rounded))
+                    Text(AppBrand.displayName)
+                        .font(.system(size: 36, weight: .black, design: .rounded))
                         .foregroundStyle(Color(red: 0.16, green: 0.18, blue: 0.24))
+                        .lineLimit(2)
 
                     Text("If you had invested then")
                         .font(.system(size: 74, weight: .heavy, design: .rounded))

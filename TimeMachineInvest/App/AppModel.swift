@@ -70,7 +70,7 @@ final class AppModel {
         let comparisonBlock = comparisons.isEmpty ? "" : "\nComparisons: " + comparisons.joined(separator: ", ")
 
         return """
-        Time Machine Invest
+        \(AppBrand.displayName)
         \(primaryLine)\(comparisonBlock)
         Basis: adjusted close, taxes/fees/inflation excluded.
         """

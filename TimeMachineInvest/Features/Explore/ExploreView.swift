@@ -60,7 +60,7 @@ struct ExploreView: View {
             .padding(.bottom, 28)
         }
         .background(backgroundGradient)
-        .navigationTitle("Time Machine")
+        .navigationTitle(AppBrand.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingComparisonSheet) {
             NavigationStack {
