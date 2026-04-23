@@ -16,7 +16,7 @@ struct ShareCardView: View {
                         .foregroundStyle(AppTheme.ColorToken.brandPrimary)
                         .lineLimit(2)
 
-                    Text("If you had invested then")
+                    Text(L10n.shareHeroTitle)
                         .font(.system(size: 74, weight: .heavy, design: .rounded))
                         .foregroundStyle(AppTheme.ColorToken.textPrimary)
                         .minimumScaleFactor(0.7)
@@ -38,14 +38,14 @@ struct ShareCardView: View {
                 }
 
                 HStack(spacing: 18) {
-                    shareMetric(title: "Invested", value: primaryResult.investedAmount.currencyText)
-                    shareMetric(title: "Return", value: primaryResult.totalReturnRatio.percentText)
-                    shareMetric(title: "Span", value: UIFormatting.spanDescriptor(for: primaryResult))
+                    shareMetric(title: L10n.investedTitle, value: primaryResult.investedAmount.currencyText)
+                    shareMetric(title: L10n.returnTitle, value: primaryResult.totalReturnRatio.percentText)
+                    shareMetric(title: L10n.spanTitle, value: UIFormatting.spanDescriptor(for: primaryResult))
                 }
 
                 if !comparisons.isEmpty {
                     VStack(alignment: .leading, spacing: 14) {
-                        Text("Compared against")
+                        Text(L10n.shareComparedAgainstTitle)
                             .font(.system(size: 24, weight: .bold, design: .rounded))
 
                         ForEach(comparisons.prefix(3)) { result in
@@ -72,9 +72,9 @@ struct ShareCardView: View {
                 Spacer()
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Adjusted close basis. Taxes, fees, FX, and inflation excluded.")
+                    Text(L10n.shareDisclaimer)
                     if let lastUpdatedAt {
-                        Text("Snapshot refreshed \(lastUpdatedAt.formatted(.dateTime.year().month().day())).")
+                        Text(L10n.shareSnapshotRefreshed(lastUpdatedAt.formatted(.dateTime.year().month().day())))
                     }
                 }
                 .font(.system(size: 22, weight: .semibold, design: .rounded))

@@ -6,37 +6,37 @@ struct LibraryView: View {
     var body: some View {
         List {
             Section {
-                Text("Saved scenarios stay on device so you can reopen a past idea and compare it again later.")
+                Text(L10n.libraryPromoCopy)
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     .listRowBackground(Color.clear)
             }
 
             if appModel.savedScenarios.isEmpty {
-                Section("Nothing saved yet") {
-                    Text("Save a scenario from Explore to keep a lightweight history.")
+                Section(L10n.libraryEmptyTitle) {
+                    Text(L10n.libraryEmptyBody)
                         .foregroundStyle(AppTheme.ColorToken.textSecondary)
                         .accessibilityIdentifier("saved-empty-state")
                 }
             } else {
-                Section("Saved scenarios") {
+                Section(L10n.librarySavedSectionTitle) {
                     ForEach(appModel.savedScenarios) { entry in
                         VStack(alignment: .leading, spacing: 8) {
                             Text(UIFormatting.scenarioDescriptor(entry.scenario))
                                 .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            Text("Saved \(entry.savedAt.formatted(.dateTime.year().month().day().hour().minute()))")
+                            Text(L10n.savedAt(entry.savedAt.formatted(.dateTime.year().month().day().hour().minute())))
                                 .font(.system(size: 12, weight: .medium, design: .rounded))
                                 .foregroundStyle(AppTheme.ColorToken.textSecondary)
 
                             HStack {
-                                Button("Open in Explore") {
+                                Button(L10n.openInExplore) {
                                     appModel.loadSavedScenario(entry)
                                 }
                                 .buttonStyle(.borderedProminent)
                                 .tint(AppTheme.ColorToken.brandPrimary)
                                 .accessibilityIdentifier("saved-scenario-open-button")
 
-                                Button("Delete", role: .destructive) {
+                                Button(L10n.delete, role: .destructive) {
                                     appModel.removeSavedScenario(entry)
                                 }
                                 .buttonStyle(.bordered)
@@ -51,6 +51,6 @@ struct LibraryView: View {
         }
         .scrollContentBackground(.hidden)
         .background(AppTheme.canvasGradient)
-        .navigationTitle("Saved")
+        .navigationTitle(L10n.tabSaved)
     }
 }

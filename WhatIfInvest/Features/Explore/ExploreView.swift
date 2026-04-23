@@ -21,12 +21,13 @@ struct ExploreView: View {
                 heroHeader
 
                 ScenarioEditorCard(
-                    title: "Story mode",
-                    subtitle: "Start with one scenario. Add comparisons only after the first answer lands.",
+                    title: L10n.storyModeTitle,
+                    subtitle: L10n.storyModeSubtitle,
                     scenario: $appModel.primaryScenario,
                     assets: appModel.availableAssets,
                     availableDateRange: appModel.availableDateRange(for: appModel.primaryScenario.asset),
-                    validationMessage: appModel.validationMessage(for: appModel.primaryScenario)
+                    validationMessage: appModel.validationMessage(for: appModel.primaryScenario),
+                    accessibilityIdentifier: "story-mode-card"
                 )
 
                 if let primaryResult = appModel.primaryResult {
@@ -44,7 +45,7 @@ struct ExploreView: View {
                         comparisonSection
                     }
                 } else if appModel.isLoading {
-                    ProgressView("Loading historical data...")
+                    ProgressView(L10n.loadingHistoricalData)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.vertical, 40)
                 } else {
@@ -103,7 +104,7 @@ struct ExploreView: View {
 
     private var heroHeader: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Time-travel investing")
+            Text(L10n.exploreHeroEyebrow)
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.ColorToken.brandPrimary)
                 .padding(.horizontal, 12)
@@ -113,11 +114,11 @@ struct ExploreView: View {
                         .fill(AppTheme.ColorToken.surfaceSubtle)
                 )
 
-            Text("If you had invested then")
+            Text(L10n.exploreHeroTitle)
                 .font(.system(size: 34, weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
-            Text("A hindsight simulator for major US ETFs and the Magnificent 7. Built to make the force of time feel visual, not abstract.")
+            Text(L10n.exploreHeroSubtitle)
                 .font(.system(size: 16, weight: .medium, design: .rounded))
                 .foregroundStyle(AppTheme.ColorToken.textSecondary)
 
@@ -166,10 +167,10 @@ struct ExploreView: View {
     private var comparisonSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Compare mode")
+                Text(L10n.compareModeTitle)
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                 Spacer()
-                Button("Clear comparisons", role: .destructive) {
+                Button(L10n.clearComparisons, role: .destructive) {
                     appModel.resetComparisons()
                 }
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -185,7 +186,12 @@ struct ExploreView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(UIFormatting.scenarioDescriptor(result.scenario))
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        Text("Now \(result.currentValue.currencyText) · Return \(result.totalReturnRatio.percentText)")
+                        Text(
+                            L10n.comparisonResultSummary(
+                                currentValue: result.currentValue.currencyText,
+                                returnValue: result.totalReturnRatio.percentText
+                            )
+                        )
                             .font(.system(size: 12, weight: .medium, design: .rounded))
                             .foregroundStyle(AppTheme.ColorToken.textSecondary)
                             .monospacedDigit()
@@ -193,7 +199,7 @@ struct ExploreView: View {
 
                     Spacer()
 
-                    Button("Remove", role: .destructive) {
+                    Button(L10n.remove, role: .destructive) {
                         appModel.removeComparisonScenario(result.scenario.id)
                     }
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
@@ -217,9 +223,9 @@ struct ExploreView: View {
 
     private func fallbackState(message: String?) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(message == nil ? "No result yet" : "Adjust the scenario")
+            Text(message == nil ? L10n.noResultYet : L10n.adjustScenario)
                 .font(.system(size: 22, weight: .bold, design: .rounded))
-            Text(message ?? "Load the bundled data or refresh the cache to start exploring.")
+            Text(message ?? L10n.noResultBody)
                 .font(.system(size: 15, weight: .medium, design: .rounded))
                 .foregroundStyle(AppTheme.ColorToken.textSecondary)
         }
@@ -238,13 +244,13 @@ struct ExploreView: View {
 
     private var visibleYearLabel: String {
         guard appModel.animationYears.indices.contains(visibleYearIndex) else {
-            return "Latest"
+            return L10n.latest
         }
         return "\(appModel.animationYears[visibleYearIndex])"
     }
 
     private var replayButton: some View {
-        Button(isPlaying ? "Stop Replay" : "Run Replay") {
+        Button(isPlaying ? L10n.stopReplay : L10n.runReplay) {
             togglePlayback()
         }
         .buttonStyle(.borderedProminent)
@@ -254,7 +260,7 @@ struct ExploreView: View {
     }
 
     private var comparisonButton: some View {
-        Button("Add Comparison") {
+        Button(L10n.addComparison) {
             comparisonDraft = appModel.nextComparisonDraft()
             showingComparisonSheet = true
         }
@@ -280,7 +286,7 @@ struct ExploreView: View {
             Button {
                 Task { await prepareShareCard() }
             } label: {
-                Label(isPreparingShare ? "Preparing..." : "Share", systemImage: "square.and.arrow.up")
+                Label(isPreparingShare ? L10n.preparing : L10n.share, systemImage: "square.and.arrow.up")
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
@@ -291,18 +297,18 @@ struct ExploreView: View {
                 Button {
                     appModel.savePrimaryScenario()
                 } label: {
-                    Label("Save Scenario", systemImage: "bookmark")
+                    Label(L10n.saveScenario, systemImage: "bookmark")
                 }
                 .disabled(appModel.primaryResult == nil)
 
                 Button {
                     Task { await appModel.refreshHistoricalData() }
                 } label: {
-                    Label(appModel.isRefreshing ? "Refreshing..." : "Refresh Data", systemImage: "arrow.clockwise")
+                    Label(appModel.isRefreshing ? L10n.refreshingData : L10n.refreshData, systemImage: "arrow.clockwise")
                 }
                 .disabled(appModel.isRefreshing)
             } label: {
-                Label("More", systemImage: "ellipsis.circle")
+                Label(L10n.more, systemImage: "ellipsis.circle")
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
@@ -311,7 +317,11 @@ struct ExploreView: View {
     }
 
     private var statusSummaryText: String {
-        "Visible through \(visibleYearLabel) • \(appModel.comparisonScenarios.count + 1) scenarios • \(appModel.savedScenarios.count) saved"
+        L10n.statusSummary(
+            visibleThrough: visibleYearLabel,
+            scenarioCount: appModel.comparisonScenarios.count + 1,
+            savedCount: appModel.savedScenarios.count
+        )
     }
 
     private func alignVisibleYearToLatest() {
@@ -375,6 +385,7 @@ private struct ScenarioEditorCard: View {
     let assets: [AssetID]
     let availableDateRange: ClosedRange<Date>?
     let validationMessage: String?
+    let accessibilityIdentifier: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -386,7 +397,7 @@ private struct ScenarioEditorCard: View {
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
 
-            Picker("Asset", selection: $scenario.asset) {
+            Picker(L10n.assetFieldTitle, selection: $scenario.asset) {
                 ForEach(assets) { asset in
                     Text("\(asset.symbol) · \(asset.displayName)")
                         .tag(asset)
@@ -395,14 +406,14 @@ private struct ScenarioEditorCard: View {
             .pickerStyle(.menu)
 
             if let availableDateRange {
-                DatePicker("Start date", selection: $scenario.startDate, in: availableDateRange, displayedComponents: .date)
+                DatePicker(L10n.startDateFieldTitle, selection: $scenario.startDate, in: availableDateRange, displayedComponents: .date)
                     .datePickerStyle(.compact)
             } else {
-                DatePicker("Start date", selection: $scenario.startDate, displayedComponents: .date)
+                DatePicker(L10n.startDateFieldTitle, selection: $scenario.startDate, displayedComponents: .date)
                     .datePickerStyle(.compact)
             }
 
-            Picker("Mode", selection: $scenario.mode) {
+            Picker(L10n.modeFieldTitle, selection: $scenario.mode) {
                 ForEach(InvestmentMode.allCases) { mode in
                     Text(mode.title).tag(mode)
                 }
@@ -413,7 +424,7 @@ private struct ScenarioEditorCard: View {
                 Text(scenario.mode.amountFieldLabel)
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
-                TextField("Amount", value: amountBinding, format: .number.precision(.fractionLength(0...2)))
+                TextField(L10n.amountPlaceholder, value: amountBinding, format: .number.precision(.fractionLength(0...2)))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
             }
@@ -437,7 +448,7 @@ private struct ScenarioEditorCard: View {
             fill: AppTheme.ColorToken.surfaceBase.opacity(0.92),
             radius: AppTheme.Radius.lg
         )
-        .accessibilityIdentifier(title == "Story mode" ? "story-mode-card" : "comparison-editor-card")
+        .accessibilityIdentifier(accessibilityIdentifier)
     }
 
     private var amountBinding: Binding<Double> {
@@ -455,7 +466,7 @@ private struct ResultSummaryCard: View {
         VStack(alignment: .leading, spacing: 18) {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("If you had started with \(result.scenario.asset.symbol)")
+                    Text(L10n.startedWithAsset(result.scenario.asset.symbol))
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     Text(result.currentValue.currencyText)
@@ -474,9 +485,9 @@ private struct ResultSummaryCard: View {
             }
 
             HStack(spacing: 16) {
-                metricBlock(title: "Invested", value: result.investedAmount.currencyText)
-                metricBlock(title: "Return", value: result.totalReturnRatio.percentText)
-                metricBlock(title: "Span", value: UIFormatting.spanDescriptor(for: result))
+                metricBlock(title: L10n.investedTitle, value: result.investedAmount.currencyText)
+                metricBlock(title: L10n.returnTitle, value: result.totalReturnRatio.percentText)
+                metricBlock(title: L10n.spanTitle, value: UIFormatting.spanDescriptor(for: result))
             }
         }
         .padding(22)
@@ -521,7 +532,7 @@ private struct TimelineChartCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Timeline replay")
+            Text(L10n.timelineReplayTitle)
                 .font(.system(size: 22, weight: .bold, design: .rounded))
                 .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
@@ -543,12 +554,12 @@ private struct TimelineChartCard: View {
             .chartXScale(domain: chartDateDomain)
             .chartYScale(domain: chartValueDomain)
             .chartXAxisLabel(position: .bottom, alignment: .center) {
-                Text("Time")
+                Text(L10n.chartTimeAxis)
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
             .chartYAxisLabel(position: .leading, alignment: .center) {
-                Text("Amount (USD)")
+                Text(L10n.chartAmountAxis)
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
@@ -576,7 +587,7 @@ private struct TimelineChartCard: View {
             if !allYears.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Visible through \(allYears[min(visibleYearIndex, allYears.count - 1)])")
+                        Text(L10n.visibleThroughYear(allYears[min(visibleYearIndex, allYears.count - 1)]))
                             .font(.system(size: 13, weight: .semibold, design: .rounded))
                         Spacer()
                     }
@@ -671,27 +682,28 @@ private struct ComparisonComposerView: View {
     var body: some View {
         ScrollView {
             ScenarioEditorCard(
-                title: "New comparison",
-                subtitle: "Keep it lightweight. Add one more line only after the first line already means something.",
+                title: L10n.newComparisonTitle,
+                subtitle: L10n.newComparisonSubtitle,
                 scenario: $scenario,
                 assets: assets,
                 availableDateRange: availableDateRange,
-                validationMessage: validationMessage
+                validationMessage: validationMessage,
+                accessibilityIdentifier: "comparison-editor-card"
             )
             .padding(20)
         }
         .background(AppTheme.canvasGradient)
-        .navigationTitle("Add comparison")
+        .navigationTitle(L10n.addComparisonTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("Cancel") {
+                Button(L10n.cancel) {
                     dismiss()
                 }
                 .accessibilityIdentifier("comparison-cancel-button")
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Add") {
+                Button(L10n.add) {
                     onAdd()
                 }
                 .fontWeight(.semibold)

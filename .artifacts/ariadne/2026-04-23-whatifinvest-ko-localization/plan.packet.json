@@ -1,0 +1,188 @@
+{
+  "format": "ariadne.plan-packet/v0.1-draft",
+  "packet_type": "plan",
+  "profile": "brownfield",
+  "generated_at": "2026-04-23T00:00:00Z",
+  "source_packets": [
+    "/Users/junsu/Develop/KinnoLabs/docs/ariadne/runs/2026-04-22-us-stock-what-if-ios-app/design.packet.json"
+  ],
+  "spec_path": ".artifacts/ariadne/2026-04-23-whatifinvest-ko-localization/spec.md",
+  "rationale_path": ".artifacts/ariadne/2026-04-23-whatifinvest-ko-localization/rationale.md",
+  "goal_tree_path": ".artifacts/ariadne/2026-04-23-whatifinvest-ko-localization/goal-tree.json",
+  "selected_plan": {
+    "id": "plan_whatifinvest_korean_localization",
+    "title": "Add Korean localization to WhatIfInvest",
+    "summary": "Use system-language-driven localization resources plus a small central string layer so the current WhatIfInvest experience reads naturally in English and Korean."
+  },
+  "retained_alternatives": [
+    {
+      "id": "alt_manual_language_switcher",
+      "title": "Add an in-app language switcher",
+      "summary": "Expose an app preference for English and Korean inside the product UI.",
+      "pros": [
+        "Gives the user explicit control",
+        "Avoids dependence on system language settings"
+      ],
+      "cons": [
+        "Widens scope into settings UX and preference persistence",
+        "Not required by the current request"
+      ],
+      "status": "retained_alt"
+    },
+    {
+      "id": "alt_inline_copy_branching",
+      "title": "Inline locale checks per view",
+      "summary": "Translate strings by branching on locale directly inside each SwiftUI view.",
+      "pros": [
+        "Fast for one or two strings"
+      ],
+      "cons": [
+        "Hard to maintain",
+        "Easy to miss dynamic strings and trust copy"
+      ],
+      "status": "rejected"
+    }
+  ],
+  "leaf_tasks": [
+    {
+      "id": "task_add_localization_resources",
+      "title": "Add English and Korean localization resources",
+      "description": "Create the shared localization tables and launch-screen resources needed for English fallback and Korean UI copy.",
+      "why": "The app needs a durable translation source instead of scattered literals.",
+      "done_criteria": [
+        "English and Korean string resources exist for the app surface",
+        "The project recognizes Korean as a supported localization",
+        "Launch-screen subtitle is covered"
+      ],
+      "file_scope": [
+        "WhatIfInvest/en.lproj/*",
+        "WhatIfInvest/ko.lproj/*",
+        "WhatIfInvest.xcodeproj/project.pbxproj"
+      ],
+      "dependencies": [],
+      "verification": [
+        {
+          "type": "review",
+          "description": "Inspect the resource tables and project settings to confirm both locales are wired correctly."
+        }
+      ],
+      "risk_level": "medium",
+      "consumer_hints": {
+        "preferred_role": "executor",
+        "needs_critic": false,
+        "needs_verifier": true,
+        "can_run_parallel": false,
+        "expected_artifacts": [
+          "localized string tables",
+          "launch screen localization",
+          "project region update"
+        ]
+      }
+    },
+    {
+      "id": "task_route_ui_copy_through_localizer",
+      "title": "Route UI and dynamic copy through a central localizer",
+      "description": "Replace hard-coded English strings across views, formatting helpers, model messages, and error copy with localized accessors and formatters.",
+      "why": "A partial localization pass would leave the Korean experience visibly incomplete.",
+      "done_criteria": [
+        "Visible UI labels and trust copy are localized",
+        "Dynamic summary and validation strings are localized",
+        "English fallback still reads correctly"
+      ],
+      "file_scope": [
+        "WhatIfInvest/App/*",
+        "WhatIfInvest/Domain/*",
+        "WhatIfInvest/Features/**/*",
+        "WhatIfInvest/Services/*",
+        "WhatIfInvest/Support/**/*"
+      ],
+      "dependencies": [
+        "task_add_localization_resources"
+      ],
+      "verification": [
+        {
+          "type": "review",
+          "description": "Review every user-facing string path in the app to confirm it now resolves through localized resources."
+        }
+      ],
+      "risk_level": "high",
+      "consumer_hints": {
+        "preferred_role": "executor",
+        "needs_critic": true,
+        "needs_verifier": true,
+        "can_run_parallel": false,
+        "expected_artifacts": [
+          "shared localizer",
+          "localized view copy",
+          "localized dynamic formatting"
+        ]
+      }
+    },
+    {
+      "id": "task_verify_english_and_korean_surfaces",
+      "title": "Verify the localized app still builds and preserves English fallback",
+      "description": "Build the app and update focused tests where the new localization structure changes behavior or selectors.",
+      "why": "Localization changes touch many text surfaces and can easily break identifiers or project resources.",
+      "done_criteria": [
+        "The app builds successfully",
+        "Existing English-path tests still make sense",
+        "Core localized surfaces are covered by verification"
+      ],
+      "file_scope": [
+        "WhatIfInvestTests/*",
+        "WhatIfInvestUITests/*"
+      ],
+      "dependencies": [
+        "task_route_ui_copy_through_localizer"
+      ],
+      "verification": [
+        {
+          "type": "build",
+          "description": "Build the WhatIfInvest scheme after localization changes."
+        },
+        {
+          "type": "test",
+          "description": "Run focused app tests that exercise the localized flow."
+        }
+      ],
+      "risk_level": "medium",
+      "consumer_hints": {
+        "preferred_role": "executor",
+        "needs_critic": false,
+        "needs_verifier": true,
+        "can_run_parallel": false,
+        "expected_artifacts": [
+          "build evidence",
+          "updated tests if needed"
+        ]
+      }
+    }
+  ],
+  "dependency_edges": [
+    {
+      "from": "task_add_localization_resources",
+      "to": "task_route_ui_copy_through_localizer",
+      "type": "blocks"
+    },
+    {
+      "from": "task_route_ui_copy_through_localizer",
+      "to": "task_verify_english_and_korean_surfaces",
+      "type": "blocks"
+    }
+  ],
+  "risk_summary": [
+    {
+      "id": "risk_incomplete_localization",
+      "description": "Some dynamic or less obvious strings could remain in English if the pass is not exhaustive.",
+      "severity": "high",
+      "mitigation": "Centralize formatted strings and re-scan the codebase for user-facing copy."
+    },
+    {
+      "id": "risk_brittle_ui_tests",
+      "description": "UI tests that rely on visible English copy can break once localization is introduced.",
+      "severity": "medium",
+      "mitigation": "Prefer accessibility identifiers where possible and keep English fallback intact for the default test path."
+    }
+  ],
+  "ready_for_consumer": true
+}

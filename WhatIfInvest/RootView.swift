@@ -12,7 +12,7 @@ struct RootView: View {
                     ExploreView()
                 }
                 .tabItem {
-                    Label("Explore", systemImage: "sparkles.rectangle.stack")
+                    Label(L10n.tabExplore, systemImage: "sparkles.rectangle.stack")
                 }
                 .tag(AppTab.explore)
                 .accessibilityIdentifier("explore-tab")
@@ -21,7 +21,7 @@ struct RootView: View {
                     LibraryView()
                 }
                 .tabItem {
-                    Label("Saved", systemImage: "bookmark")
+                    Label(L10n.tabSaved, systemImage: "bookmark")
                 }
                 .tag(AppTab.library)
                 .accessibilityIdentifier("saved-tab")
@@ -60,11 +60,11 @@ private struct LaunchLoadingView: View {
                     .controlSize(.large)
                     .tint(AppTheme.ColorToken.brandPrimary)
 
-                Text("Loading adjusted-close history")
+                Text(L10n.loadingAdjustedCloseTitle)
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
-                Text("Past market data is loading locally so your first result is ready fast.")
+                Text(L10n.loadingAdjustedCloseBody)
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     .multilineTextAlignment(.center)

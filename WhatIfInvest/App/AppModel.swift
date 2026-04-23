@@ -33,7 +33,7 @@ final class AppModel {
     }
 
     var providerLabel: String {
-        historicalPayload?.provider ?? "Bundled data"
+        L10n.providerLabel(for: historicalPayload?.provider)
     }
 
     var lastUpdatedAt: Date? {
@@ -60,19 +60,25 @@ final class AppModel {
     var shareSummary: String {
         let primaryLine = primaryResult.map { result in
             let growth = (result.totalReturnRatio * 100).formatted(.number.precision(.fractionLength(1)))
-            return "\(result.scenario.asset.symbol): \(result.currentValue.currencyText) now from \(result.scenario.amount.currencyText) \(result.scenario.mode.inlineLabel), return \(growth)%."
-        } ?? "Scenario pending."
+            return L10n.shareSummaryPrimaryLine(
+                asset: result.scenario.asset.symbol,
+                currentValue: result.currentValue.currencyText,
+                amount: result.scenario.amount.currencyText,
+                mode: result.scenario.mode.inlineLabel,
+                growth: growth
+            )
+        } ?? L10n.shareSummaryPending
 
         let comparisons = comparisonResults.map { result in
             "\(result.scenario.asset.symbol) -> \(result.currentValue.currencyText)"
         }
 
-        let comparisonBlock = comparisons.isEmpty ? "" : "\nComparisons: " + comparisons.joined(separator: ", ")
+        let comparisonBlock = comparisons.isEmpty ? "" : "\n\(L10n.shareSummaryComparisonsPrefix): " + comparisons.joined(separator: ", ")
 
         return """
         \(AppBrand.displayName)
         \(primaryLine)\(comparisonBlock)
-        Basis: adjusted close, taxes/fees/inflation excluded.
+        \(L10n.shareSummaryBasis)
         """
     }
 
@@ -161,7 +167,7 @@ final class AppModel {
 
     func validationMessage(for scenario: InvestmentScenario) -> String? {
         guard scenario.amount > 0 else {
-            return "Enter an amount above $0 to generate a meaningful result."
+            return L10n.validationPositiveAmount
         }
 
         guard let range = availableDateRange(for: scenario.asset) else {
@@ -172,7 +178,7 @@ final class AppModel {
         guard range.contains(normalizedDate) else {
             let start = range.lowerBound.formatted(.dateTime.year().month().day())
             let end = range.upperBound.formatted(.dateTime.year().month().day())
-            return "\(scenario.asset.symbol) history currently runs from \(start) through \(end)."
+            return L10n.validationRange(symbol: scenario.asset.symbol, start: start, end: end)
         }
 
         return nil

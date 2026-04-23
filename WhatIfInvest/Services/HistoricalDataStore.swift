@@ -8,11 +8,11 @@ enum HistoricalDataError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingBundledFile:
-            return "Bundled historical data file is missing."
+            return L10n.errorBundledFileMissing
         case .invalidResponse:
-            return "Historical data refresh returned an invalid response."
+            return L10n.errorInvalidResponse
         case .emptySeries(let symbol):
-            return "No adjusted-close series was returned for \(symbol)."
+            return L10n.errorEmptySeries(for: symbol)
         }
     }
 }

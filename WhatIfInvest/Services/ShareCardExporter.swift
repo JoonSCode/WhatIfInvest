@@ -13,7 +13,7 @@ enum ShareCardExportError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .imageRenderFailed:
-            return "The share card could not be rendered right now."
+            return L10n.errorShareRenderFailed
         }
     }
 }

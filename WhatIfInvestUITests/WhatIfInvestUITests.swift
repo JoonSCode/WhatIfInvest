@@ -46,4 +46,20 @@ final class WhatIfInvestUITests: XCTestCase {
         app.buttons["Open in Explore"].firstMatch.tap()
         XCTAssertTrue(app.staticTexts["Timeline replay"].waitForExistence(timeout: 5))
     }
+
+    @MainActor
+    func testKoreanLocalizationShowsCoreLabels() throws {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "UITEST_RESET_DATA",
+            "-AppleLanguages", "(ko)",
+            "-AppleLocale", "ko_KR"
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["그때 투자했다면"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["스토리 모드"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["비교 추가"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["이 결과 읽는 법"].waitForExistence(timeout: 10))
+    }
 }

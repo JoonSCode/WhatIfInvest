@@ -27,28 +27,15 @@ enum AssetID: String, Codable, CaseIterable, Identifiable, Sendable {
     }
 
     var displayName: String {
-        switch self {
-        case .spy: return "SPDR S&P 500 ETF"
-        case .voo: return "Vanguard S&P 500 ETF"
-        case .vti: return "Vanguard Total Stock Market ETF"
-        case .qqq: return "Invesco Nasdaq-100 ETF"
-        case .dia: return "SPDR Dow Jones ETF"
-        case .aapl: return "Apple"
-        case .msft: return "Microsoft"
-        case .nvda: return "NVIDIA"
-        case .amzn: return "Amazon"
-        case .googl: return "Alphabet"
-        case .meta: return "Meta"
-        case .tsla: return "Tesla"
-        }
+        L10n.assetDisplayName(for: self)
     }
 
     var categoryLabel: String {
         switch self {
         case .spy, .voo, .vti, .qqq, .dia:
-            return "Major ETF"
+            return L10n.categoryMajorETF
         default:
-            return "Magnificent 7"
+            return L10n.categoryMagnificent7
         }
     }
 
@@ -79,27 +66,27 @@ enum InvestmentMode: String, Codable, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .lumpSum:
-            return "Lump Sum"
+            return L10n.modeLumpSumTitle
         case .recurringMonthly:
-            return "Monthly"
+            return L10n.modeRecurringMonthlyTitle
         }
     }
 
     var inlineLabel: String {
         switch self {
         case .lumpSum:
-            return "lump sum"
+            return L10n.modeLumpSumInline
         case .recurringMonthly:
-            return "monthly"
+            return L10n.modeRecurringMonthlyInline
         }
     }
 
     var amountFieldLabel: String {
         switch self {
         case .lumpSum:
-            return "Starting amount"
+            return L10n.modeLumpSumAmountField
         case .recurringMonthly:
-            return "Monthly amount"
+            return L10n.modeRecurringMonthlyAmountField
         }
     }
 }
