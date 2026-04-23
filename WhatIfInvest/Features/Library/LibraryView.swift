@@ -6,7 +6,7 @@ struct LibraryView: View {
     var body: some View {
         List {
             Section {
-                Text("Saved scenarios stay free so revisit and sharing behavior can be measured before deeper monetization.")
+                Text("Saved scenarios stay on device so you can reopen a past idea and compare it again later.")
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     .listRowBackground(Color.clear)

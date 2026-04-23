@@ -131,66 +131,36 @@ struct ExploreView: View {
 
     private var controlRow: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 12) {
-                Button(isPlaying ? "Stop Playback" : "Play Years") {
-                    togglePlayback()
+            ViewThatFits(in: .vertical) {
+                HStack(spacing: 12) {
+                    replayButton
+                        .frame(maxWidth: .infinity)
+                    comparisonButton
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.ColorToken.brandPrimary)
-                .accessibilityIdentifier("timeline-playback-button")
 
-                Button("Add Comparison") {
-                    comparisonDraft = appModel.nextComparisonDraft()
-                    showingComparisonSheet = true
+                VStack(alignment: .leading, spacing: 10) {
+                    replayButton
+                        .frame(maxWidth: .infinity)
+                    comparisonButton
                 }
-                .buttonStyle(.bordered)
-                .disabled(appModel.primaryResult == nil)
-                .accessibilityIdentifier("add-comparison-button")
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
 
-            FlowLayout(spacing: 10) {
-                Button {
-                    appModel.savePrimaryScenario()
-                } label: {
-                    Label("Save Scenario", systemImage: "bookmark")
-                }
-                .buttonStyle(.bordered)
-                .disabled(appModel.primaryResult == nil)
-                .accessibilityIdentifier("save-scenario-button")
+            ViewThatFits(in: .vertical) {
+                HStack(alignment: .center, spacing: 12) {
+                    statusSummary
 
-                Button {
-                    Task { await prepareShareCard() }
-                } label: {
-                    Label(isPreparingShare ? "Preparing Share Card..." : "Share Card", systemImage: "square.and.arrow.up")
-                }
-                .buttonStyle(.bordered)
-                .disabled(appModel.primaryResult == nil || isPreparingShare)
-                .accessibilityIdentifier("share-card-button")
+                    Spacer(minLength: 0)
 
-                Button {
-                    Task { await appModel.refreshHistoricalData() }
-                } label: {
-                    Label(appModel.isRefreshing ? "Refreshing..." : "Refresh Data", systemImage: "arrow.clockwise")
+                    utilityActions
                 }
-                .buttonStyle(.bordered)
-                .disabled(appModel.isRefreshing)
-                .accessibilityIdentifier("refresh-data-button")
+
+                VStack(alignment: .leading, spacing: 10) {
+                    statusSummary
+                    utilityActions
+                }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            HStack(spacing: 16) {
-                statPill(title: "Visible year", value: visibleYearLabel, accessibilityIdentifier: "visible-year-pill")
-                statPill(title: "Saved", value: "\(appModel.savedScenarios.count)", accessibilityIdentifier: "saved-count-pill")
-                statPill(title: "Compared", value: "\(appModel.comparisonScenarios.count + 1)", accessibilityIdentifier: "compared-count-pill")
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(18)
-        .appCardSurface(
-            fill: AppTheme.ColorToken.surfaceBase.opacity(0.9),
-            radius: 24
-        )
+        .padding(.horizontal, 4)
     }
 
     private var comparisonSection: some View {
@@ -199,7 +169,7 @@ struct ExploreView: View {
                 Text("Compare mode")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                 Spacer()
-                Button("Clear") {
+                Button("Clear comparisons", role: .destructive) {
                     appModel.resetComparisons()
                 }
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -223,12 +193,12 @@ struct ExploreView: View {
 
                     Spacer()
 
-                    Button(role: .destructive) {
+                    Button("Remove", role: .destructive) {
                         appModel.removeComparisonScenario(result.scenario.id)
-                    } label: {
-                        Image(systemName: "trash")
                     }
-                    .buttonStyle(.borderless)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
                 }
                 .padding(14)
                 .appCardSurface(
@@ -273,25 +243,75 @@ struct ExploreView: View {
         return "\(appModel.animationYears[visibleYearIndex])"
     }
 
-    private func statPill(title: String, value: String, accessibilityIdentifier: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title.uppercased())
-                .font(.system(size: 10, weight: .bold, design: .rounded))
-                .foregroundStyle(AppTheme.ColorToken.textSecondary)
-                .accessibilityIdentifier("\(accessibilityIdentifier)-title")
-            Text(value)
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .monospacedDigit()
-                .accessibilityIdentifier("\(accessibilityIdentifier)-value")
+    private var replayButton: some View {
+        Button(isPlaying ? "Stop Replay" : "Run Replay") {
+            togglePlayback()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
-        .background(
-            Capsule(style: .continuous)
-                .fill(AppTheme.ColorToken.surfaceSubtle.opacity(0.9))
-        )
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier(accessibilityIdentifier)
+        .buttonStyle(.borderedProminent)
+        .tint(AppTheme.ColorToken.brandPrimary)
+        .controlSize(.large)
+        .accessibilityIdentifier("timeline-playback-button")
+    }
+
+    private var comparisonButton: some View {
+        Button("Add Comparison") {
+            comparisonDraft = appModel.nextComparisonDraft()
+            showingComparisonSheet = true
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+        .disabled(appModel.primaryResult == nil)
+        .accessibilityIdentifier("add-comparison-button")
+    }
+
+    private var statusSummary: some View {
+        Label(statusSummaryText, systemImage: "clock.arrow.circlepath")
+            .font(.system(size: 13, weight: .semibold, design: .rounded))
+            .foregroundStyle(AppTheme.ColorToken.textSecondary)
+            .monospacedDigit()
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("status-summary")
+    }
+
+    private var utilityActions: some View {
+        HStack(spacing: 10) {
+            Button {
+                Task { await prepareShareCard() }
+            } label: {
+                Label(isPreparingShare ? "Preparing..." : "Share", systemImage: "square.and.arrow.up")
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .disabled(appModel.primaryResult == nil || isPreparingShare)
+            .accessibilityIdentifier("share-card-button")
+
+            Menu {
+                Button {
+                    appModel.savePrimaryScenario()
+                } label: {
+                    Label("Save Scenario", systemImage: "bookmark")
+                }
+                .disabled(appModel.primaryResult == nil)
+
+                Button {
+                    Task { await appModel.refreshHistoricalData() }
+                } label: {
+                    Label(appModel.isRefreshing ? "Refreshing..." : "Refresh Data", systemImage: "arrow.clockwise")
+                }
+                .disabled(appModel.isRefreshing)
+            } label: {
+                Label("More", systemImage: "ellipsis.circle")
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .accessibilityIdentifier("more-actions-button")
+        }
+    }
+
+    private var statusSummaryText: String {
+        "Visible through \(visibleYearLabel) • \(appModel.comparisonScenarios.count + 1) scenarios • \(appModel.savedScenarios.count) saved"
     }
 
     private func alignVisibleYearToLatest() {
@@ -572,15 +592,26 @@ private struct TimelineChartCard: View {
                 }
             }
 
-            FlowLayout(spacing: 10) {
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 150), spacing: 10, alignment: .leading)],
+                alignment: .leading,
+                spacing: 10
+            ) {
                 ForEach(results) { result in
                     HStack(spacing: 8) {
                         Circle()
                             .fill(result.scenario.asset.tint)
                             .frame(width: 8, height: 8)
-                        Text(result.scenario.asset.symbol)
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(result.scenario.asset.symbol)
+                                .font(.system(size: 12, weight: .bold, design: .rounded))
+                            Text(result.scenario.asset.displayName)
+                                .font(.system(size: 11, weight: .medium, design: .rounded))
+                                .foregroundStyle(AppTheme.ColorToken.textSecondary)
+                                .lineLimit(1)
+                        }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 8)
                     .background(Capsule().fill(AppTheme.ColorToken.surfaceSubtle.opacity(0.9)))
@@ -666,22 +697,6 @@ private struct ComparisonComposerView: View {
                 .fontWeight(.semibold)
                 .disabled(validationMessage != nil)
                 .accessibilityIdentifier("comparison-add-button")
-            }
-        }
-    }
-}
-
-private struct FlowLayout<Content: View>: View {
-    let spacing: CGFloat
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        ViewThatFits(in: .vertical) {
-            HStack(spacing: spacing) {
-                content
-            }
-            VStack(alignment: .leading, spacing: spacing) {
-                content
             }
         }
     }

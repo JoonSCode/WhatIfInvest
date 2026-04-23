@@ -42,6 +42,7 @@ struct TrustNotesView: View {
         VStack(alignment: .leading, spacing: 10) {
             Label("How to read this", systemImage: "checkmark.shield")
                 .font(.system(size: 16, weight: .bold, design: .rounded))
+                .foregroundStyle(AppTheme.ColorToken.textPrimary)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Returns use adjusted close, which reflects splits and dividends.")
@@ -52,12 +53,12 @@ struct TrustNotesView: View {
                     Text("Latest data snapshot unavailable.")
                 }
             }
-            .font(.system(size: 13, weight: .medium, design: .rounded))
-            .foregroundStyle(AppTheme.ColorToken.textSecondary)
+            .font(.system(size: 14, weight: .medium, design: .rounded))
+            .foregroundStyle(AppTheme.ColorToken.textPrimary.opacity(0.82))
         }
         .padding(18)
         .appCardSurface(
-            fill: AppTheme.ColorToken.surfaceSubtle.opacity(0.82),
+            fill: AppTheme.ColorToken.surfaceBase.opacity(0.88),
             radius: 24
         )
     }

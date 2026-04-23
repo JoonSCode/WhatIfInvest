@@ -22,13 +22,17 @@ final class WhatIfInvestUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["Compare mode"].waitForExistence(timeout: 5))
 
+        let moreActionsButton = app.buttons["More"].firstMatch
+        XCTAssertTrue(moreActionsButton.waitForExistence(timeout: 5))
+        moreActionsButton.tap()
+
         let saveButton = app.buttons["Save Scenario"].firstMatch
         XCTAssertTrue(saveButton.waitForExistence(timeout: 5))
         saveButton.tap()
 
-        let savedCount = app.staticTexts["saved-count-pill-value"].firstMatch
-        XCTAssertTrue(savedCount.waitForExistence(timeout: 5))
-        XCTAssertEqual(savedCount.label, "1")
+        let statusSummary = app.staticTexts["status-summary"].firstMatch
+        XCTAssertTrue(statusSummary.waitForExistence(timeout: 5))
+        XCTAssertTrue(statusSummary.label.contains("1 saved"))
     }
 
     @MainActor
