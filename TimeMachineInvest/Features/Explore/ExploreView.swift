@@ -490,17 +490,35 @@ private struct TimelineChartCard: View {
                     let points = visiblePoints(for: result)
                     ForEach(points) { point in
                         LineMark(
-                            x: .value("Year", point.year),
+                            x: .value("Date", point.date),
                             y: .value("Portfolio", point.portfolioValue)
                         )
                         .foregroundStyle(result.scenario.asset.tint)
                         .lineStyle(.init(lineWidth: result.scenario == results.first?.scenario ? 3.5 : 2.4))
+                        .interpolationMethod(.catmullRom)
                     }
                 }
             }
             .frame(height: 240)
+            .chartXScale(domain: chartDateDomain)
+            .chartYScale(domain: chartValueDomain)
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .year)) { value in
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel(format: .dateTime.year())
+                }
+            }
             .chartYAxis {
-                AxisMarks(position: .leading)
+                AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { value in
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel {
+                        if let amount = value.as(Double.self) {
+                            Text(amount.formatted(.currency(code: "USD").precision(.fractionLength(0))))
+                        }
+                    }
+                }
             }
             .chartLegend(.hidden)
 
@@ -549,6 +567,34 @@ private struct TimelineChartCard: View {
         guard !allYears.isEmpty else { return result.timeline }
         let upperYear = allYears[min(visibleYearIndex, allYears.count - 1)]
         return result.timeline.filter { $0.year <= upperYear }
+    }
+
+    private var chartDateDomain: ClosedRange<Date> {
+        let allDates = results.flatMap { $0.timeline.map(\.date) }.sorted()
+        guard let firstDate = allDates.first, let lastDate = allDates.last else {
+            let today = Date.now
+            return today...today
+        }
+        return firstDate...lastDate
+    }
+
+    private var chartValueDomain: ClosedRange<Double> {
+        let allPortfolioValues = results.flatMap { $0.timeline.map(\.portfolioValue) }
+        guard
+            let minimumValue = allPortfolioValues.min(),
+            let maximumValue = allPortfolioValues.max()
+        else {
+            return 0...1
+        }
+
+        let lowerBound = max(0, minimumValue * 0.9)
+        let upperBound = maximumValue * 1.08
+
+        if lowerBound == upperBound {
+            return lowerBound...(upperBound + 1)
+        }
+
+        return lowerBound...upperBound
     }
 }
 
