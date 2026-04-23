@@ -27,4 +27,9 @@ This repository contains the standalone iOS app for the US stock what-if simulat
 - Keep feature code split into small files under `WhatIfInvest/`.
 - For material UI changes, review with multiple expert lenses: brand/product, SwiftUI implementation, fintech accessibility, and growth/shareability.
 - Keep Apple default controls and interaction surfaces where possible. Do not custom-skin standard `Picker`, `DatePicker`, `TextField`, `List`, `TabView`, or segmented controls unless explicitly requested.
+- Treat English and Korean as required shipping languages for user-facing feature work.
+- When adding or changing user-facing copy, update `WhatIfInvest/Support/L10n.swift` and the matching entries in `WhatIfInvest/en.lproj/Localizable.strings` and `WhatIfInvest/ko.lproj/Localizable.strings`.
+- If a feature touches launch, share, export, or other system-visible copy, localize those resources too, including strings files and any UI tests that assert visible text.
+- Korean copy should be meaning-first and product-appropriate, not a literal English-to-Korean translation.
+- Do not consider a user-facing feature complete until both English and Korean flows have been updated together.
 - If product rules change, update this file and `SPECIFICATION.md`.
