@@ -6,6 +6,23 @@
 	objectVersion = 70;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		A10000000000000000000011 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000007 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000008;
+			remoteInfo = TimeMachineInvest;
+		};
+		A1000000000000000000001E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000007 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A10000000000000000000008;
+			remoteInfo = TimeMachineInvest;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		A10000000000000000000001 /* TimeMachineInvest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeMachineInvest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000012 /* TimeMachineInvestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimeMachineInvestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -23,38 +40,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A10000000000000000000003 /* TimeMachineInvest */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				A10000000000000000000002 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TimeMachineInvest;
-			sourceTree = "<group>";
-		};
+		A10000000000000000000003 /* TimeMachineInvest */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (A10000000000000000000002 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvest; sourceTree = "<group>"; };
 		A10000000000000000000013 /* TimeMachineInvestTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvestTests; sourceTree = "<group>"; };
 		A1000000000000000000001D /* TimeMachineInvestUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeMachineInvestUITests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
-
-/* Begin PBXContainerItemProxy section */
-		A10000000000000000000011 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A10000000000000000000007 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A10000000000000000000008;
-			remoteInfo = TimeMachineInvest;
-		};
-		A1000000000000000000001E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A10000000000000000000007 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A10000000000000000000008;
-			remoteInfo = TimeMachineInvest;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A10000000000000000000004 /* Frameworks */ = {
@@ -536,20 +525,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1000000000000000000000C /* Build configuration list for PBXProject "TimeMachineInvest" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A1000000000000000000000D /* Debug */,
-				A1000000000000000000000E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		A10000000000000000000009 /* Build configuration list for PBXNativeTarget "TimeMachineInvest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000000000000000000000F /* Debug */,
 				A10000000000000000000010 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000000000000000000000C /* Build configuration list for PBXProject "TimeMachineInvest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000000D /* Debug */,
+				A1000000000000000000000E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

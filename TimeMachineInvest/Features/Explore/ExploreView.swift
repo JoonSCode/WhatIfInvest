@@ -82,7 +82,9 @@ struct ExploreView: View {
             ActivityShareSheet(items: [export.caption, export.fileURL])
         }
         .task {
-            await appModel.loadIfNeeded()
+            alignVisibleYearToLatest()
+        }
+        .onChange(of: appModel.animationYears) { _, _ in
             alignVisibleYearToLatest()
         }
         .onChange(of: appModel.primaryScenario) { _, _ in

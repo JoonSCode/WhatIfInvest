@@ -49,15 +49,20 @@ struct HistoricalDataStore {
 
     @MainActor
     func loadHistoricalData() async throws -> BundledHistoricalData {
-        do {
-            if let cached = try loadCachedPayload() {
-                return cached
-            }
-        } catch {
-            try? clearCache()
-        }
+        let cacheURL = try cacheURL()
+        let bundledURL = try resolveBundledPayloadURL()
 
-        return try loadBundledPayload()
+        return try await Task.detached(priority: .userInitiated) {
+            do {
+                if let cached = try Self.loadCachedPayload(at: cacheURL) {
+                    return cached
+                }
+            } catch {
+                try? Self.clearCache(at: cacheURL)
+            }
+
+            return try Self.loadPayload(from: bundledURL)
+        }.value
     }
 
     @MainActor
@@ -84,14 +89,13 @@ struct HistoricalDataStore {
             interval: "1mo",
             histories: histories
         )
-        try persist(payload)
+        try await Self.persist(payload, to: cacheURL())
         return payload
     }
 
-    private func loadBundledPayload() throws -> BundledHistoricalData {
+    private func resolveBundledPayloadURL() throws -> URL {
         if let bundledPayloadURL {
-            let data = try Data(contentsOf: bundledPayloadURL)
-            return try decodePayload(from: data)
+            return bundledPayloadURL
         }
 
         let candidates = [
@@ -103,38 +107,43 @@ struct HistoricalDataStore {
             throw HistoricalDataError.missingBundledFile
         }
 
+        return url
+    }
+
+    private static func loadPayload(from url: URL) throws -> BundledHistoricalData {
         let data = try Data(contentsOf: url)
         return try decodePayload(from: data)
     }
 
-    private func loadCachedPayload() throws -> BundledHistoricalData? {
-        let url = try cacheURL()
+    private static func loadCachedPayload(at url: URL) throws -> BundledHistoricalData? {
+        let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: url.path) else { return nil }
-        let data = try Data(contentsOf: url)
-        return try decodePayload(from: data)
+        return try loadPayload(from: url)
     }
 
-    private func decodePayload(from data: Data) throws -> BundledHistoricalData {
+    private static func decodePayload(from data: Data) throws -> BundledHistoricalData {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(BundledHistoricalData.self, from: data)
     }
 
-    private func persist(_ payload: BundledHistoricalData) throws {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        let data = try encoder.encode(payload)
-        let url = try cacheURL()
-        try fileManager.createDirectory(
-            at: url.deletingLastPathComponent(),
-            withIntermediateDirectories: true
-        )
-        try data.write(to: url, options: [.atomic])
+    private static func persist(_ payload: BundledHistoricalData, to url: URL) async throws {
+        try await Task.detached(priority: .utility) {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            let data = try encoder.encode(payload)
+            let fileManager = FileManager.default
+            try fileManager.createDirectory(
+                at: url.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try data.write(to: url, options: [.atomic])
+        }.value
     }
 
-    private func clearCache() throws {
-        let url = try cacheURL()
+    private static func clearCache(at url: URL) throws {
+        let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: url.path) else { return }
         try fileManager.removeItem(at: url)
     }

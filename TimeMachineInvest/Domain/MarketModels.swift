@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-enum AssetID: String, Codable, CaseIterable, Identifiable {
+enum AssetID: String, Codable, CaseIterable, Identifiable, Sendable {
     case spy
     case voo
     case vti
@@ -70,7 +70,7 @@ enum AssetID: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-enum InvestmentMode: String, Codable, CaseIterable, Identifiable {
+enum InvestmentMode: String, Codable, CaseIterable, Identifiable, Sendable {
     case lumpSum
     case recurringMonthly
 
@@ -104,7 +104,7 @@ enum InvestmentMode: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-struct InvestmentScenario: Codable, Hashable, Identifiable {
+struct InvestmentScenario: Codable, Hashable, Identifiable, Sendable {
     var id: UUID = UUID()
     var asset: AssetID
     var startDate: Date
@@ -151,12 +151,12 @@ struct InvestmentScenario: Codable, Hashable, Identifiable {
     }
 }
 
-struct MarketPoint: Codable, Hashable {
+struct MarketPoint: Codable, Hashable, Sendable {
     var date: Date
     var adjustedClose: Double
 }
 
-struct AssetHistory: Codable, Hashable {
+struct AssetHistory: Codable, Hashable, Sendable {
     var asset: AssetID
     var symbol: String
     var displayName: String
@@ -164,14 +164,14 @@ struct AssetHistory: Codable, Hashable {
     var monthlyPoints: [MarketPoint]
 }
 
-struct BundledHistoricalData: Codable {
+struct BundledHistoricalData: Codable, Sendable {
     var generatedAt: Date
     var provider: String
     var interval: String
     var histories: [AssetHistory]
 }
 
-struct TimelinePoint: Hashable, Identifiable {
+struct TimelinePoint: Hashable, Identifiable, Sendable {
     let date: Date
     let year: Int
     let investedAmount: Double
@@ -182,7 +182,7 @@ struct TimelinePoint: Hashable, Identifiable {
     }
 }
 
-struct ScenarioResult: Identifiable {
+struct ScenarioResult: Identifiable, Sendable {
     let scenario: InvestmentScenario
     let investedAmount: Double
     let currentValue: Double
@@ -199,7 +199,7 @@ struct ScenarioResult: Identifiable {
     }
 }
 
-struct SavedScenario: Codable, Hashable, Identifiable {
+struct SavedScenario: Codable, Hashable, Identifiable, Sendable {
     var id: UUID = UUID()
     var scenario: InvestmentScenario
     var savedAt: Date

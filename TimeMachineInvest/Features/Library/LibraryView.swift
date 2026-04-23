@@ -61,8 +61,5 @@ struct LibraryView: View {
             )
         )
         .navigationTitle("Saved")
-        .task {
-            await appModel.loadIfNeeded()
-        }
     }
 }
