@@ -23,9 +23,20 @@ struct ShareCardView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 14) {
-                    Text(primaryResult.scenario.asset.symbol)
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
-                        .foregroundStyle(primaryResult.scenario.asset.tint)
+                    HStack(spacing: 16) {
+                        AssetBadgeView(asset: primaryResult.scenario.asset, size: .hero)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(primaryResult.scenario.asset.symbol)
+                                .font(.system(size: 26, weight: .bold, design: .rounded))
+                                .foregroundStyle(primaryResult.scenario.asset.tint)
+
+                            Text(primaryResult.scenario.asset.displayName)
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                .foregroundStyle(AppTheme.ColorToken.textSecondary)
+                                .lineLimit(1)
+                        }
+                    }
 
                     Text(primaryResult.currentValue.currencyText)
                         .font(.system(size: 92, weight: .black, design: .rounded))
@@ -50,9 +61,7 @@ struct ShareCardView: View {
 
                         ForEach(comparisons.prefix(3)) { result in
                             HStack(spacing: 14) {
-                                Circle()
-                                    .fill(result.scenario.asset.tint)
-                                    .frame(width: 18, height: 18)
+                                AssetBadgeView(asset: result.scenario.asset, size: .standard)
 
                                 Text("\(result.scenario.asset.symbol)  \(result.currentValue.currencyText)  \(result.totalReturnRatio.percentText)")
                                     .font(.system(size: 24, weight: .semibold, design: .rounded))

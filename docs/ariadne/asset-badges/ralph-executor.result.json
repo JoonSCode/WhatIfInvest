@@ -1,0 +1,28 @@
+{
+  "format": "ariadne.ralph-executor-result/v0.3-draft",
+  "executor_type": "ralph",
+  "backend": "codex-native-ralph-skill",
+  "attempt_id": "ralph-attempt-001",
+  "attempt_number": 1,
+  "trigger": "run_now",
+  "started_at": "2026-04-23T12:00:47Z",
+  "finished_at": "2026-04-23T12:07:45Z",
+  "status": "completed",
+  "bundle": {
+    "plan_packet_path": "WhatIfInvest/docs/ariadne/asset-badges/plan.packet.json",
+    "goal_tree_path": "WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json",
+    "spec_path": "WhatIfInvest/docs/ariadne/asset-badges/spec.md",
+    "rationale_path": "WhatIfInvest/docs/ariadne/asset-badges/rationale.md"
+  },
+  "bundle_fingerprint": "sha256:578666074ad2e9b948245f72bfb48e086888173c851bf6141708364ab15bbf54",
+  "execution_feedback_path": "WhatIfInvest/docs/ariadne/asset-badges/codex-consumer-feedback.json",
+  "recommended_reentry_target": "none",
+  "handoff_artifact_disposition": "active",
+  "notes": [
+    "Executed all four scoped executable leaves in the current Codex session.",
+    "The app builds successfully for generic iOS Simulator.",
+    "The full WhatIfInvest test suite succeeded on iPhone 17 Pro simulator.",
+    "A simulator screenshot was captured at WhatIfInvest/.artifacts/asset-badges-explore-picker.png.",
+    "No official logo PNGs or new bundled image assets were introduced."
+  ]
+}

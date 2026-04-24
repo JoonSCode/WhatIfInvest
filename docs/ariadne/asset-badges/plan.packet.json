@@ -1,0 +1,256 @@
+{
+  "format": "ariadne.plan-packet/v0.1-draft",
+  "packet_type": "plan",
+  "profile": "brownfield",
+  "generated_at": "2026-04-23T11:07:44Z",
+  "source_packets": [
+    "docs/ariadne/asset-badges/intent.packet.json",
+    "docs/ariadne/asset-badges/design.packet.json"
+  ],
+  "spec_path": "spec.md",
+  "rationale_path": "rationale.md",
+  "goal_tree_path": "goal-tree.json",
+  "selected_plan": {
+    "id": "plan_swiftui_asset_badges",
+    "title": "Unify asset visuals with a shared SwiftUI ticker badge",
+    "summary": "Create one reusable circular AssetBadgeView, integrate it into Explore and share surfaces, then verify build, visual legibility, accessibility, and absence of official logo assets."
+  },
+  "retained_alternatives": [
+    {
+      "id": "approach_pattern_badges",
+      "title": "Circular badges with abstract patterns",
+      "summary": "Add sector or asset-class patterns behind ticker text if color plus ticker proves too plain.",
+      "pros": [
+        "More distinctive visual identity",
+        "Still avoids official logo risk"
+      ],
+      "cons": [
+        "More visual complexity",
+        "More QA burden in compact surfaces"
+      ],
+      "status": "retained_alt"
+    },
+    {
+      "id": "approach_rounded_square_hero_badges",
+      "title": "Rounded-square hero badges",
+      "summary": "Use larger rounded-square badges in share or hero surfaces if circle readability is insufficient later.",
+      "pros": [
+        "More room for long ticker text",
+        "Can increase share-card visual impact"
+      ],
+      "cons": [
+        "Breaks the approved all-circle direction",
+        "Adds shape inconsistency"
+      ],
+      "status": "retained_alt"
+    }
+  ],
+  "leaf_tasks": [
+    {
+      "id": "task_asset_badge_component",
+      "title": "Create the shared AssetBadgeView component",
+      "description": "Add a SwiftUI component that renders a circular badge for any AssetID using its tint and symbol, with compact, standard, and hero sizing.",
+      "why": "All screens need one consistent badge implementation instead of ad hoc circles, dots, and first-letter fallbacks.",
+      "done_criteria": [
+        "AssetBadgeView exists under the shared feature layer",
+        "The component supports compact, standard, and hero sizes",
+        "The badge uses asset.tint and asset.symbol",
+        "Long symbols scale without overflowing the circular badge",
+        "The badge exposes an accessibility label containing symbol and display name",
+        "No PNG assets or official logos are introduced"
+      ],
+      "file_scope": [
+        "WhatIfInvest/WhatIfInvest/Features/Shared/AssetBadgeView.swift"
+      ],
+      "dependencies": [],
+      "verification": [
+        {
+          "type": "build",
+          "description": "Build the app target after adding the component."
+        },
+        {
+          "type": "review",
+          "description": "Confirm the component has no official logo or image asset dependency."
+        }
+      ],
+      "risk_level": "medium",
+      "consumer_hints": {
+        "preferred_role": "implementer",
+        "needs_critic": true,
+        "needs_verifier": true,
+        "can_run_parallel": false,
+        "expected_artifacts": [
+          "shared SwiftUI badge component"
+        ]
+      }
+    },
+    {
+      "id": "task_explore_badge_integration",
+      "title": "Integrate AssetBadgeView into ExploreView",
+      "description": "Replace ExploreView asset dots and first-letter badge with the shared badge, and enrich the menu Picker asset rows where SwiftUI supports it.",
+      "why": "The main simulation surface is where users most often see selected and compared assets.",
+      "done_criteria": [
+        "ResultSummaryCard no longer uses symbol.prefix(1) as a badge",
+        "Comparison rows use compact AssetBadgeView instead of a small tint dot",
+        "Timeline legend uses compact AssetBadgeView instead of a small tint dot",
+        "ScenarioEditorCard keeps the menu Picker and includes badge treatment where practical",
+        "Existing scenario selection behavior is unchanged"
+      ],
+      "file_scope": [
+        "WhatIfInvest/WhatIfInvest/Features/Explore/ExploreView.swift"
+      ],
+      "dependencies": [
+        "task_asset_badge_component"
+      ],
+      "verification": [
+        {
+          "type": "build",
+          "description": "Build the WhatIfInvest app target for iOS simulator."
+        },
+        {
+          "type": "manual",
+          "description": "Inspect the Explore screen with a primary scenario and at least one comparison."
+        }
+      ],
+      "risk_level": "medium",
+      "consumer_hints": {
+        "preferred_role": "implementer",
+        "needs_critic": true,
+        "needs_verifier": true,
+        "can_run_parallel": true,
+        "expected_artifacts": [
+          "ExploreView badge integration"
+        ]
+      }
+    },
+    {
+      "id": "task_share_card_badge_integration",
+      "title": "Integrate AssetBadgeView into ShareCardView",
+      "description": "Use the shared badge in the share card primary asset area and comparison rows while preserving the poster-like numeric hierarchy.",
+      "why": "Share surfaces should use the same asset identity language as the app without becoming cluttered or logo-dependent.",
+      "done_criteria": [
+        "Primary share-card asset area includes a hero-size AssetBadgeView",
+        "Comparison rows use compact or standard AssetBadgeView instead of tint-only dots",
+        "Current share-card title, metrics, disclaimer, and data-refresh copy remain intact",
+        "Badge sizing does not clip in exported share-card rendering"
+      ],
+      "file_scope": [
+        "WhatIfInvest/WhatIfInvest/Features/Shared/ShareCardView.swift"
+      ],
+      "dependencies": [
+        "task_asset_badge_component"
+      ],
+      "verification": [
+        {
+          "type": "build",
+          "description": "Build the WhatIfInvest app target for iOS simulator."
+        },
+        {
+          "type": "manual",
+          "description": "Render or preview the share card and inspect badge placement and clipping."
+        }
+      ],
+      "risk_level": "medium",
+      "consumer_hints": {
+        "preferred_role": "implementer",
+        "needs_critic": true,
+        "needs_verifier": true,
+        "can_run_parallel": true,
+        "expected_artifacts": [
+          "ShareCardView badge integration"
+        ]
+      }
+    },
+    {
+      "id": "task_visual_accessibility_verification",
+      "title": "Verify build, visual fit, accessibility, and asset hygiene",
+      "description": "Run the final checks needed to confirm the badge system is safe to ship and does not introduce official-logo assets.",
+      "why": "This is a UI consistency change, so code review alone is not enough; compact ticker legibility and share rendering need visual validation.",
+      "done_criteria": [
+        "The app builds successfully for iOS simulator",
+        "GOOGL, AMZN, and NVDA badges remain legible enough in compact contexts",
+        "Accessibility labels identify assets without relying only on color",
+        "Repository search shows no newly added official logo PNGs",
+        "Share card rendering is visually acceptable"
+      ],
+      "file_scope": [
+        "WhatIfInvest/WhatIfInvest/Features/Shared/AssetBadgeView.swift",
+        "WhatIfInvest/WhatIfInvest/Features/Explore/ExploreView.swift",
+        "WhatIfInvest/WhatIfInvest/Features/Shared/ShareCardView.swift",
+        "WhatIfInvest/.artifacts/ if screenshots are captured"
+      ],
+      "dependencies": [
+        "task_explore_badge_integration",
+        "task_share_card_badge_integration"
+      ],
+      "verification": [
+        {
+          "type": "command",
+          "description": "Run xcodebuild for the WhatIfInvest simulator target."
+        },
+        {
+          "type": "manual",
+          "description": "Inspect Explore and share-card surfaces on simulator or previews."
+        },
+        {
+          "type": "search",
+          "description": "Search for newly added PNG logo assets or official brand-logo references."
+        }
+      ],
+      "risk_level": "low",
+      "consumer_hints": {
+        "preferred_role": "verifier",
+        "needs_critic": false,
+        "needs_verifier": true,
+        "can_run_parallel": false,
+        "expected_artifacts": [
+          "build result",
+          "visual verification notes"
+        ]
+      }
+    }
+  ],
+  "dependency_edges": [
+    {
+      "from": "task_explore_badge_integration",
+      "to": "task_asset_badge_component",
+      "type": "depends_on"
+    },
+    {
+      "from": "task_share_card_badge_integration",
+      "to": "task_asset_badge_component",
+      "type": "depends_on"
+    },
+    {
+      "from": "task_visual_accessibility_verification",
+      "to": "task_explore_badge_integration",
+      "type": "depends_on"
+    },
+    {
+      "from": "task_visual_accessibility_verification",
+      "to": "task_share_card_badge_integration",
+      "type": "depends_on"
+    }
+  ],
+  "risk_summary": [
+    {
+      "id": "risk_long_ticker_legibility",
+      "description": "Four- and five-letter symbols may be hard to read inside compact circular badges.",
+      "severity": "medium",
+      "mitigation": "Use size-specific fonts, minimumScaleFactor, and visual checks on GOOGL, AMZN, and NVDA."
+    },
+    {
+      "id": "risk_picker_custom_content",
+      "description": "SwiftUI menu Picker may not render complex custom row content consistently.",
+      "severity": "medium",
+      "mitigation": "Keep the menu Picker and only enrich rows in the simplest stable way; do not replace the control."
+    },
+    {
+      "id": "risk_share_rendering",
+      "description": "Share-card export can reveal clipping or scaling issues not obvious in regular app layout.",
+      "severity": "medium",
+      "mitigation": "Render or preview the share card after integration."
+    }
+  ],
+  "ready_for_consumer": true
+}

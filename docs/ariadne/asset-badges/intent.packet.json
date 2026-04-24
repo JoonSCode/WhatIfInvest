@@ -1,0 +1,81 @@
+{
+  "format": "ariadne.intent-packet/v0.1-draft",
+  "packet_type": "intent",
+  "profile": "brownfield",
+  "generated_at": "2026-04-23T11:07:44Z",
+  "source_packets": [],
+  "goal": "Unify WhatIfInvest asset visuals with app-owned SwiftUI badges instead of first-letter placeholders or official brand logos.",
+  "why_now": "The current result UI uses a first-letter circle for the selected asset, which feels generic and ticker-centric. A consistent asset badge system can make ETF and stock scenarios more recognizable while avoiding trademark and external asset-management risk.",
+  "in_scope": [
+    "Create a reusable SwiftUI asset badge component",
+    "Use circular badges with ticker text and the existing per-asset tint",
+    "Apply badges across the scenario picker, result summary, comparison rows, timeline legend, and share card",
+    "Keep the current menu-style asset Picker",
+    "Preserve accessibility and small-size legibility"
+  ],
+  "non_goals": [
+    "Using official Apple, Microsoft, NVIDIA, Google, Meta, Tesla, Amazon, ETF provider, or other third-party logos",
+    "Creating or bundling PNG image assets for this pass",
+    "Changing the product terminology from Asset or changing localization copy unless required by implementation",
+    "Adding visual patterns, sector illustrations, or shape variants beyond a circular badge",
+    "Adding new supported assets beyond the current ETF plus Magnificent 7 set"
+  ],
+  "decision_boundaries": [
+    {
+      "decision": "Introduce official or third-party brand logos",
+      "allowed_without_confirmation": false,
+      "notes": "The approved direction explicitly excludes official logos and brand-owned icons."
+    },
+    {
+      "decision": "Change from circular badges to rounded-square or mixed-shape badges",
+      "allowed_without_confirmation": false,
+      "notes": "The approved design keeps the current circular visual language."
+    },
+    {
+      "decision": "Use SwiftUI implementation details that preserve the existing menu Picker",
+      "allowed_without_confirmation": true,
+      "notes": "Implementation may choose the most reliable SwiftUI row composition as long as the menu Picker remains the selection control."
+    },
+    {
+      "decision": "Add a reusable badge component in the shared feature layer",
+      "allowed_without_confirmation": true,
+      "notes": "A shared component boundary is required to keep the badge consistent across app and share surfaces."
+    }
+  ],
+  "constraints": [
+    "Follow the existing SwiftUI-first app architecture",
+    "Do not custom-skin Apple standard controls beyond adding allowed row content",
+    "Keep the design aligned with the Coinbase-inspired light fintech visual system",
+    "Use current AssetID symbol, displayName, and tint data where possible",
+    "Support English and Korean flows without introducing unlocalized user-facing copy"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "ac_reusable_badge",
+      "description": "A reusable SwiftUI AssetBadgeView renders circular app-owned badges for every current AssetID.",
+      "verification": "Code review plus iOS simulator build"
+    },
+    {
+      "id": "ac_no_official_logos",
+      "description": "No official brand logos, trademark-like marks, or PNG logo assets are introduced.",
+      "verification": "Repository asset and code review"
+    },
+    {
+      "id": "ac_app_wide_usage",
+      "description": "Asset display points in ExploreView and ShareCardView use the shared badge instead of ad hoc dots or first-letter fallback.",
+      "verification": "Code review and visual simulator pass"
+    },
+    {
+      "id": "ac_small_size_legibility",
+      "description": "Ticker text remains readable or gracefully scaled in compact badge sizes.",
+      "verification": "Visual inspection on simulator at compact, standard, and share-card sizes"
+    },
+    {
+      "id": "ac_accessibility",
+      "description": "Badges provide accessible labels based on asset symbol and display name without relying on color alone.",
+      "verification": "Code review and accessibility inspector spot check"
+    }
+  ],
+  "open_questions": [],
+  "confidence": 0.88
+}

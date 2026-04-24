@@ -1,0 +1,13 @@
+{
+  "format": "ariadne.wrapper-request/v0.1-draft",
+  "mode": "auto",
+  "profile": "auto",
+  "executor_handoff": "none",
+  "brief": "Plan an app-owned SwiftUI asset badge system for WhatIfInvest, excluding official logos and PNG assets, with app-wide use across picker, result, comparison, timeline, and share surfaces.",
+  "output_dir": "docs/ariadne/asset-badges",
+  "consumer_handoff": "none",
+  "notes": [
+    "Live session resolved from an initially ambiguous icon question.",
+    "User approved official-logo exclusion, circular badge shape, color plus ticker only, SwiftUI implementation, and keeping the menu Picker."
+  ]
+}

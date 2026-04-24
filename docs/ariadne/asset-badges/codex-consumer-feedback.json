@@ -1,0 +1,114 @@
+{
+  "format": "ariadne.codex-consumer-feedback/v0.2-draft",
+  "metadata": {
+    "profile": "brownfield",
+    "generated_at": "2026-04-23T12:07:45Z",
+    "consumer": "codex",
+    "plan_id": "plan_swiftui_asset_badges",
+    "goal_tree_path": "WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json",
+    "attempt_id": "ralph-attempt-001",
+    "attempt_number": 1,
+    "bundle_fingerprint": "sha256:578666074ad2e9b948245f72bfb48e086888173c851bf6141708364ab15bbf54",
+    "executor_result_path": "WhatIfInvest/docs/ariadne/asset-badges/ralph-executor.result.json"
+  },
+  "summary": {
+    "completed_count": 4,
+    "blocked_count": 0,
+    "invalidated_count": 0,
+    "requires_planner_reentry": false,
+    "recommended_reentry_target": "none"
+  },
+  "leaf_updates": [
+    {
+      "node_id": "task_asset_badge_component",
+      "previous_status": "executable_leaf",
+      "new_status": "completed",
+      "execution_lane": "direct_session",
+      "artifacts": [
+        "WhatIfInvest/WhatIfInvest/Features/Shared/AssetBadgeView.swift"
+      ],
+      "evidence": [
+        {
+          "type": "build",
+          "description": "xcodebuild -project WhatIfInvest.xcodeproj -scheme WhatIfInvest -destination 'generic/platform=iOS Simulator' build succeeded."
+        },
+        {
+          "type": "review",
+          "description": "AssetBadgeView uses SwiftUI Circle, LinearGradient, asset.tint, asset.symbol, and accessibility labels; it has no image or official-logo dependency."
+        }
+      ],
+      "notes": "Created compact, standard, and hero circular SwiftUI badge sizes with scaled ticker text.",
+      "recommended_reentry_target": "none"
+    },
+    {
+      "node_id": "task_explore_badge_integration",
+      "previous_status": "executable_leaf",
+      "new_status": "completed",
+      "execution_lane": "direct_session",
+      "artifacts": [
+        "WhatIfInvest/WhatIfInvest/Features/Explore/ExploreView.swift",
+        "WhatIfInvest/WhatIfInvest/Features/Explore/TimelineChartCard.swift",
+        "WhatIfInvest/.artifacts/asset-badges-explore-picker.png"
+      ],
+      "evidence": [
+        {
+          "type": "build",
+          "description": "The WhatIfInvest app target built successfully after ExploreView and TimelineChartCard integration."
+        },
+        {
+          "type": "manual",
+          "description": "Simulator screenshot shows the selected VOO badge in the scenario picker and the result summary card."
+        }
+      ],
+      "notes": "Replaced comparison and timeline legend markers with AssetBadgeView and kept the menu Picker while adding a visible selected asset badge beside it.",
+      "recommended_reentry_target": "none"
+    },
+    {
+      "node_id": "task_share_card_badge_integration",
+      "previous_status": "executable_leaf",
+      "new_status": "completed",
+      "execution_lane": "direct_session",
+      "artifacts": [
+        "WhatIfInvest/WhatIfInvest/Features/Shared/ShareCardView.swift"
+      ],
+      "evidence": [
+        {
+          "type": "test",
+          "description": "ShareCardExporterTests.testExportCreatesPNGFile passed, exercising ShareCardView rendering to PNG."
+        },
+        {
+          "type": "build",
+          "description": "The app target built successfully with hero and standard badge usage in ShareCardView."
+        }
+      ],
+      "notes": "Added a hero badge in the primary share-card asset area and standard badges in comparison rows while preserving existing metric hierarchy.",
+      "recommended_reentry_target": "none"
+    },
+    {
+      "node_id": "task_visual_accessibility_verification",
+      "previous_status": "executable_leaf",
+      "new_status": "completed",
+      "execution_lane": "direct_session",
+      "artifacts": [
+        "WhatIfInvest/.artifacts/asset-badges-explore-picker.png"
+      ],
+      "evidence": [
+        {
+          "type": "command",
+          "description": "xcodebuild test -project WhatIfInvest.xcodeproj -scheme WhatIfInvest -destination 'platform=iOS Simulator,name=iPhone 17 Pro' succeeded."
+        },
+        {
+          "type": "search",
+          "description": "Repository search found no newly added official logo PNGs or bundled image assets; existing PNG references are share-card export output only."
+        },
+        {
+          "type": "manual",
+          "description": "Visual inspection of the simulator screenshot confirmed compact and standard VOO badges render without clipping."
+        }
+      ],
+      "notes": "No planner re-entry was needed.",
+      "recommended_reentry_target": "none"
+    }
+  ],
+  "escalations": []
+}

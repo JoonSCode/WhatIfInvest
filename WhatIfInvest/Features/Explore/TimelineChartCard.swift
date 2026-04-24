@@ -291,14 +291,7 @@ private struct TimelineSeriesLegendRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            Image(systemName: descriptor.symbol.systemImageName)
-                .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(descriptor.color)
-                .frame(width: 26, height: 26)
-                .background(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(descriptor.color.opacity(0.12))
-                )
+            AssetBadgeView(asset: descriptor.result.scenario.asset, size: .compact)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(descriptor.primaryText)

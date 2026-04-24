@@ -1,0 +1,98 @@
+{
+  "format": "ariadne.ralph-executor-request/v0.3-draft",
+  "executor_type": "ralph",
+  "backend": "codex-native-ralph-skill",
+  "bundle_root_path": "WhatIfInvest/docs/ariadne/asset-badges",
+  "bundle": {
+    "plan_packet_path": "WhatIfInvest/docs/ariadne/asset-badges/plan.packet.json",
+    "goal_tree_path": "WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json",
+    "spec_path": "WhatIfInvest/docs/ariadne/asset-badges/spec.md",
+    "rationale_path": "WhatIfInvest/docs/ariadne/asset-badges/rationale.md"
+  },
+  "attempt_id": "ralph-attempt-001",
+  "attempt_number": 1,
+  "request_generated_at": "2026-04-23T12:00:47Z",
+  "request_status": "active",
+  "bundle_fingerprint": "sha256:578666074ad2e9b948245f72bfb48e086888173c851bf6141708364ab15bbf54",
+  "planning_context": {
+    "resolved_mode": "full",
+    "resolved_profile": "brownfield",
+    "selected_plan_id": "plan_swiftui_asset_badges",
+    "selected_plan_title": "Unify asset visuals with a shared SwiftUI ticker badge",
+    "selected_plan_summary": "Create one reusable circular AssetBadgeView, integrate it into Explore and share surfaces, then verify build, visual legibility, accessibility, and absence of official logo assets."
+  },
+  "execution_scope": {
+    "selection_mode": "all_executable_leaves",
+    "executable_leaf_ids": [
+      "task_asset_badge_component",
+      "task_explore_badge_integration",
+      "task_share_card_badge_integration",
+      "task_visual_accessibility_verification"
+    ],
+    "ordered_leaf_ids": [
+      "task_asset_badge_component",
+      "task_explore_badge_integration",
+      "task_share_card_badge_integration",
+      "task_visual_accessibility_verification"
+    ]
+  },
+  "source_of_truth": [
+    "plan_packet",
+    "goal_tree",
+    "spec",
+    "rationale"
+  ],
+  "allow_replanning": false,
+  "allowed_reentry_targets": [
+    "local_reexploration",
+    "brainstorming",
+    "deep_interview",
+    "human_review"
+  ],
+  "execution_rules": [
+    "Treat the Ariadne bundle as the source of truth in this order: plan.packet.json, goal-tree.json, spec.md, rationale.md, planning-summary.md when present.",
+    "Execute only the executable_leaf nodes included in execution_scope.",
+    "Respect dependency order and do not dispatch a leaf before its dependencies complete.",
+    "Run leaves in parallel only when file scopes do not overlap, risk is not high, and the leaf's consumer hints allow parallel execution.",
+    "Do not reopen planning or widen scope unless execution discovers a real contradiction in the bundle or codebase.",
+    "Gather fresh verification evidence before claiming a leaf is complete.",
+    "Escalate contradictions through the allowed re-entry targets instead of guessing."
+  ],
+  "output_expectations": [
+    "Report which leaf ids completed, blocked, or were invalidated.",
+    "Capture verification evidence for each dispatched leaf.",
+    "List modified files or generated artifacts.",
+    "If execution blocks, recommend exactly one re-entry target when possible.",
+    "Persist execution feedback and executor result artifacts at the suggested root-level paths unless an explicit harness policy overrides them."
+  ],
+  "recommended_next_command": "$ralph follow WhatIfInvest/docs/ariadne/asset-badges/ralph-next-step.md",
+  "next_step_options": {
+    "1": {
+      "label": "Run now here",
+      "description": "Continue in the current session by handing the generated Ariadne prompt to Ralph immediately.",
+      "action_type": "run_now"
+    },
+    "3": {
+      "label": "Run in another session or terminal",
+      "description": "Use the copyable handoff command later after /clear or in a different terminal window.",
+      "action_type": "show_command",
+      "command": "$ralph follow WhatIfInvest/docs/ariadne/asset-badges/ralph-next-step.md"
+    }
+  },
+  "next_step_message": "## Next Step\n\n1. Run now here\n   Continue in the current session without typing a command.\n\n3. Run in another session or terminal\n   `$ralph follow WhatIfInvest/docs/ariadne/asset-badges/ralph-next-step.md`\n\nArtifacts:\n- `ralph-executor.request.json`: `WhatIfInvest/docs/ariadne/asset-badges/ralph-executor.request.json`\n- `ralph-next-step.md`: `WhatIfInvest/docs/ariadne/asset-badges/ralph-next-step.md`",
+  "suggested_handoff_prompt_path": "WhatIfInvest/docs/ariadne/asset-badges/ralph-next-step.md",
+  "suggested_execution_feedback_path": "WhatIfInvest/docs/ariadne/asset-badges/codex-consumer-feedback.json",
+  "suggested_result_path": "WhatIfInvest/docs/ariadne/asset-badges/ralph-executor.result.json",
+  "notes": [
+    "Resolved Ariadne mode: full",
+    "Resolved Ariadne profile: brownfield",
+    "Attempt id: ralph-attempt-001",
+    "Attempt number: 1",
+    "Prepared handoff for 4 executable leaf nodes.",
+    "Treat the Ariadne bundle as the execution source of truth.",
+    "Do not reopen planning unless execution discovers a real contradiction.",
+    "Root-level request and next-step files represent the latest active handoff for this bundle.",
+    "Root-level result and feedback files are the durable persistence targets for this attempt unless an explicit harness policy overrides them."
+  ],
+  "handoff_prompt": "# Ralph Execution Handoff\n\nYou are receiving a validated Ariadne planning bundle for execution through the Codex-native Ralph skill.\nTreat the Ariadne bundle as authoritative and do not reopen planning unless execution discovers a real contradiction.\n\n## Task Summary\n\n- Bundle directory: `WhatIfInvest/docs/ariadne/asset-badges`\n- Attempt id: `ralph-attempt-001`\n- Attempt number: `1`\n- Resolved Ariadne mode: `full`\n- Resolved Ariadne profile: `brownfield`\n- Selected plan id: `plan_swiftui_asset_badges`\n- Selected plan title: `Unify asset visuals with a shared SwiftUI ticker badge`\n- Selected plan summary: Create one reusable circular AssetBadgeView, integrate it into Explore and share surfaces, then verify build, visual legibility, accessibility, and absence of official logo assets.\n- Bundle fingerprint: `sha256:578666074ad2e9b948245f72bfb48e086888173c851bf6141708364ab15bbf54`\n\n## Source Of Truth\n\n1. `plan.packet.json`: `WhatIfInvest/docs/ariadne/asset-badges/plan.packet.json`\n2. `goal-tree.json`: `WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json`\n3. `spec.md`: `WhatIfInvest/docs/ariadne/asset-badges/spec.md`\n4. `rationale.md`: `WhatIfInvest/docs/ariadne/asset-badges/rationale.md`\n\n## Execution Scope\n\n- Selection mode: `all_executable_leaves`\n- Executable leaf ids: `task_asset_badge_component`, `task_explore_badge_integration`, `task_share_card_badge_integration`, `task_visual_accessibility_verification`\n- Recommended dispatch order: `task_asset_badge_component`, `task_explore_badge_integration`, `task_share_card_badge_integration`, `task_visual_accessibility_verification`\n\n## Execution Rules\n\n- Treat the Ariadne bundle as the source of truth in this order: plan.packet.json, goal-tree.json, spec.md, rationale.md, planning-summary.md when present.\n- Execute only the executable_leaf nodes included in execution_scope.\n- Respect dependency order and do not dispatch a leaf before its dependencies complete.\n- Run leaves in parallel only when file scopes do not overlap, risk is not high, and the leaf's consumer hints allow parallel execution.\n- Do not reopen planning or widen scope unless execution discovers a real contradiction in the bundle or codebase.\n- Gather fresh verification evidence before claiming a leaf is complete.\n- Escalate contradictions through the allowed re-entry targets instead of guessing.\n\n## Leaf Contracts\n\n### `task_asset_badge_component` - Create the shared AssetBadgeView component\n\n- Why: All screens need one consistent badge implementation instead of ad hoc circles, dots, and first-letter fallbacks.\n- Description: Add a SwiftUI component that renders a circular badge for any AssetID using its tint and symbol, with compact, standard, and hero sizing.\n- Risk level: `medium`\n\nDone criteria:\n- AssetBadgeView exists under the shared feature layer\n- The component supports compact, standard, and hero sizes\n- The badge uses asset.tint and asset.symbol\n- Long symbols scale without overflowing the circular badge\n- The badge exposes an accessibility label containing symbol and display name\n- No PNG assets or official logos are introduced\n\nDependencies:\n- None\n\nFile scope:\n- `WhatIfInvest/WhatIfInvest/Features/Shared/AssetBadgeView.swift`\n\nVerification:\n- `build`: Build the app target after adding the component.\n- `review`: Confirm the component has no official logo or image asset dependency.\n\nConsumer hints:\n- preferred_role: `implementer`\n- needs_critic: `True`\n- needs_verifier: `True`\n- can_run_parallel: `False`\n- expected_artifacts: `shared SwiftUI badge component`\n\n### `task_explore_badge_integration` - Integrate AssetBadgeView into ExploreView\n\n- Why: The main simulation surface is where users most often see selected and compared assets.\n- Description: Replace ExploreView asset dots and first-letter badge with the shared badge, and enrich the menu Picker asset rows where SwiftUI supports it.\n- Risk level: `medium`\n\nDone criteria:\n- ResultSummaryCard no longer uses symbol.prefix(1) as a badge\n- Comparison rows use compact AssetBadgeView instead of a small tint dot\n- Timeline legend uses compact AssetBadgeView instead of a small tint dot\n- ScenarioEditorCard keeps the menu Picker and includes badge treatment where practical\n- Existing scenario selection behavior is unchanged\n\nDependencies:\n- `task_asset_badge_component`\n\nFile scope:\n- `WhatIfInvest/WhatIfInvest/Features/Explore/ExploreView.swift`\n\nVerification:\n- `build`: Build the WhatIfInvest app target for iOS simulator.\n- `manual`: Inspect the Explore screen with a primary scenario and at least one comparison.\n\nConsumer hints:\n- preferred_role: `implementer`\n- needs_critic: `True`\n- needs_verifier: `True`\n- can_run_parallel: `True`\n- expected_artifacts: `ExploreView badge integration`\n\n### `task_share_card_badge_integration` - Integrate AssetBadgeView into ShareCardView\n\n- Why: Share surfaces should use the same asset identity language as the app without becoming cluttered or logo-dependent.\n- Description: Use the shared badge in the share card primary asset area and comparison rows while preserving the poster-like numeric hierarchy.\n- Risk level: `medium`\n\nDone criteria:\n- Primary share-card asset area includes a hero-size AssetBadgeView\n- Comparison rows use compact or standard AssetBadgeView instead of tint-only dots\n- Current share-card title, metrics, disclaimer, and data-refresh copy remain intact\n- Badge sizing does not clip in exported share-card rendering\n\nDependencies:\n- `task_asset_badge_component`\n\nFile scope:\n- `WhatIfInvest/WhatIfInvest/Features/Shared/ShareCardView.swift`\n\nVerification:\n- `build`: Build the WhatIfInvest app target for iOS simulator.\n- `manual`: Render or preview the share card and inspect badge placement and clipping.\n\nConsumer hints:\n- preferred_role: `implementer`\n- needs_critic: `True`\n- needs_verifier: `True`\n- can_run_parallel: `True`\n- expected_artifacts: `ShareCardView badge integration`\n\n### `task_visual_accessibility_verification` - Verify build, visual fit, accessibility, and asset hygiene\n\n- Why: This is a UI consistency change, so code review alone is not enough; compact ticker legibility and share rendering need visual validation.\n- Description: Run the final checks needed to confirm the badge system is safe to ship and does not introduce official-logo assets.\n- Risk level: `low`\n\nDone criteria:\n- The app builds successfully for iOS simulator\n- GOOGL, AMZN, and NVDA badges remain legible enough in compact contexts\n- Accessibility labels identify assets without relying only on color\n- Repository search shows no newly added official logo PNGs\n- Share card rendering is visually acceptable\n\nDependencies:\n- `task_explore_badge_integration`\n- `task_share_card_badge_integration`\n\nFile scope:\n- `WhatIfInvest/WhatIfInvest/Features/Shared/AssetBadgeView.swift`\n- `WhatIfInvest/WhatIfInvest/Features/Explore/ExploreView.swift`\n- `WhatIfInvest/WhatIfInvest/Features/Shared/ShareCardView.swift`\n- `WhatIfInvest/.artifacts/ if screenshots are captured`\n\nVerification:\n- `command`: Run xcodebuild for the WhatIfInvest simulator target.\n- `manual`: Inspect Explore and share-card surfaces on simulator or previews.\n- `search`: Search for newly added PNG logo assets or official brand-logo references.\n\nConsumer hints:\n- preferred_role: `verifier`\n- needs_critic: `False`\n- needs_verifier: `True`\n- can_run_parallel: `False`\n- expected_artifacts: `build result`, `visual verification notes`\n\n## Output Expectations\n\n- Report which leaf ids completed, blocked, or were invalidated.\n- Capture verification evidence for each dispatched leaf.\n- List modified files or generated artifacts.\n- If execution blocks, recommend exactly one re-entry target when possible.\n- Persist execution feedback and executor result artifacts at the suggested root-level paths unless an explicit harness policy overrides them.\n\n## Suggested Artifact Paths\n\n- Attempt id: `ralph-attempt-001`\n- Consumer feedback: `WhatIfInvest/docs/ariadne/asset-badges/codex-consumer-feedback.json`\n- Executor result: `WhatIfInvest/docs/ariadne/asset-badges/ralph-executor.result.json`\n\nPersist the result and feedback at these root-level paths for this attempt unless your harness has an explicit alternate retention policy.\n\n## Re-entry Targets\n\n- `local_reexploration`\n- `brainstorming`\n- `deep_interview`\n- `human_review`\n"
+}

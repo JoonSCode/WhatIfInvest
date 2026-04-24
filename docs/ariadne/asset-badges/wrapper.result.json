@@ -1,0 +1,23 @@
+{
+  "format": "ariadne.wrapper-result/v0.1-draft",
+  "resolved_mode": "full",
+  "resolved_profile": "brownfield",
+  "executor_handoff": "none",
+  "status": "completed",
+  "artifacts": {
+    "intent_packet_path": "WhatIfInvest/docs/ariadne/asset-badges/intent.packet.json",
+    "design_packet_path": "WhatIfInvest/docs/ariadne/asset-badges/design.packet.json",
+    "plan_packet_path": "WhatIfInvest/docs/ariadne/asset-badges/plan.packet.json",
+    "goal_tree_path": "WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json",
+    "spec_path": "WhatIfInvest/docs/ariadne/asset-badges/spec.md",
+    "rationale_path": "WhatIfInvest/docs/ariadne/asset-badges/rationale.md"
+  },
+  "consumer_handoff": "none",
+  "planner_reentry_needed": false,
+  "blockers": [],
+  "notes": [
+    "Resolved to full because the initial brief lacked explicit icon scope, non-goals, and design boundaries.",
+    "Planning is complete and ready for a later executor or direct implementation pass.",
+    "Canonical planning truth remains in the generated Ariadne packet and goal-tree artifacts."
+  ]
+}

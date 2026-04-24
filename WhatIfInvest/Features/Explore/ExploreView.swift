@@ -188,7 +188,7 @@ struct ExploreView: View {
 
             ForEach(comparisonSeriesDescriptors) { descriptor in
                 HStack(alignment: .top, spacing: 12) {
-                    comparisonMarker(for: descriptor)
+                    AssetBadgeView(asset: descriptor.result.scenario.asset, size: .compact)
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(descriptor.primaryText)
@@ -333,17 +333,6 @@ struct ExploreView: View {
         )
     }
 
-    private func comparisonMarker(for descriptor: ChartSeriesDescriptor) -> some View {
-        Image(systemName: descriptor.symbol.systemImageName)
-            .font(.system(size: 13, weight: .bold))
-            .foregroundStyle(descriptor.color)
-            .frame(width: 26, height: 26)
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(descriptor.color.opacity(0.12))
-            )
-    }
-
     private func alignVisibleYearToLatest() {
         visibleYearIndex = max(0, appModel.animationYears.count - 1)
     }
@@ -411,6 +400,7 @@ private struct ScenarioEditorCard: View {
     let availableDateRange: ClosedRange<Date>?
     let validationMessage: String?
     let accessibilityIdentifier: String
+    @State private var isAssetSelectorPresented = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -422,14 +412,28 @@ private struct ScenarioEditorCard: View {
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
             }
 
-            Picker(L10n.assetFieldTitle, selection: $scenario.asset) {
-                ForEach(assets) { asset in
-                    Text("\(asset.symbol) · \(asset.displayName)")
-                        .tag(asset)
-                }
+            Button {
+                isAssetSelectorPresented = true
+            } label: {
+                SelectedAssetMenuLabel(asset: scenario.asset)
             }
-            .pickerStyle(.menu)
             .accessibilityIdentifier("\(accessibilityIdentifier)-asset-picker")
+            .accessibilityLabel("\(scenario.asset.symbol), \(scenario.asset.displayName)")
+            .accessibilityHint(L10n.assetFieldTitle)
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .popover(isPresented: $isAssetSelectorPresented, arrowEdge: .top) {
+                AssetSelectionPopover(
+                    assets: assets,
+                    selectedAsset: scenario.asset
+                ) { asset in
+                    scenario.asset = asset
+                    isAssetSelectorPresented = false
+                }
+                .presentationCompactAdaptation(.popover)
+                .presentationCornerRadius(28)
+            }
 
             if let availableDateRange {
                 DatePicker(L10n.startDateFieldTitle, selection: $scenario.startDate, in: availableDateRange, displayedComponents: .date)
@@ -489,6 +493,95 @@ private struct ScenarioEditorCard: View {
     }
 }
 
+private struct AssetSelectionPopover: View {
+    let assets: [AssetID]
+    let selectedAsset: AssetID
+    let onSelect: (AssetID) -> Void
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 2) {
+                ForEach(assets) { asset in
+                    Button {
+                        onSelect(asset)
+                    } label: {
+                        AssetPickerRow(asset: asset, isSelected: asset == selectedAsset)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(10)
+        }
+        .frame(width: 330)
+        .frame(maxHeight: 560)
+        .background(AppTheme.ColorToken.surfaceBase)
+    }
+}
+
+private struct AssetPickerRow: View {
+    let asset: AssetID
+    let isSelected: Bool
+
+    var body: some View {
+        HStack(spacing: 12) {
+            AssetBadgeView(asset: asset, size: .compact)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(asset.symbol)
+                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .foregroundStyle(isSelected ? AppTheme.ColorToken.brandPrimary : AppTheme.ColorToken.textPrimary)
+                Text(asset.displayName)
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 12)
+
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(AppTheme.ColorToken.brandPrimary)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(isSelected ? asset.tint.opacity(0.12) : Color.clear)
+        )
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(asset.symbol), \(asset.displayName)")
+    }
+}
+
+private struct SelectedAssetMenuLabel: View {
+    let asset: AssetID
+
+    var body: some View {
+        HStack(spacing: 12) {
+            AssetBadgeView(asset: asset, size: .standard)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(asset.symbol)
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .foregroundStyle(AppTheme.ColorToken.brandPrimary)
+                Text(asset.displayName)
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(AppTheme.ColorToken.textSecondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 0)
+
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
+        }
+    }
+}
+
 private struct ResultSummaryCard: View {
     let result: ScenarioResult
 
@@ -504,14 +597,7 @@ private struct ResultSummaryCard: View {
                         .monospacedDigit()
                 }
                 Spacer()
-                Circle()
-                    .fill(result.scenario.asset.tint.gradient)
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Text(result.scenario.asset.symbol.prefix(1))
-                            .font(.system(size: 18, weight: .black, design: .rounded))
-                            .foregroundStyle(.white)
-                    )
+                AssetBadgeView(asset: result.scenario.asset, size: .standard)
             }
 
             HStack(spacing: 16) {

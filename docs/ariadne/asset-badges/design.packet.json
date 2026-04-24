@@ -1,0 +1,139 @@
+{
+  "format": "ariadne.design-packet/v0.1-draft",
+  "packet_type": "design",
+  "profile": "brownfield",
+  "generated_at": "2026-04-23T11:07:44Z",
+  "source_packets": [
+    "docs/ariadne/asset-badges/intent.packet.json"
+  ],
+  "problem_frame": "WhatIfInvest needs asset visuals that feel intentional and recognizable without implying official brand affiliation. The current first-letter and small-dot treatments are simple but inconsistent across app and share surfaces.",
+  "selected_approach": {
+    "id": "approach_swiftui_circular_ticker_badge",
+    "title": "SwiftUI circular ticker badge",
+    "summary": "Create a reusable circular AssetBadgeView that uses the existing asset tint plus ticker text, then apply it consistently across app-wide asset display surfaces.",
+    "pros": [
+      "Avoids official logo licensing and trademark ambiguity",
+      "Requires no PNG asset pipeline",
+      "Fits the current circular badge language",
+      "Can be reused across compact, standard, and share-card contexts",
+      "Keeps the design easy to update later"
+    ],
+    "cons": [
+      "Ticker-only visual identity is less distinctive than real brand logos",
+      "Longer tickers such as GOOGL and AMZN need careful font scaling in small circles"
+    ],
+    "status": "selected"
+  },
+  "alternatives": [
+    {
+      "id": "approach_swiftui_circular_ticker_badge",
+      "title": "SwiftUI circular ticker badge",
+      "summary": "Create a reusable circular AssetBadgeView that uses the existing asset tint plus ticker text, then apply it consistently across app-wide asset display surfaces.",
+      "pros": [
+        "Low implementation cost",
+        "Low rights risk",
+        "Consistent with current UI"
+      ],
+      "cons": [
+        "Less brand-recognizable than official logos"
+      ],
+      "status": "selected"
+    },
+    {
+      "id": "approach_pattern_badges",
+      "title": "Circular badges with abstract patterns",
+      "summary": "Add sector or asset-class patterns behind ticker text to make badges more visually distinct.",
+      "pros": [
+        "More distinctive than color plus ticker alone",
+        "Still avoids official logos"
+      ],
+      "cons": [
+        "Adds visual complexity and more QA burden",
+        "User explicitly selected color plus ticker only for this pass"
+      ],
+      "status": "retained_alt"
+    },
+    {
+      "id": "approach_rounded_square_hero_badges",
+      "title": "Rounded-square badge shape",
+      "summary": "Use rounded-square badges to increase ticker readability and create an app-icon-like look.",
+      "pros": [
+        "Better room for longer ticker text",
+        "Can feel more distinctive in share surfaces"
+      ],
+      "cons": [
+        "Breaks from the approved circular direction",
+        "Less aligned with current result card badge language"
+      ],
+      "status": "retained_alt"
+    },
+    {
+      "id": "approach_official_logo_pngs",
+      "title": "Official logo PNGs",
+      "summary": "Bundle real company or ETF logos and show them as asset icons.",
+      "pros": [
+        "Highest immediate recognizability"
+      ],
+      "cons": [
+        "Trademark and permission risk",
+        "Requires logo sourcing and asset maintenance",
+        "Explicitly excluded by the approved intent"
+      ],
+      "status": "rejected"
+    }
+  ],
+  "tradeoffs": [
+    "The selected approach favors rights safety, consistency, and implementation speed over real-world brand recognition.",
+    "Color plus ticker is simpler than abstract patterns, but may be less visually rich.",
+    "Keeping the menu Picker preserves platform behavior but may limit how much badge detail appears in the collapsed selection control.",
+    "A reusable SwiftUI component is easier to scale and theme than PNG assets, but final visual polish depends on careful sizing and typography."
+  ],
+  "key_decisions": [
+    "Use a shared AssetBadgeView rather than per-screen badge code.",
+    "Use Circle shape for all badge sizes.",
+    "Use existing AssetID.symbol, AssetID.displayName, and AssetID.tint as the data source.",
+    "Use color and ticker text only; do not add custom patterns in this pass.",
+    "Retain the existing menu Picker as the asset selection control.",
+    "Apply the shared badge to ExploreView and ShareCardView asset display surfaces."
+  ],
+  "assumptions": [
+    "The current Xcode project uses synchronized filesystem groups, so adding a Swift file under the app target folder should not require manual project.pbxproj edits.",
+    "Existing asset tint values are acceptable starting colors for the badge system.",
+    "No new localized visible text is required if accessibility labels are built from existing symbol and displayName values.",
+    "A compact circular badge can remain legible with font scaling and line limits."
+  ],
+  "risks": [
+    {
+      "id": "risk_long_ticker_legibility",
+      "description": "Four- and five-letter symbols may be hard to read inside compact circular badges.",
+      "severity": "medium",
+      "mitigation": "Define compact, standard, and hero sizes with scaled fonts, minimumScaleFactor, and tight line limits."
+    },
+    {
+      "id": "risk_picker_custom_content",
+      "description": "SwiftUI menu Picker rendering may not preserve complex row content consistently across OS versions.",
+      "severity": "medium",
+      "mitigation": "Keep the menu Picker and use the simplest supported custom row composition; if row badges render poorly, keep badge use around the picker label and menu text stable."
+    },
+    {
+      "id": "risk_visual_noise",
+      "description": "Replacing small dots with ticker badges in dense areas may make the UI feel crowded.",
+      "severity": "low",
+      "mitigation": "Use compact sizing in comparison rows and timeline legend, and preserve existing spacing hierarchy."
+    },
+    {
+      "id": "risk_share_rendering",
+      "description": "The share card renderer may expose sizing or clipping issues that are not obvious in regular views.",
+      "severity": "medium",
+      "mitigation": "Verify ShareCardView rendering after badge integration."
+    }
+  ],
+  "validation_plan": [
+    "Review code to confirm all replaced badges use the shared component.",
+    "Build the iOS app for simulator.",
+    "Run a visual simulator pass on the Explore screen with primary and comparison scenarios.",
+    "Render or preview the share card and inspect badge clipping and ticker legibility.",
+    "Search the repository for introduced PNG logo assets or official logo references."
+  ],
+  "approval_status": "approved"
+}
