@@ -1,0 +1,15 @@
+{
+  "format": "ariadne.wrapper-request/v0.1-draft",
+  "mode": "auto",
+  "profile": "auto",
+  "executor_handoff": "none",
+  "brief": "Generate and apply a What If Invest app icon, update the launch screen to use the same brand mark, port Hi_Tomorrow-style App Store Connect automation for first-review readiness, archive the app, then fill ASC env values where discoverable after archive/setup.",
+  "output_dir": "docs/ariadne/app-icon-release",
+  "consumer_handoff": "none",
+  "notes": [
+    "Live session clarified that the icon direction may be selected by the agent.",
+    "User approved a blue and white fintech icon with a hindsight-to-value investing motif.",
+    "User requested Hi_Tomorrow-style deployment automation and an archive/readiness attempt.",
+    "First review means App Store Connect ids may not exist yet; env should be scaffolded and filled when discoverable."
+  ]
+}

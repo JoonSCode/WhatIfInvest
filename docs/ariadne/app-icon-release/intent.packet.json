@@ -1,0 +1,81 @@
+{
+  "format": "ariadne.intent-packet/v0.1-draft",
+  "packet_type": "intent",
+  "profile": "brownfield",
+  "generated_at": "2026-04-24T09:12:57Z",
+  "source_packets": [],
+  "goal": "Prepare WhatIfInvest for first App Store review by adding a production app icon, matching launch screen treatment, App Store Connect automation scaffolding, and a verified archive path.",
+  "why_now": "The app has an empty AppIcon set and placeholder launch mark, and needs the same deployment-readiness path used by Hi_Tomorrow before first review.",
+  "in_scope": [
+    "Generate a What If Invest app icon aligned with the app's blue-and-white beginner fintech identity",
+    "Populate the iOS app icon asset catalog with required iPhone and marketing icon PNGs",
+    "Update LaunchScreen.storyboard to show the brand icon instead of the placeholder square",
+    "Add Hi_Tomorrow-style ASC helper scripts, env template, metadata drafts, and documentation",
+    "Run build/archive verification and attempt App Store Connect id discovery after archive/setup"
+  ],
+  "non_goals": [
+    "Submitting the app for review without explicit final confirmation",
+    "Changing product functionality or investor simulation behavior",
+    "Adding paid features, ads, subscriptions, or analytics",
+    "Creating official stock or ETF logos",
+    "Hardcoding private App Store Connect credentials into the repository"
+  ],
+  "decision_boundaries": [
+    {
+      "decision": "Choose the final icon visual direction within the approved blue fintech hindsight-investing motif",
+      "allowed_without_confirmation": true,
+      "notes": "User approved agent-selected icon direction."
+    },
+    {
+      "decision": "Create ASC scripts and metadata scaffold with empty or discovered ids",
+      "allowed_without_confirmation": true,
+      "notes": "User requested adding this even though this is first review."
+    },
+    {
+      "decision": "Submit the version for review",
+      "allowed_without_confirmation": false,
+      "notes": "The requested scope is archive and review readiness, not final submission."
+    },
+    {
+      "decision": "Store API keys or private credentials",
+      "allowed_without_confirmation": false,
+      "notes": "Automation may read local env files but must not commit secrets."
+    }
+  ],
+  "constraints": [
+    "Follow WhatIfInvest DESIGN.md: trust-first, clean blue-and-white fintech, not a trading-terminal look",
+    "Keep English and Korean App Store metadata drafts together",
+    "Reuse Hi_Tomorrow automation shape where practical",
+    "Support first-review setup where APP_ID, APP_INFO_ID, and VERSION_ID may initially be unknown",
+    "Do not revert unrelated parent KinnoLabs gitlink state"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "ac_app_icon",
+      "description": "AppIcon.appiconset contains generated PNG assets including a 1024x1024 marketing icon and valid Contents.json entries.",
+      "verification": "Asset catalog inspection and Xcode build"
+    },
+    {
+      "id": "ac_launch_screen",
+      "description": "LaunchScreen.storyboard shows the new brand icon and existing localized product copy on a matching light fintech background.",
+      "verification": "Storyboard inspection and app launch/build"
+    },
+    {
+      "id": "ac_asc_automation",
+      "description": "WhatIfInvest includes ASC scripts, env template, metadata drafts, and README guidance adapted from Hi_Tomorrow.",
+      "verification": "Script review and shell syntax/readiness checks"
+    },
+    {
+      "id": "ac_archive",
+      "description": "The app can be archived with the WhatIfInvest scheme or a concrete blocker is reported.",
+      "verification": "xcodebuild archive output"
+    },
+    {
+      "id": "ac_env_retry",
+      "description": "ASC env values are filled where discoverable, or the remaining first-review setup gap is explicit.",
+      "verification": "asc discovery command output and .asc/env contents"
+    }
+  ],
+  "open_questions": [],
+  "confidence": 0.84
+}

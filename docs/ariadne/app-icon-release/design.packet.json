@@ -1,0 +1,126 @@
+{
+  "format": "ariadne.design-packet/v0.1-draft",
+  "packet_type": "design",
+  "profile": "brownfield",
+  "generated_at": "2026-04-24T09:12:57Z",
+  "source_packets": [
+    "docs/ariadne/app-icon-release/intent.packet.json"
+  ],
+  "problem_frame": "WhatIfInvest needs a credible, distinctive App Store-facing brand asset and the operational scaffolding needed to move from a local Xcode app to first-review readiness. The work is mostly integration and release hygiene around an existing SwiftUI app.",
+  "selected_approach": {
+    "id": "approach_generated_icon_plus_hitomorrow_asc_scaffold",
+    "title": "Generated fintech icon with Hi_Tomorrow-style ASC scaffold",
+    "summary": "Generate one polished blue-and-white icon, derive all app icon sizes from it, use the same icon on launch, then port ASC metadata and screenshot/upload/readiness scripts with WhatIfInvest names and first-review env handling.",
+    "pros": [
+      "Fastest path to a coherent first-review package",
+      "Keeps brand and launch visuals consistent",
+      "Reuses a known local automation pattern",
+      "Avoids secrets in git while still giving a concrete env path"
+    ],
+    "cons": [
+      "Generated icon may need later human brand review",
+      "ASC id discovery may be blocked if the app record does not exist in App Store Connect",
+      "Screenshot automation may need future UI-test capture work if no raw screenshot exporter exists yet"
+    ],
+    "status": "selected"
+  },
+  "alternatives": [
+    {
+      "id": "approach_generated_icon_plus_hitomorrow_asc_scaffold",
+      "title": "Generated fintech icon with Hi_Tomorrow-style ASC scaffold",
+      "summary": "Create the visual asset now and port the release automation scaffold in one pass.",
+      "pros": [
+        "Complete first-review preparation path",
+        "Matches user request directly"
+      ],
+      "cons": [
+        "More moving parts than icon-only work"
+      ],
+      "status": "selected"
+    },
+    {
+      "id": "approach_code_native_symbol_icon",
+      "title": "Code-native simple symbol icon",
+      "summary": "Build a deterministic icon from vector/SVG or drawing code instead of generated bitmap art.",
+      "pros": [
+        "Deterministic and easy to tweak",
+        "No generated-image selection risk"
+      ],
+      "cons": [
+        "Likely less polished for App Store presentation",
+        "Contradicts the request to create a fitting app icon"
+      ],
+      "status": "retained_alt"
+    },
+    {
+      "id": "approach_automation_only_after_asc_record",
+      "title": "Delay automation until ASC record exists",
+      "summary": "Archive first, then add scripts only after the App Store Connect app/version ids are known.",
+      "pros": [
+        "Avoids empty env placeholders",
+        "Reduces setup uncertainty"
+      ],
+      "cons": [
+        "Does not satisfy the request to apply Hi_Tomorrow automation now",
+        "Leaves no repeatable review-prep path in the repo"
+      ],
+      "status": "retained_alt"
+    }
+  ],
+  "tradeoffs": [
+    "A generated bitmap icon maximizes polish speed but should be treated as a brand candidate until reviewed in context.",
+    "Porting the full Hi_Tomorrow automation shape now creates useful scaffolding even if first-review App Store Connect ids are not yet discoverable.",
+    "Screenshot upload scripts can be ported, but WhatIfInvest may need a future screenshot capture/export test before the full ASC preparation path is fully runnable.",
+    "Archive verification is valuable even if App Store Connect readiness remains blocked by missing app records or credentials."
+  ],
+  "key_decisions": [
+    "Use a blue/white fintech icon with a hindsight-to-growth motif rather than stock-specific logos.",
+    "Derive all AppIcon PNGs from a single 1024x1024 source.",
+    "Use a launch-screen image asset based on the same icon rather than the current colored square.",
+    "Add WhatIfInvest-specific ASC scripts and metadata under the app repo, adapted from Hi_Tomorrow.",
+    "Keep `.asc/env.example` committed and `.asc/env` local-only or non-secret with discovered IDs only.",
+    "Do not submit the app for review automatically."
+  ],
+  "assumptions": [
+    "The Xcode synchronized filesystem group will include new assets and scripts without manual resource phase edits.",
+    "The current development team and bundle identifier are intended for first-review setup.",
+    "The installed asc CLI and Xcode can be used locally for discovery and archive attempts.",
+    "First-review App Store Connect app/version ids may be absent until the app record and version are created."
+  ],
+  "risks": [
+    {
+      "id": "risk_icon_quality",
+      "description": "The generated icon may look good at 1024px but lose clarity at small Home Screen sizes.",
+      "severity": "medium",
+      "mitigation": "Use a simple high-contrast motif and inspect derived sizes."
+    },
+    {
+      "id": "risk_archive_signing",
+      "description": "Archive may fail because signing, provisioning, or app registration is incomplete.",
+      "severity": "medium",
+      "mitigation": "Run xcodebuild archive and report the exact blocker; keep scripts ready for retry."
+    },
+    {
+      "id": "risk_asc_missing_record",
+      "description": "ASC discovery cannot fill ids if no App Store Connect app or version exists yet.",
+      "severity": "medium",
+      "mitigation": "Create env template and discovery scripts that list apps/versions once the record exists."
+    },
+    {
+      "id": "risk_screenshot_pipeline_gap",
+      "description": "Hi_Tomorrow has a screenshot capture test and generator; WhatIfInvest may not yet have equivalent raw screenshots.",
+      "severity": "medium",
+      "mitigation": "Port upload/readiness scaffolding and document screenshot directory expectations as the minimum first pass."
+    }
+  ],
+  "validation_plan": [
+    "Validate the Ariadne bundle.",
+    "Generate and inspect the icon source and derived app icon files.",
+    "Build the app for simulator after asset and storyboard changes.",
+    "Run unit tests if build is healthy.",
+    "Run xcodebuild archive for Release on generic iOS destination.",
+    "Run ASC discovery/listing scripts and fill `.asc/env` only with discoverable non-secret ids.",
+    "Report any App Store Connect setup or screenshot-pipeline blockers explicitly."
+  ],
+  "approval_status": "approved"
+}

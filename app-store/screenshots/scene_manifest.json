@@ -1,0 +1,169 @@
+{
+  "canvas": {
+    "width": 1320,
+    "height": 2868,
+    "locale_directory": "iphone69"
+  },
+  "locales": [
+    {
+      "identifier": "en-US",
+      "scenes": [
+        {
+          "slug": "01-first-result",
+          "eyebrow": "WHAT IF",
+          "title": "See a past investment in seconds",
+          "subtitle": "Start from a ready scenario and see what time did to a major ETF or Magnificent 7 stock.",
+          "chips": ["Historical replay", "Adjusted close"],
+          "palette": {
+            "background_top": "#F8FBFF",
+            "background_bottom": "#EAF2FF",
+            "accent": "#0052FF",
+            "accent_soft": "#D7E6FF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "02-timeline-replay",
+          "eyebrow": "REPLAY",
+          "title": "Watch the years unfold",
+          "subtitle": "The timeline chart turns historical growth into a visual story instead of an abstract return number.",
+          "chips": ["Year by year", "Readable chart"],
+          "palette": {
+            "background_top": "#FFFFFF",
+            "background_bottom": "#EEF4FF",
+            "accent": "#0052FF",
+            "accent_soft": "#C7DBFF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "03-add-comparison",
+          "eyebrow": "COMPARE",
+          "title": "Add one more scenario when ready",
+          "subtitle": "Compare assets, start dates, and monthly contributions after the first answer lands.",
+          "chips": ["ETF and stocks", "Lump sum or monthly"],
+          "palette": {
+            "background_top": "#F8FBFF",
+            "background_bottom": "#EEF0F3",
+            "accent": "#2563EB",
+            "accent_soft": "#D8E5FF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "04-compare-mode",
+          "eyebrow": "CONTEXT",
+          "title": "Compare without turning it into a trading desk",
+          "subtitle": "Keep the focus on learning how time, date, and contribution behavior change the result.",
+          "chips": ["Side by side", "Beginner friendly"],
+          "palette": {
+            "background_top": "#FFFFFF",
+            "background_bottom": "#EAF2FF",
+            "accent": "#0052FF",
+            "accent_soft": "#DBEAFE",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "05-saved-scenarios",
+          "eyebrow": "SAVE",
+          "title": "Save useful scenarios on device",
+          "subtitle": "Keep a lightweight local library of ideas to reopen and compare again later.",
+          "chips": ["Local saves", "No account needed"],
+          "palette": {
+            "background_top": "#F8FBFF",
+            "background_bottom": "#FFFFFF",
+            "accent": "#0052FF",
+            "accent_soft": "#DFEAFF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        }
+      ]
+    },
+    {
+      "identifier": "ko-KR",
+      "scenes": [
+        {
+          "slug": "01-first-result",
+          "eyebrow": "WHAT IF",
+          "title": "그때 투자했다면 지금 얼마일까요?",
+          "subtitle": "미리 준비된 시나리오에서 시작해 주요 ETF와 매그니피센트 7의 과거 흐름을 빠르게 확인하세요.",
+          "chips": ["과거 시뮬레이션", "조정종가 기준"],
+          "palette": {
+            "background_top": "#F8FBFF",
+            "background_bottom": "#EAF2FF",
+            "accent": "#0052FF",
+            "accent_soft": "#D7E6FF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "02-timeline-replay",
+          "eyebrow": "REPLAY",
+          "title": "시간의 흐름을 차트로 다시 보기",
+          "subtitle": "단순한 수익률 숫자 대신, 해마다 가치가 어떻게 변했는지 시각적으로 살펴볼 수 있어요.",
+          "chips": ["연도별 흐름", "읽기 쉬운 차트"],
+          "palette": {
+            "background_top": "#FFFFFF",
+            "background_bottom": "#EEF4FF",
+            "accent": "#0052FF",
+            "accent_soft": "#C7DBFF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "03-add-comparison",
+          "eyebrow": "COMPARE",
+          "title": "궁금할 때만 비교를 추가하세요",
+          "subtitle": "첫 결과를 본 뒤 종목, 시작일, 일시불과 월 적립 조건을 가볍게 비교할 수 있어요.",
+          "chips": ["ETF와 주식", "일시불 또는 월 적립"],
+          "palette": {
+            "background_top": "#F8FBFF",
+            "background_bottom": "#EEF0F3",
+            "accent": "#2563EB",
+            "accent_soft": "#D8E5FF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "04-compare-mode",
+          "eyebrow": "CONTEXT",
+          "title": "투자 단말기처럼 복잡하지 않게",
+          "subtitle": "종목보다 시간, 시작일, 적립 방식이 결과를 어떻게 바꾸는지 배우는 데 집중합니다.",
+          "chips": ["나란히 비교", "초보자 친화적"],
+          "palette": {
+            "background_top": "#FFFFFF",
+            "background_bottom": "#EAF2FF",
+            "accent": "#0052FF",
+            "accent_soft": "#DBEAFE",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        },
+        {
+          "slug": "05-saved-scenarios",
+          "eyebrow": "SAVE",
+          "title": "의미 있는 시나리오를 기기에 저장",
+          "subtitle": "계정 없이도 가벼운 로컬 보관함에 아이디어를 저장하고 나중에 다시 열어볼 수 있어요.",
+          "chips": ["기기 내 저장", "계정 불필요"],
+          "palette": {
+            "background_top": "#F8FBFF",
+            "background_bottom": "#FFFFFF",
+            "accent": "#0052FF",
+            "accent_soft": "#DFEAFF",
+            "text_primary": "#0A0B0D",
+            "text_secondary": "#5B616E"
+          }
+        }
+      ]
+    }
+  ]
+}

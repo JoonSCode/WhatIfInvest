@@ -7,3 +7,6 @@ xcuserdata/
 *.moved-aside
 *.swp
 *.orig
+app-store/screenshots/raw/
+app-store/screenshots/generated/
+.asc/env

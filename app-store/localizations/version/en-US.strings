@@ -1,0 +1,7 @@
+// Replace placeholder URLs before uploading with asc if production pages move.
+"description" = "What If Invest helps beginner investors answer one simple question fast: what if I had invested back then? Pick a major US ETF or Magnificent 7 stock, choose a date and amount, and see the historical result with a year-by-year replay. Results use adjusted-close history and keep important exclusions visible, including taxes, fees, FX, and inflation.";
+"keywords" = "investing,stocks,ETF,simulator,historical returns,compound growth,finance,portfolio,calculator";
+"whatsNew" = "Initial release for first App Store review.";
+"supportUrl" = "https://example.com/whatifinvest/support";
+"marketingUrl" = "https://example.com/whatifinvest";
+"promotionalText" = "See what a past investment would be worth today.";

@@ -1,0 +1,23 @@
+{
+  "format": "ariadne.wrapper-result/v0.1-draft",
+  "resolved_mode": "full",
+  "resolved_profile": "brownfield",
+  "executor_handoff": "none",
+  "status": "completed",
+  "artifacts": {
+    "intent_packet_path": "WhatIfInvest/docs/ariadne/app-icon-release/intent.packet.json",
+    "design_packet_path": "WhatIfInvest/docs/ariadne/app-icon-release/design.packet.json",
+    "plan_packet_path": "WhatIfInvest/docs/ariadne/app-icon-release/plan.packet.json",
+    "goal_tree_path": "WhatIfInvest/docs/ariadne/app-icon-release/goal-tree.json",
+    "spec_path": "WhatIfInvest/docs/ariadne/app-icon-release/spec.md",
+    "rationale_path": "WhatIfInvest/docs/ariadne/app-icon-release/rationale.md"
+  },
+  "consumer_handoff": "none",
+  "planner_reentry_needed": false,
+  "blockers": [],
+  "notes": [
+    "Resolved to full because the original request combined brand asset creation, release automation, and review preparation.",
+    "User explicitly approved the key planning decisions in the live clarification reply.",
+    "Execution continues in this session after bundle creation."
+  ]
+}
