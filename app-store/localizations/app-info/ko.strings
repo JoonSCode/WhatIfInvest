@@ -1,0 +1,4 @@
+// Replace placeholder URLs before uploading with asc if production pages move.
+"name" = "What If Invest";
+"subtitle" = "과거 투자를 현재 가치로";
+"privacyPolicyUrl" = "https://example.com/whatifinvest/privacy";

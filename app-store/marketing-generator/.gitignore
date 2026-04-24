@@ -1,0 +1,6 @@
+node_modules/
+.next/
+out/
+public/app-icon.png
+public/mockup.png
+public/raw/

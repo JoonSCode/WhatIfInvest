@@ -1,0 +1,204 @@
+{
+  "format": "ariadne.plan-packet/v0.1-draft",
+  "packet_type": "plan",
+  "profile": "brownfield",
+  "generated_at": "2026-04-24T09:12:57Z",
+  "source_packets": [
+    "docs/ariadne/app-icon-release/intent.packet.json",
+    "docs/ariadne/app-icon-release/design.packet.json"
+  ],
+  "spec_path": "spec.md",
+  "rationale_path": "rationale.md",
+  "goal_tree_path": "goal-tree.json",
+  "selected_plan": {
+    "id": "plan_app_icon_release_readiness",
+    "title": "Add brand assets and first-review release automation",
+    "summary": "Generate and apply the app icon, update launch screen branding, port ASC automation and metadata scaffolding, then build/archive and retry env discovery."
+  },
+  "retained_alternatives": [
+    {
+      "id": "approach_code_native_symbol_icon",
+      "title": "Code-native simple symbol icon",
+      "summary": "Use deterministic vector-like drawing if generated art is rejected later.",
+      "pros": [
+        "Easy to revise",
+        "Fully deterministic"
+      ],
+      "cons": [
+        "Less polished for App Store presentation"
+      ],
+      "status": "retained_alt"
+    },
+    {
+      "id": "approach_automation_only_after_asc_record",
+      "title": "Delay automation until ASC record exists",
+      "summary": "Keep automation blocked until App Store Connect ids are manually created.",
+      "pros": [
+        "Avoids empty ids"
+      ],
+      "cons": [
+        "Slower first-review preparation"
+      ],
+      "status": "retained_alt"
+    }
+  ],
+  "leaf_tasks": [
+    {
+      "id": "task_generate_apply_icon",
+      "title": "Generate and apply AppIcon resources",
+      "description": "Generate a polished What If Invest app icon and derive all required AppIcon PNGs and Contents.json entries.",
+      "why": "The app currently has an empty AppIcon set and cannot present a finished brand identity.",
+      "done_criteria": [
+        "A 1024x1024 source icon is saved in the workspace",
+        "AppIcon.appiconset contains required derived PNG sizes",
+        "Contents.json references the generated icon files",
+        "Icon assets have no alpha channel problems for App Store use"
+      ],
+      "file_scope": [
+        "WhatIfInvest/WhatIfInvest/Assets.xcassets/AppIcon.appiconset"
+      ],
+      "dependencies": [],
+      "verification": [
+        {
+          "type": "asset-review",
+          "description": "Inspect generated 1024px and small derived icons."
+        },
+        {
+          "type": "build",
+          "description": "Build WhatIfInvest with the populated app icon set."
+        }
+      ],
+      "risk_level": "medium"
+    },
+    {
+      "id": "task_update_launch_screen",
+      "title": "Apply the icon mark to LaunchScreen",
+      "description": "Create a launch-screen image asset from the icon and update the storyboard to use it instead of the placeholder square.",
+      "why": "Launch should match the App Store icon and avoid placeholder UI.",
+      "done_criteria": [
+        "A launch icon image set exists in Assets.xcassets",
+        "LaunchScreen.storyboard references the launch image asset",
+        "Existing launch title and localized subtitle remain intact",
+        "Storyboard remains valid XML"
+      ],
+      "file_scope": [
+        "WhatIfInvest/WhatIfInvest/Assets.xcassets/LaunchIcon.imageset",
+        "WhatIfInvest/WhatIfInvest/LaunchScreen.storyboard"
+      ],
+      "dependencies": [
+        "task_generate_apply_icon"
+      ],
+      "verification": [
+        {
+          "type": "build",
+          "description": "Build or launch the app after storyboard edits."
+        }
+      ],
+      "risk_level": "low"
+    },
+    {
+      "id": "task_port_asc_automation",
+      "title": "Port ASC automation and metadata scaffold",
+      "description": "Add scripts, env template, metadata strings, site-content drafts, and README guidance adapted from Hi_Tomorrow for WhatIfInvest.",
+      "why": "First-review preparation needs a repeatable path for metadata, screenshots, readiness check, and later submission.",
+      "done_criteria": [
+        ".asc/env.example exists with empty ids and relevant defaults",
+        "ASC helper scripts exist under scripts/",
+        "App Store localization drafts exist for en-US and ko-KR",
+        "README documents first-review setup and archive/readiness flow",
+        "Scripts avoid committing credentials"
+      ],
+      "file_scope": [
+        "WhatIfInvest/.asc",
+        "WhatIfInvest/app-store",
+        "WhatIfInvest/scripts/asc_*.sh"
+      ],
+      "dependencies": [],
+      "verification": [
+        {
+          "type": "shell",
+          "description": "Run syntax checks for added shell scripts."
+        },
+        {
+          "type": "review",
+          "description": "Compare script behavior with Hi_Tomorrow source scripts."
+        }
+      ],
+      "risk_level": "medium"
+    },
+    {
+      "id": "task_verify_archive_env",
+      "title": "Build, archive, and retry ASC env discovery",
+      "description": "Run build/test/archive checks and use ASC listing to fill local env ids where possible.",
+      "why": "Review readiness is only useful if the archive path and ASC setup gaps are known.",
+      "done_criteria": [
+        "Simulator build result is recorded",
+        "Unit test result is recorded when runnable",
+        "Archive result path or exact failure is recorded",
+        "ASC app/version id discovery is attempted",
+        ".asc/env is filled only with discoverable non-secret ids or left with explicit blanks"
+      ],
+      "file_scope": [
+        "WhatIfInvest/.asc/env",
+        "WhatIfInvest/.artifacts"
+      ],
+      "dependencies": [
+        "task_generate_apply_icon",
+        "task_update_launch_screen",
+        "task_port_asc_automation"
+      ],
+      "verification": [
+        {
+          "type": "build",
+          "description": "xcodebuild build or test for simulator."
+        },
+        {
+          "type": "archive",
+          "description": "xcodebuild archive for generic iOS destination."
+        },
+        {
+          "type": "asc",
+          "description": "Run ASC listing/readiness commands when authenticated."
+        }
+      ],
+      "risk_level": "high"
+    }
+  ],
+  "dependency_edges": [
+    {
+      "from": "task_update_launch_screen",
+      "to": "task_generate_apply_icon",
+      "type": "depends_on"
+    },
+    {
+      "from": "task_verify_archive_env",
+      "to": "task_generate_apply_icon",
+      "type": "depends_on"
+    },
+    {
+      "from": "task_verify_archive_env",
+      "to": "task_update_launch_screen",
+      "type": "depends_on"
+    },
+    {
+      "from": "task_verify_archive_env",
+      "to": "task_port_asc_automation",
+      "type": "depends_on"
+    }
+  ],
+  "risk_summary": [
+    {
+      "id": "risk_archive_signing",
+      "description": "Archive may fail due to signing or App Store Connect setup.",
+      "severity": "medium",
+      "mitigation": "Run archive and report exact signing or provisioning blocker."
+    },
+    {
+      "id": "risk_asc_missing_record",
+      "description": "First-review ids may not exist yet.",
+      "severity": "medium",
+      "mitigation": "Scaffold env and fill discovered ids only."
+    }
+  ],
+  "ready_for_consumer": true
+}
