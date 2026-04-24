@@ -1,4 +1,4 @@
-// Public support and privacy URLs used for App Store Connect submission.
+// Public Notion support and privacy URLs used for App Store Connect submission.
 "name" = "What If Invest";
 "subtitle" = "과거 투자를 현재 가치로";
-"privacyPolicyUrl" = "https://github.com/JoonSCode/WhatIfInvest/blob/main/app-store/site-content/privacy-policy.md";
+"privacyPolicyUrl" = "https://colin-ios.notion.site/What-If-Invest-Privacy-Policy-34ca3c8a74fc818cadf0db518780eab5";

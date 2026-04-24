@@ -39,7 +39,7 @@ Current metadata locales:
 - `en-US`
 - `ko`
 
-The committed metadata points to the public GitHub-rendered support and privacy documents in `app-store/site-content`.
+The committed metadata points to the public Notion support and privacy pages. The Markdown files in `app-store/site-content` are kept as source copies/backups for those pages.
 
 ## First Review Flow
 
