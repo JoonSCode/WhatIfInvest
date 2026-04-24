@@ -30,9 +30,12 @@ final class WhatIfInvestUITests: XCTestCase {
         XCTAssertTrue(saveButton.waitForExistence(timeout: 5))
         saveButton.tap()
 
-        let statusSummary = app.staticTexts["status-summary"].firstMatch
+        let statusSummary = app.descendants(matching: .any)["status-summary"].firstMatch
         XCTAssertTrue(statusSummary.waitForExistence(timeout: 5))
-        XCTAssertTrue(statusSummary.label.contains("1 saved"))
+
+        let savedPredicate = NSPredicate(format: "label CONTAINS[c] %@", "1 saved")
+        expectation(for: savedPredicate, evaluatedWith: statusSummary)
+        waitForExpectations(timeout: 5)
     }
 
     @MainActor

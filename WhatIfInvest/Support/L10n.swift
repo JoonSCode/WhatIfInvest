@@ -163,6 +163,12 @@ enum L10n {
     static var trustLatestSnapshotUnavailable: String {
         text("trust.latest_snapshot_unavailable", "Latest data snapshot unavailable.")
     }
+    static var trustLatestSnapshotDateTitle: String {
+        text("trust.latest_snapshot_date.title", "Snapshot")
+    }
+    static var trustLatestSnapshotProviderTitle: String {
+        text("trust.latest_snapshot_provider.title", "Provider")
+    }
 
     static var providerBundledData: String { text("provider.bundled_data", "Bundled data") }
     static var providerYahooMonthlyAdjusted: String {
@@ -326,6 +332,14 @@ enum L10n {
             date,
             provider
         )
+    }
+
+    static func trustLatestSnapshotDate(_ date: String) -> String {
+        format("trust.latest_snapshot_date", "Latest data snapshot: %@.", date)
+    }
+
+    static func trustLatestSnapshotProvider(_ provider: String) -> String {
+        format("trust.latest_snapshot_provider", "Provider: %@.", provider)
     }
 
     static func shareSummaryPrimaryLine(

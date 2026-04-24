@@ -80,6 +80,10 @@
 "trust.adjusted_close" = "Returns use adjusted close, which reflects splits and dividends.";
 "trust.exclusions" = "Taxes, fees, exchange rates, and inflation are excluded.";
 "trust.latest_snapshot" = "Latest data snapshot: %@ via %@.";
+"trust.latest_snapshot_date" = "Latest data snapshot: %@.";
+"trust.latest_snapshot_date.title" = "Snapshot";
+"trust.latest_snapshot_provider" = "Provider: %@.";
+"trust.latest_snapshot_provider.title" = "Provider";
 "trust.latest_snapshot_unavailable" = "Latest data snapshot unavailable.";
 "provider.bundled_data" = "Bundled data";
 "provider.yahoo_monthly_adjusted" = "Yahoo Finance monthly adjusted close";

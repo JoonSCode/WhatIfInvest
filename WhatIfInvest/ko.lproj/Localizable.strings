@@ -80,6 +80,10 @@
 "trust.adjusted_close" = "수익률은 분할과 배당을 반영한 수정종가 기준입니다.";
 "trust.exclusions" = "세금, 수수료, 환율, 물가상승률은 반영하지 않았습니다.";
 "trust.latest_snapshot" = "최신 데이터 스냅샷: %@ · %@";
+"trust.latest_snapshot_date" = "최신 데이터 스냅샷: %@";
+"trust.latest_snapshot_date.title" = "스냅샷";
+"trust.latest_snapshot_provider" = "제공처: %@";
+"trust.latest_snapshot_provider.title" = "제공처";
 "trust.latest_snapshot_unavailable" = "최신 데이터 스냅샷 정보를 아직 확인할 수 없어요.";
 "provider.bundled_data" = "기본 내장 데이터";
 "provider.yahoo_monthly_adjusted" = "Yahoo Finance 월간 수정종가";
