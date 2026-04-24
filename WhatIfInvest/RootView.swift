@@ -55,6 +55,8 @@ private struct LaunchLoadingView: View {
                     .font(.system(size: 34, weight: .black, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textPrimary)
                     .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 ProgressView()
                     .controlSize(.large)
@@ -63,11 +65,16 @@ private struct LaunchLoadingView: View {
                 Text(L10n.loadingAdjustedCloseTitle)
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(L10n.loadingAdjustedCloseBody)
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(AppTheme.ColorToken.textSecondary)
                     .multilineTextAlignment(.center)
+                    .lineLimit(4)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: 260)
             }
             .padding(28)

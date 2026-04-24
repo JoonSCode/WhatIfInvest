@@ -21,8 +21,34 @@ extension Date {
 }
 
 enum UIFormatting {
+    struct ScenarioParts {
+        let assetSymbol: String
+        let assetName: String
+        let startDate: String
+        let mode: String
+        let amount: String
+        let amountTitle: String
+    }
+
+    static func scenarioParts(_ scenario: InvestmentScenario) -> ScenarioParts {
+        ScenarioParts(
+            assetSymbol: scenario.asset.symbol,
+            assetName: scenario.asset.displayName,
+            startDate: scenario.startDate.monthYearText,
+            mode: scenario.mode.title,
+            amount: scenario.amount.currencyText,
+            amountTitle: scenario.mode.amountFieldLabel
+        )
+    }
+
     static func scenarioDescriptor(_ scenario: InvestmentScenario) -> String {
-        "\(scenario.asset.symbol) · \(scenario.startDate.monthYearText) · \(scenario.mode.title) \(scenario.amount.currencyText)"
+        let parts = scenarioParts(scenario)
+        return "\(parts.assetSymbol) · \(parts.startDate) · \(parts.mode) \(parts.amount)"
+    }
+
+    static func scenarioMetadataLine(_ scenario: InvestmentScenario) -> String {
+        let parts = scenarioParts(scenario)
+        return "\(parts.startDate) · \(parts.mode) · \(parts.amount)"
     }
 
     static func spanDescriptor(for result: ScenarioResult) -> String {
@@ -48,18 +74,15 @@ struct TrustNotesView: View {
                 Text(L10n.trustAdjustedClose)
                 Text(L10n.trustExclusions)
                 if let lastUpdatedAt {
-                    Text(
-                        L10n.trustLatestSnapshot(
-                            date: lastUpdatedAt.formatted(.dateTime.year().month().day()),
-                            provider: providerLabel
-                        )
-                    )
+                    Text(L10n.trustLatestSnapshotDate(lastUpdatedAt.formatted(.dateTime.year().month().day())))
+                    Text(L10n.trustLatestSnapshotProvider(providerLabel))
                 } else {
                     Text(L10n.trustLatestSnapshotUnavailable)
                 }
             }
             .font(.system(size: 14, weight: .medium, design: .rounded))
             .foregroundStyle(AppTheme.ColorToken.textPrimary.opacity(0.82))
+            .fixedSize(horizontal: false, vertical: true)
         }
         .padding(18)
         .appCardSurface(

@@ -132,7 +132,7 @@ struct ExploreView: View {
 
     private var controlRow: some View {
         VStack(alignment: .leading, spacing: 14) {
-            ViewThatFits(in: .vertical) {
+            ViewThatFits(in: .horizontal) {
                 HStack(spacing: 12) {
                     replayButton
                         .frame(maxWidth: .infinity)
@@ -146,7 +146,7 @@ struct ExploreView: View {
                 }
             }
 
-            ViewThatFits(in: .vertical) {
+            ViewThatFits(in: .horizontal) {
                 HStack(alignment: .center, spacing: 12) {
                     statusSummary
 
@@ -166,51 +166,23 @@ struct ExploreView: View {
 
     private var comparisonSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(L10n.compareModeTitle)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                Spacer()
-                Button(L10n.clearComparisons, role: .destructive) {
-                    appModel.resetComparisons()
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    comparisonSectionTitle
+                    Spacer(minLength: 0)
+                    clearComparisonsButton
                 }
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .buttonStyle(.bordered)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    comparisonSectionTitle
+                    clearComparisonsButton
+                }
             }
 
             ForEach(appModel.comparisonResults) { result in
-                HStack(spacing: 12) {
-                    Circle()
-                        .fill(result.scenario.asset.tint)
-                        .frame(width: 12, height: 12)
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(UIFormatting.scenarioDescriptor(result.scenario))
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        Text(
-                            L10n.comparisonResultSummary(
-                                currentValue: result.currentValue.currencyText,
-                                returnValue: result.totalReturnRatio.percentText
-                            )
-                        )
-                            .font(.system(size: 12, weight: .medium, design: .rounded))
-                            .foregroundStyle(AppTheme.ColorToken.textSecondary)
-                            .monospacedDigit()
-                    }
-
-                    Spacer()
-
-                    Button(L10n.remove, role: .destructive) {
-                        appModel.removeComparisonScenario(result.scenario.id)
-                    }
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
+                ComparisonResultRow(result: result) {
+                    appModel.removeComparisonScenario(result.scenario.id)
                 }
-                .padding(14)
-                .appCardSurface(
-                    fill: AppTheme.ColorToken.surfaceMuted.opacity(0.95),
-                    radius: 18
-                )
             }
         }
         .padding(18)
@@ -219,6 +191,22 @@ struct ExploreView: View {
             radius: 24
         )
         .accessibilityIdentifier("comparison-section")
+    }
+
+    private var comparisonSectionTitle: some View {
+        Text(L10n.compareModeTitle)
+            .font(.system(size: 20, weight: .bold, design: .rounded))
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(1)
+    }
+
+    private var clearComparisonsButton: some View {
+        Button(L10n.clearComparisons, role: .destructive) {
+            appModel.resetComparisons()
+        }
+        .font(.system(size: 14, weight: .semibold, design: .rounded))
+        .buttonStyle(.bordered)
     }
 
     private func fallbackState(message: String?) -> some View {
@@ -271,14 +259,28 @@ struct ExploreView: View {
     }
 
     private var statusSummary: some View {
-        Label(statusSummaryText, systemImage: "clock.arrow.circlepath")
-            .font(.system(size: 13, weight: .semibold, design: .rounded))
-            .foregroundStyle(AppTheme.ColorToken.textSecondary)
-            .monospacedDigit()
-            .lineLimit(2)
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("status-summary")
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                StatusPill(title: L10n.visibleYearTitle, value: visibleYearLabel, systemImage: "clock")
+                StatusPill(title: L10n.comparedCountTitle, value: "\(appModel.comparisonScenarios.count + 1)", systemImage: "chart.line.uptrend.xyaxis")
+                StatusPill(title: L10n.savedCountTitle, value: "\(appModel.savedScenarios.count)", systemImage: "bookmark")
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                StatusPill(title: L10n.visibleYearTitle, value: visibleYearLabel, systemImage: "clock")
+                StatusPill(title: L10n.comparedCountTitle, value: "\(appModel.comparisonScenarios.count + 1)", systemImage: "chart.line.uptrend.xyaxis")
+                StatusPill(title: L10n.savedCountTitle, value: "\(appModel.savedScenarios.count)", systemImage: "bookmark")
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            L10n.statusSummary(
+                visibleThrough: visibleYearLabel,
+                scenarioCount: appModel.comparisonScenarios.count + 1,
+                savedCount: appModel.savedScenarios.count
+            )
+        )
+        .accessibilityIdentifier("status-summary")
     }
 
     private var utilityActions: some View {
@@ -286,11 +288,17 @@ struct ExploreView: View {
             Button {
                 Task { await prepareShareCard() }
             } label: {
-                Label(isPreparingShare ? L10n.preparing : L10n.share, systemImage: "square.and.arrow.up")
+                if isPreparingShare {
+                    ProgressView()
+                        .controlSize(.small)
+                } else {
+                    Image(systemName: "square.and.arrow.up")
+                }
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
             .disabled(appModel.primaryResult == nil || isPreparingShare)
+            .accessibilityLabel(isPreparingShare ? L10n.preparing : L10n.share)
             .accessibilityIdentifier("share-card-button")
 
             Menu {
@@ -308,20 +316,13 @@ struct ExploreView: View {
                 }
                 .disabled(appModel.isRefreshing)
             } label: {
-                Label(L10n.more, systemImage: "ellipsis.circle")
+                Image(systemName: "ellipsis.circle")
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
+            .accessibilityLabel(L10n.more)
             .accessibilityIdentifier("more-actions-button")
         }
-    }
-
-    private var statusSummaryText: String {
-        L10n.statusSummary(
-            visibleThrough: visibleYearLabel,
-            scenarioCount: appModel.comparisonScenarios.count + 1,
-            savedCount: appModel.savedScenarios.count
-        )
     }
 
     private func alignVisibleYearToLatest() {
@@ -375,6 +376,101 @@ struct ExploreView: View {
         } catch {
             appModel.lastErrorMessage = error.localizedDescription
         }
+    }
+}
+
+private struct StatusPill: View {
+    let title: String
+    let value: String
+    let systemImage: String
+
+    var body: some View {
+        Label {
+            HStack(spacing: 4) {
+                Text(title)
+                Text(value)
+                    .foregroundStyle(AppTheme.ColorToken.textPrimary)
+                    .monospacedDigit()
+            }
+        } icon: {
+            Image(systemName: systemImage)
+        }
+        .font(.system(size: 12, weight: .semibold, design: .rounded))
+        .foregroundStyle(AppTheme.ColorToken.textSecondary)
+        .lineLimit(1)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(
+            Capsule(style: .continuous)
+                .fill(AppTheme.ColorToken.surfaceSubtle.opacity(0.92))
+        )
+    }
+}
+
+private struct ComparisonResultRow: View {
+    let result: ScenarioResult
+    let onRemove: () -> Void
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .top, spacing: 12) {
+                marker
+                comparisonText
+                    .layoutPriority(1)
+                Spacer(minLength: 0)
+                removeButton
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .top, spacing: 12) {
+                    marker
+                    comparisonText
+                        .layoutPriority(1)
+                }
+                removeButton
+            }
+        }
+        .padding(14)
+        .appCardSurface(
+            fill: AppTheme.ColorToken.surfaceMuted.opacity(0.95),
+            radius: 18
+        )
+    }
+
+    private var marker: some View {
+        Circle()
+            .fill(result.scenario.asset.tint)
+            .frame(width: 12, height: 12)
+            .padding(.top, 4)
+    }
+
+    private var comparisonText: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(UIFormatting.scenarioDescriptor(result.scenario))
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppTheme.ColorToken.textPrimary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(
+                L10n.comparisonResultSummary(
+                    currentValue: result.currentValue.currencyText,
+                    returnValue: result.totalReturnRatio.percentText
+                )
+            )
+            .font(.system(size: 12, weight: .medium, design: .rounded))
+            .foregroundStyle(AppTheme.ColorToken.textSecondary)
+            .monospacedDigit()
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var removeButton: some View {
+        Button(L10n.remove, role: .destructive, action: onRemove)
+            .font(.system(size: 12, weight: .semibold, design: .rounded))
+            .buttonStyle(.bordered)
+            .controlSize(.small)
     }
 }
 
@@ -435,13 +531,7 @@ private struct ScenarioEditorCard: View {
                     .foregroundStyle(AppTheme.ColorToken.danger)
             }
 
-            HStack(spacing: 10) {
-                Label(scenario.asset.categoryLabel, systemImage: "chart.line.uptrend.xyaxis")
-                Spacer()
-                Text(UIFormatting.scenarioDescriptor(scenario))
-            }
-            .font(.system(size: 12, weight: .semibold, design: .rounded))
-            .foregroundStyle(AppTheme.ColorToken.textSecondary)
+            ScenarioMetadataStrip(scenario: scenario)
         }
         .padding(20)
         .appCardSurface(
@@ -459,35 +549,59 @@ private struct ScenarioEditorCard: View {
     }
 }
 
+private struct ScenarioMetadataStrip: View {
+    let scenario: InvestmentScenario
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                category
+                Spacer(minLength: 0)
+                metadata
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                category
+                metadata
+            }
+        }
+        .font(.system(size: 12, weight: .semibold, design: .rounded))
+        .foregroundStyle(AppTheme.ColorToken.textSecondary)
+    }
+
+    private var category: some View {
+        Label(scenario.asset.categoryLabel, systemImage: "chart.line.uptrend.xyaxis")
+            .lineLimit(1)
+    }
+
+    private var metadata: some View {
+        Text(UIFormatting.scenarioMetadataLine(scenario))
+            .monospacedDigit()
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(1)
+    }
+}
+
 private struct ResultSummaryCard: View {
     let result: ScenarioResult
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(L10n.startedWithAsset(result.scenario.asset.symbol))
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        .foregroundStyle(AppTheme.ColorToken.textSecondary)
-                    Text(result.currentValue.currencyText)
-                        .font(.system(size: 34, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                }
-                Spacer()
-                Circle()
-                    .fill(result.scenario.asset.tint.gradient)
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Text(result.scenario.asset.symbol.prefix(1))
-                            .font(.system(size: 18, weight: .black, design: .rounded))
-                            .foregroundStyle(.white)
-                    )
-            }
+            resultHeader
 
-            HStack(spacing: 16) {
-                metricBlock(title: L10n.investedTitle, value: result.investedAmount.currencyText)
-                metricBlock(title: L10n.returnTitle, value: result.totalReturnRatio.percentText)
-                metricBlock(title: L10n.spanTitle, value: UIFormatting.spanDescriptor(for: result))
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 16) {
+                    metricBlock(title: L10n.investedTitle, value: result.investedAmount.currencyText)
+                    metricBlock(title: L10n.returnTitle, value: result.totalReturnRatio.percentText)
+                    metricBlock(title: L10n.spanTitle, value: UIFormatting.spanDescriptor(for: result))
+                }
+
+                VStack(alignment: .leading, spacing: 10) {
+                    metricBlock(title: L10n.investedTitle, value: result.investedAmount.currencyText)
+                    metricBlock(title: L10n.returnTitle, value: result.totalReturnRatio.percentText)
+                    metricBlock(title: L10n.spanTitle, value: UIFormatting.spanDescriptor(for: result))
+                }
             }
         }
         .padding(22)
@@ -512,6 +626,50 @@ private struct ResultSummaryCard: View {
         .accessibilityIdentifier("result-summary-card")
     }
 
+    private var resultHeader: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: 14) {
+                resultValueBlock
+                    .layoutPriority(1)
+                Spacer(minLength: 0)
+                assetBadge
+            }
+
+            VStack(alignment: .leading, spacing: 12) {
+                resultValueBlock
+                assetBadge
+            }
+        }
+    }
+
+    private var resultValueBlock: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(L10n.startedWithAsset(result.scenario.asset.symbol))
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppTheme.ColorToken.textSecondary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(result.currentValue.currencyText)
+                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .allowsTightening(true)
+        }
+    }
+
+    private var assetBadge: some View {
+        Circle()
+            .fill(result.scenario.asset.tint.gradient)
+            .frame(width: 44, height: 44)
+            .overlay(
+                Text(result.scenario.asset.symbol.prefix(1))
+                    .font(.system(size: 18, weight: .black, design: .rounded))
+                    .foregroundStyle(.white)
+            )
+    }
+
     private func metricBlock(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title.uppercased())
@@ -520,6 +678,8 @@ private struct ResultSummaryCard: View {
             Text(value)
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
