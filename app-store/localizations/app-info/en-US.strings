@@ -1,4 +1,4 @@
-// Replace placeholder URLs before uploading with asc if production pages move.
+// Public support and privacy URLs used for App Store Connect submission.
 "name" = "What If Invest";
 "subtitle" = "See past investments today";
-"privacyPolicyUrl" = "https://example.com/whatifinvest/privacy";
+"privacyPolicyUrl" = "https://github.com/JoonSCode/WhatIfInvest/blob/main/app-store/site-content/privacy-policy.md";

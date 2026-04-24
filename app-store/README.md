@@ -39,7 +39,7 @@ Current metadata locales:
 - `en-US`
 - `ko`
 
-Replace placeholder URLs before upload if the production support/privacy URLs differ from the committed drafts.
+The committed metadata points to the public GitHub-rendered support and privacy documents in `app-store/site-content`.
 
 ## First Review Flow
 
