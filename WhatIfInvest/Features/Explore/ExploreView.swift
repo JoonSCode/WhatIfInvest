@@ -141,18 +141,9 @@ struct ExploreView: View {
 
     private var controlRow: some View {
         VStack(alignment: .leading, spacing: 14) {
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 12) {
-                    replayButton
-                        .frame(maxWidth: .infinity)
-                    comparisonButton
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    replayButton
-                        .frame(maxWidth: .infinity)
-                    comparisonButton
-                }
+            HStack(spacing: 12) {
+                replayButton
+                comparisonButton
             }
 
             ViewThatFits(in: .horizontal) {
@@ -187,6 +178,7 @@ struct ExploreView: View {
                     clearComparisonsButton
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             ForEach(comparisonSeriesDescriptors) { descriptor in
                 ComparisonResultRow(descriptor: descriptor) {
@@ -195,6 +187,7 @@ struct ExploreView: View {
             }
         }
         .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .appCardSurface(
             fill: AppTheme.ColorToken.surfaceBase.opacity(0.88),
             radius: 24
@@ -252,8 +245,9 @@ struct ExploreView: View {
     }
 
     private var replayButton: some View {
-        Button(isPlaying ? L10n.stopReplay : L10n.runReplay) {
-            togglePlayback()
+        Button(action: togglePlayback) {
+            Text(isPlaying ? L10n.stopReplay : L10n.runReplay)
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
         .tint(AppTheme.ColorToken.brandPrimary)
@@ -262,12 +256,16 @@ struct ExploreView: View {
     }
 
     private var comparisonButton: some View {
-        Button(L10n.addComparison) {
+        Button(action: {
             comparisonDraft = appModel.nextComparisonDraft()
             showingComparisonSheet = true
-        }
+        }, label: {
+            Text(L10n.addComparison)
+                .frame(maxWidth: .infinity)
+        })
         .buttonStyle(.bordered)
         .controlSize(.large)
+        .frame(maxWidth: .infinity)
         .disabled(appModel.primaryResult == nil)
         .accessibilityIdentifier("add-comparison-button")
     }
@@ -450,6 +448,7 @@ private struct ComparisonResultRow: View {
             }
         }
         .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .appCardSurface(
             fill: AppTheme.ColorToken.surfaceMuted.opacity(0.95),
             radius: 18
