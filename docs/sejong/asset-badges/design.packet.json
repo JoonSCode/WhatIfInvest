@@ -1,10 +1,10 @@
 {
-  "format": "ariadne.design-packet/v0.1-draft",
+  "format": "uigwe.design-packet/v0.1-draft",
   "packet_type": "design",
   "profile": "brownfield",
   "generated_at": "2026-04-23T11:07:44Z",
   "source_packets": [
-    "docs/ariadne/asset-badges/intent.packet.json"
+    "docs/sejong/asset-badges/intent.packet.json"
   ],
   "problem_frame": "WhatIfInvest needs asset visuals that feel intentional and recognizable without implying official brand affiliation. The current first-letter and small-dot treatments are simple but inconsistent across app and share surfaces.",
   "selected_approach": {

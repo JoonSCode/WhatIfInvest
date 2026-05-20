@@ -1,6 +1,6 @@
 # CLAUDE.md (WhatIfInvest)
 
-This repository contains the standalone iOS app for the US stock what-if simulator planned in Ariadne.
+This repository contains the standalone iOS app for the US stock what-if simulator planned in Uigwe.
 
 ## Core Product Rules
 

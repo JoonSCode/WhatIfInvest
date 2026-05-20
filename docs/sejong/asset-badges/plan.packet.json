@@ -1,11 +1,11 @@
 {
-  "format": "ariadne.plan-packet/v0.1-draft",
+  "format": "uigwe.plan-packet/v0.1-draft",
   "packet_type": "plan",
   "profile": "brownfield",
   "generated_at": "2026-04-23T11:07:44Z",
   "source_packets": [
-    "docs/ariadne/asset-badges/intent.packet.json",
-    "docs/ariadne/asset-badges/design.packet.json"
+    "docs/sejong/asset-badges/intent.packet.json",
+    "docs/sejong/asset-badges/design.packet.json"
   ],
   "spec_path": "spec.md",
   "rationale_path": "rationale.md",

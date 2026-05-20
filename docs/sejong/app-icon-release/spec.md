@@ -30,7 +30,7 @@ Prepare WhatIfInvest for first App Store review by adding finished app branding,
 
 ## Verification
 
-- Validate the Ariadne bundle.
+- Validate the Uigwe bundle.
 - Inspect icon source and derived sizes.
 - Run `xcodebuild build` or tests for simulator.
 - Run `xcodebuild archive` for generic iOS.

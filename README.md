@@ -4,9 +4,9 @@ Standalone SwiftUI iOS app for exploring US stock and ETF what-if scenarios.
 
 ## Current Status
 
-This repo starts from the Ariadne plan bundle in:
+This repo starts from the Uigwe plan bundle in:
 
-- `/Users/junsu/Develop/KinnoLabs/docs/ariadne/runs/2026-04-22-us-stock-what-if-ios-app/`
+- `/Users/junsu/Develop/KinnoLabs/docs/sejong/runs/2026-04-22-us-stock-what-if-ios-app/`
 
 ## MVP Direction
 

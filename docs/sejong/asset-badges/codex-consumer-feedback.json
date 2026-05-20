@@ -1,15 +1,15 @@
 {
-  "format": "ariadne.codex-consumer-feedback/v0.2-draft",
+  "format": "uigwe.codex-consumer-feedback/v0.2-draft",
   "metadata": {
     "profile": "brownfield",
     "generated_at": "2026-04-23T12:07:45Z",
     "consumer": "codex",
     "plan_id": "plan_swiftui_asset_badges",
-    "goal_tree_path": "WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json",
+    "goal_tree_path": "WhatIfInvest/docs/sejong/asset-badges/goal-tree.json",
     "attempt_id": "ralph-attempt-001",
     "attempt_number": 1,
     "bundle_fingerprint": "sha256:578666074ad2e9b948245f72bfb48e086888173c851bf6141708364ab15bbf54",
-    "executor_result_path": "WhatIfInvest/docs/ariadne/asset-badges/ralph-executor.result.json"
+    "executor_result_path": "WhatIfInvest/docs/sejong/asset-badges/ralph-executor.result.json"
   },
   "summary": {
     "completed_count": 4,

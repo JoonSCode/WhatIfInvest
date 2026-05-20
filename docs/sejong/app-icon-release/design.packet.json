@@ -1,10 +1,10 @@
 {
-  "format": "ariadne.design-packet/v0.1-draft",
+  "format": "uigwe.design-packet/v0.1-draft",
   "packet_type": "design",
   "profile": "brownfield",
   "generated_at": "2026-04-24T09:12:57Z",
   "source_packets": [
-    "docs/ariadne/app-icon-release/intent.packet.json"
+    "docs/sejong/app-icon-release/intent.packet.json"
   ],
   "problem_frame": "WhatIfInvest needs a credible, distinctive App Store-facing brand asset and the operational scaffolding needed to move from a local Xcode app to first-review readiness. The work is mostly integration and release hygiene around an existing SwiftUI app.",
   "selected_approach": {
@@ -114,7 +114,7 @@
     }
   ],
   "validation_plan": [
-    "Validate the Ariadne bundle.",
+    "Validate the Uigwe bundle.",
     "Generate and inspect the icon source and derived app icon files.",
     "Build the app for simulator after asset and storyboard changes.",
     "Run unit tests if build is healthy.",

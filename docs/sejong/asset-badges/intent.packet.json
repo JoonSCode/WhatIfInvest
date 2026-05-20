@@ -1,5 +1,5 @@
 {
-  "format": "ariadne.intent-packet/v0.1-draft",
+  "format": "uigwe.intent-packet/v0.1-draft",
   "packet_type": "intent",
   "profile": "brownfield",
   "generated_at": "2026-04-23T11:07:44Z",

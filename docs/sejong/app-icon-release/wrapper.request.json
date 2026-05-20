@@ -1,10 +1,10 @@
 {
-  "format": "ariadne.wrapper-request/v0.1-draft",
+  "format": "uigwe.wrapper-request/v0.1-draft",
   "mode": "auto",
   "profile": "auto",
   "executor_handoff": "none",
   "brief": "Generate and apply a What If Invest app icon, update the launch screen to use the same brand mark, port Hi_Tomorrow-style App Store Connect automation for first-review readiness, archive the app, then fill ASC env values where discoverable after archive/setup.",
-  "output_dir": "docs/ariadne/app-icon-release",
+  "output_dir": "docs/sejong/app-icon-release",
   "consumer_handoff": "none",
   "notes": [
     "Live session clarified that the icon direction may be selected by the agent.",

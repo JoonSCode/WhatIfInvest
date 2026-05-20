@@ -1,15 +1,15 @@
 # Ralph Execution Handoff
 
-You are receiving a validated Ariadne planning bundle for execution through the Codex-native Ralph skill.
-Treat the Ariadne bundle as authoritative and do not reopen planning unless execution discovers a real contradiction.
+You are receiving a validated Uigwe planning bundle for execution through the Codex-native Ralph skill.
+Treat the Uigwe bundle as authoritative and do not reopen planning unless execution discovers a real contradiction.
 
 ## Task Summary
 
-- Bundle directory: `WhatIfInvest/docs/ariadne/asset-badges`
+- Bundle directory: `WhatIfInvest/docs/sejong/asset-badges`
 - Attempt id: `ralph-attempt-001`
 - Attempt number: `1`
-- Resolved Ariadne mode: `full`
-- Resolved Ariadne profile: `brownfield`
+- Resolved Uigwe mode: `full`
+- Resolved Uigwe profile: `brownfield`
 - Selected plan id: `plan_swiftui_asset_badges`
 - Selected plan title: `Unify asset visuals with a shared SwiftUI ticker badge`
 - Selected plan summary: Create one reusable circular AssetBadgeView, integrate it into Explore and share surfaces, then verify build, visual legibility, accessibility, and absence of official logo assets.
@@ -17,10 +17,10 @@ Treat the Ariadne bundle as authoritative and do not reopen planning unless exec
 
 ## Source Of Truth
 
-1. `plan.packet.json`: `WhatIfInvest/docs/ariadne/asset-badges/plan.packet.json`
-2. `goal-tree.json`: `WhatIfInvest/docs/ariadne/asset-badges/goal-tree.json`
-3. `spec.md`: `WhatIfInvest/docs/ariadne/asset-badges/spec.md`
-4. `rationale.md`: `WhatIfInvest/docs/ariadne/asset-badges/rationale.md`
+1. `plan.packet.json`: `WhatIfInvest/docs/sejong/asset-badges/plan.packet.json`
+2. `goal-tree.json`: `WhatIfInvest/docs/sejong/asset-badges/goal-tree.json`
+3. `spec.md`: `WhatIfInvest/docs/sejong/asset-badges/spec.md`
+4. `rationale.md`: `WhatIfInvest/docs/sejong/asset-badges/rationale.md`
 
 ## Execution Scope
 
@@ -30,7 +30,7 @@ Treat the Ariadne bundle as authoritative and do not reopen planning unless exec
 
 ## Execution Rules
 
-- Treat the Ariadne bundle as the source of truth in this order: plan.packet.json, goal-tree.json, spec.md, rationale.md, planning-summary.md when present.
+- Treat the Uigwe bundle as the source of truth in this order: plan.packet.json, goal-tree.json, spec.md, rationale.md, planning-summary.md when present.
 - Execute only the executable_leaf nodes included in execution_scope.
 - Respect dependency order and do not dispatch a leaf before its dependencies complete.
 - Run leaves in parallel only when file scopes do not overlap, risk is not high, and the leaf's consumer hints allow parallel execution.
@@ -176,8 +176,8 @@ Consumer hints:
 ## Suggested Artifact Paths
 
 - Attempt id: `ralph-attempt-001`
-- Consumer feedback: `WhatIfInvest/docs/ariadne/asset-badges/codex-consumer-feedback.json`
-- Executor result: `WhatIfInvest/docs/ariadne/asset-badges/ralph-executor.result.json`
+- Consumer feedback: `WhatIfInvest/docs/sejong/asset-badges/codex-consumer-feedback.json`
+- Executor result: `WhatIfInvest/docs/sejong/asset-badges/ralph-executor.result.json`
 
 Persist the result and feedback at these root-level paths for this attempt unless your harness has an explicit alternate retention policy.
 
